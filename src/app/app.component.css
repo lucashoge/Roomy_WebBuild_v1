@@ -1,0 +1,183 @@
+:host {
+    font-family: "PPPangramSansRounded-Bold";
+    font-size: 22px;
+    color: #333;
+    box-sizing: border-box;
+    /* -webkit-font-smoothing: antialiased; */
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    margin: 8px 0;
+  }
+
+  p {
+    margin: 0;
+  }
+
+  .spacer {
+    flex: 1;
+  }
+
+  .toolbar {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    background-color: #000000;
+    color: white;
+    
+    font-weight: 600;
+    font-family: "Pangram";
+  }
+
+  .toolbar svg {
+    margin: 0 16px;
+  }
+
+  .toolbar #twitter-logo {
+    height: 40px;
+    margin: 0 8px;
+  }
+
+  .toolbar #tiktok-logo {
+    height: 40px;
+    margin: 0 16px;
+  }
+
+  .toolbar #twitter-logo:hover,
+  .toolbar #youtube-logo:hover {
+    opacity: 0.8;
+  }
+
+  .content {
+    display: flex;
+    margin: 60px auto 32px;
+    /* padding: 0 16px; */
+    max-width: 960px;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+
+    width: 100%;
+    height: 100vh; 
+  }
+
+  .card-container {
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+    /* margin-top: 16px; */
+  }
+
+  .card {
+    all: unset;
+    border-radius: 4px;
+   
+    height: 50px;
+    width: 50px;
+    padding: 14px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    transition: all 0.2s ease-in-out;
+    line-height: 24px;
+
+    margin: 8px 0;
+  }
+
+  
+
+  .card-container .card:not(.highlight-card) {
+    cursor: pointer;
+  }
+
+  .card-container .card:not(.highlight-card):hover {
+    transform: translateY(-3px);
+  }
+
+  .roomylogo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 20px;
+  }
+
+  .roomylogo svg {
+    margin: 0 10px;
+  }
+
+  .swipebox {
+    border-radius: 14px;
+    /* border: 0px solid #333; */
+    box-shadow: 0px 0px 7px rgba(0,0,0,0.2), inset 0px 0px 2px rgba(0,0,0,0.09);
+    
+
+    background-color: #EFE5FF;
+    height: 300px;
+    width: 200px;
+  }
+
+  .swipebox img {
+    width: 100%;
+    height: 100%;
+
+    display: none;
+
+    transform: rotateY(90deg);
+
+    border-radius: 14px;
+
+    animation: img_intro 1s ease-in-out forwards;
+
+  }
+
+  @keyframes img_intro{
+    from{
+      opacity: 0;
+      transform: rotateY(90deg);
+    }
+    to{
+      opacity: 1;
+      transform: rotateY(0deg);
+    }
+  }
+
+  
+
+
+  
+
+
+
+  /* Responsive Styles */
+  @media screen and (max-width: 767px) {
+    
+    
+
+    /* .card:not(.highlight-card) {
+      height: 16px;
+      margin: 8px 0;
+    } */
+
+    .card.highlight-card span {
+      margin-left: 72px;
+    }
+  }
+
+  @media screen and (max-width: 575px) {
+    svg#rocket-smoke {
+      display: none;
+      visibility: hidden;
+    }
+  }
