@@ -7,14 +7,25 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 import { RegisterComponent } from './register/register.component';
 
-import { ProfileBoxComponentComponent } from './profile-box-component/profile-box-component.component';
+import { MainUiComponent } from './main-ui/main-ui.component';
+import { ProfileBoxComponent } from './profile-box/profile-box.component';
+import { ChatComponent } from './chat/chat.component';
+import { MatchComponent } from './match/match.component';
+import { SettingsEditingComponent } from './settings-editing/settings-editing.component';
+import { LoginComponent } from './login/login.component';
+import { ProfileComponent } from './profile/profile.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    RegisterComponent
-
-    ProfileBoxComponentComponent
+    RegisterComponent,
+     MainUiComponent,
+     ProfileBoxComponent,
+     ChatComponent,
+     MatchComponent,
+     SettingsEditingComponent,
+     LoginComponent,
+     ProfileComponent
   ],
   imports: [
     BrowserModule,
