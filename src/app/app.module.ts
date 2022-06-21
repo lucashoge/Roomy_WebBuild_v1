@@ -1,9 +1,11 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
+import { RouterModule } from '@angular/router';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { FormsModule } from "@angular/forms";
 
 import { RegisterComponent } from './register/register.component';
 
@@ -14,6 +16,8 @@ import { MatchComponent } from './match/match.component';
 import { SettingsEditingComponent } from './settings-editing/settings-editing.component';
 import { LoginComponent } from './login/login.component';
 import { ProfileComponent } from './profile/profile.component';
+import { HashLocationStrategy, LocationStrategy } from '@angular/common'
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -30,10 +34,54 @@ import { ProfileComponent } from './profile/profile.component';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    FormsModule,
+    HttpClientModule,
+    RouterModule.forRoot([     //Abkürzungen für die Links zu den Components | Später wichtig für die Login Überwachung
+      {
+        path: 'login',
+        component: LoginComponent
+      },
+      {
+        path: 'register',
+        component: RegisterComponent
+      },{
+        path: 'mainUI',
+        component: MainUiComponent
+      },
+      {
+        path: 'profileBox',
+        component: ProfileBoxComponent
+      },
+      {
+        path: 'profile',
+        component: ProfileComponent
+      },
+      {
+        path: 'chat',
+        component: ChatComponent
+      },
+      {
+        path: 'match',
+        component: MatchComponent
+      },
+      {
+        path: 'settings',
+        component: SettingsEditingComponent
+      },
+      {
+        path: '', //Hauptseite
+        component: MainUiComponent
+      }
+    ])
 
   ],
-  providers: [],
+  providers: [
+    {   //Verhindert, dass Unterseiten beim Neuladen nicht gefunden werden
+    provide: LocationStrategy,
+    useClass: HashLocationStrategy
+    }
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
