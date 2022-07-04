@@ -15,8 +15,12 @@ export class RegisterComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  showPerson:boolean=true;
+  showWG:boolean=false;
+
   users: any;
   registerDenied: any;
+
   Username: any;
   Email: any;
   Nachname: any;
@@ -25,6 +29,21 @@ export class RegisterComponent implements OnInit {
   PasswortBest: any;
   passwordError: any;
   registerSuccessful: any;
+
+  Geschlecht: any;
+  Geburtsdatum: any;
+
+  Postleitzahl: any;
+  Stadt: any;
+  Land: any;
+  pushPerson(){
+    this.showPerson=true;
+    this.showWG=false;
+  }
+  pushWG(){
+    this.showPerson=false;
+    this.showWG=true;
+  }
   
   
   sendRegister(data: any) {
