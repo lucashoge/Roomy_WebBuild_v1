@@ -57,6 +57,40 @@ app.post('/register', function (req, res) {
 
 
 
+  // get all chats of a person:
+  /*
+  *
+    SELECT 22_DB_Gruppe3.chat.lastMessage, 22_DB_Gruppe3.chat.fk_personid, 22_DB_Gruppe3.chat.fk_wgid, 22_DB_Gruppe3.users.email FROM 22_DB_Gruppe3.chat
+    INNER JOIN 22_DB_Gruppe3.users ON 22_DB_Gruppe3.chat.fk_personid=22_DB_Gruppe3.users.userid
+    WHERE email="testPerson2@gmail.com" ORDER BY lastMessage
+   */
+// get all chats of a wg:
+  /*
+  *
+    SELECT 22_DB_Gruppe3.chat.lastMessage, 22_DB_Gruppe3.chat.fk_personid, 22_DB_Gruppe3.chat.fk_wgid, 22_DB_Gruppe3.users.email FROM 22_DB_Gruppe3.chat
+    INNER JOIN 22_DB_Gruppe3.users ON 22_DB_Gruppe3.chat.fk_wgid=22_DB_Gruppe3.users.userid
+    WHERE email="testPerson2@gmail.com" ORDER BY lastMessage
+   */
+
+  app.post('/allChats', function (req, res) {
+
+    var con = mysql.createConnection(conConfig);
+  
+      con.connect(function (error) {
+        if (error) throw error;
+        console.log("connected");
+        con.query('SELECT * FROM chat WHERE ', { username: req.body.body.Username, email: req.body.body.Email, nachname: req.body.body.Nachname, vorname: req.body.body.Name, passwort: req.body.body.Passwort },
+          function (error, results, fields) {
+            if (error) throw error;
+            console.log(results);
+            con.end(function (error) {
+              if (error) throw error;
+              console.log("connection End");
+            });
+          });
+      });
+  });
+
 
  
   // application -------------------------------------------------------------
