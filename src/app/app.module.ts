@@ -18,6 +18,7 @@ import { LoginComponent } from './login/login.component';
 import { ProfileComponent } from './profile/profile.component';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common'
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { ChatverlaeufeComponent } from './chatverlaeufe/chatverlaeufe.component';
 
 @NgModule({
   declarations: [
@@ -29,7 +30,8 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
      MatchComponent,
      SettingsEditingComponent,
      LoginComponent,
-     ProfileComponent
+     ProfileComponent,
+     ChatverlaeufeComponent
   ],
   imports: [
     BrowserModule,
