@@ -106,16 +106,41 @@ app.get('/register', function (req, res) {
   
 });
 
-//Ist vom alten Projekt, muss noch angepasst werden
+
+
 //Registrieren Neuen User in die Datenbank eintragen
 app.post('/register', function (req, res) {
-      //Person
-      var con = mysql.createConnection(conConfig);    
+  console.log("Start");
+  console.log(req.body);
+  if(req.body.body.kindOfUser=='person'){
+    console.log("Person");
+    //Person
+    var con = mysql.createConnection(conConfig);    
+      con.connect(function (error) {
+        if (error) throw error;
+        console.log("connected");
+        con.query('INSERT INTO users SET ?;INSERT INTO person(personid)  select MAX(userid) as newid FROM users; UPDATE person SET ? where personid = (SELECT MAX(userid) FROM users); ', [{ username: req.body.body.Username, email: req.body.body.Email, password: req.body.body.Passwort },{ firstname: req.body.body.Vorname, surname: req.body.body.Nachname, gender: req.body.body.Geschlecht, birthdate: req.body.body.Geburtsdatum }],
+        //con.query('INSERT INTO person SET ?; INSERT INTO users SET ? ', [{ personid: 'SELECT userid FROM users WHERE userid=LAST_INSERT_ID()', firstname: req.body.body.Vorname, surname: req.body.body.Nachname, gender: req.body.body.Geschlecht, birthdate: req.body.body.Geburtsdatum },{ username: req.body.body.Username, email: req.body.body.Email, password: req.body.body.Passwort }],
+          function (error, results, fields) {
+            if (error) throw error;
+            console.log(results[0]);
+            console.log(results[1]);
+            console.log(results[2]);
+            con.end(function (error) {
+              if (error) throw error;
+              console.log("connection End");
+            });
+          });
+      });
+  }
+  else if(req.body.body.kindOfUser=='wg'){
+    console.log("WG");
+    //WG
+    var con = mysql.createConnection(conConfig);    
         con.connect(function (error) {
           if (error) throw error;
           console.log("connected");
-          con.query('INSERT INTO users SET ?;INSERT INTO person(personid)  select MAX(userid) as newid FROM users; UPDATE person SET ? where personid = (SELECT MAX(userid) FROM users); ', [{ username: req.body.body.Username, email: req.body.body.Email, password: req.body.body.Passwort },{ firstname: req.body.body.Vorname, surname: req.body.body.Nachname, gender: req.body.body.Geschlecht, birthdate: req.body.body.Geburtsdatum }],
-          //con.query('INSERT INTO person SET ?; INSERT INTO users SET ? ', [{ personid: 'SELECT userid FROM users WHERE userid=LAST_INSERT_ID()', firstname: req.body.body.Vorname, surname: req.body.body.Nachname, gender: req.body.body.Geschlecht, birthdate: req.body.body.Geburtsdatum },{ username: req.body.body.Username, email: req.body.body.Email, password: req.body.body.Passwort }],
+          con.query('INSERT INTO users SET ?;INSERT INTO wg(wgid)  select MAX(userid) as newid FROM users; UPDATE wg SET ? where wgid = (SELECT MAX(userid) FROM users); ', [{ username: req.body.body.Username, email: req.body.body.Email, password: req.body.body.Passwort },{ wgname: req.body.body.WGName, postcode: req.body.body.Postleitzahl, city: req.body.body.Stadt, country: req.body.body.Land }],
             function (error, results, fields) {
               if (error) throw error;
               console.log(results[0]);
@@ -127,6 +152,8 @@ app.post('/register', function (req, res) {
               });
             });
         });
+  }
+      
     });
 
 

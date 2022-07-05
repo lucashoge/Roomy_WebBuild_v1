@@ -104,10 +104,10 @@
       </div> <br>
       
 
-      WG Name: <input type="text" name="Name" required
-                  [(ngModel)]="Vorname" #vorname="ngModel"> <br>
-      <div *ngIf="vorname.invalid && (vorname.dirty||  vorname.touched)">
-        Es wurde kein Vornamename angegeben.
+      WG Name: <input type="text" name="WGName" required
+                  [(ngModel)]="WGName" #wgname="ngModel"> <br>
+      <div *ngIf="wgname.invalid && (wgname.dirty||  wgname.touched)">
+        Es wurde kein WG Namen angegeben.
       </div> <br>
 
   
