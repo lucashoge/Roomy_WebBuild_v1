@@ -1,6 +1,11 @@
 <br>
 <br>
 <br>
-test
+<form (submit)="loginUser($event)">
+  <input type="text" placeholder="Username" id="username">
+  <input type="password" placeholder="Passwort" id="password">
+  <input type="Submit" value="Anmelden">
+</form>
 <br>
 <br>
+{{loginMessage}}

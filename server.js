@@ -13,7 +13,7 @@ var fs = require("fs");
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json())
 app.use(express.json());
-app.use(express.static(path.join(__dirname, '/dist/angular-microblog')));
+app.use(express.static(path.join(__dirname, '/dist/my-new-angular-app')));
 
 const privateKey = fs.readFileSync('./private.key', 'utf8');
 const publicKey = fs.readFileSync('./public.key', 'utf8');
@@ -43,6 +43,82 @@ var conConfig = {
 
 
 
+//Middleware -----------------------------------------------------------
+function verifyToken(req, res, next) {
+  if (!req.headers.authorization) {
+    console.log("Kein Token vorhanden");
+    return res.status(401).send("Unauthorized request");
+  }
+  var token = req.headers.authorization.split(' ')[1];
+  if (token === 'null') {
+    console.log("Token leer");
+    return res.status(401).send("Unauthorized request");
+  }
+  const payload = jwt.verify(token, publicKey);
+  if (!payload || payload == 'undefined') {
+    console.log("Payload leer");
+    return res.status(401).send("Unauthorized request");
+  }
+  else {
+    req.userId = payload.sub;
+    next();
+  }
+
+
+}
+
+
+
+
+// application -------------------------------------------------------------
+
+//Login Abfrage ob User (mit Passwort) existiert
+app.get('/api/login', function (req, res) {
+
+  var con = mysql.createConnection(conConfig);
+  var userData = ["", ""];
+
+  if (req.query.Username && req.query.password) {
+    userData = [req.query.Username, req.query.password];
+  }
+
+
+  con.connect(function (error) {
+    if (error) throw error;
+    console.log("connected");
+    con.query("SELECT username, userid FROM users WHERE username = ? AND password = ?;", userData, function (error, results, fields) {
+      if (error) throw error;
+      if (results != "") {
+        console.log(results[0].userid);
+
+        payload = { subject: stringify(results[0].userid) };
+
+        const jwtBearerToken = jwt.sign({}, privateKey, {
+          algorithm: 'RS256',
+          expiresIn: '24h',
+          subject: stringify(results[0].userid)
+        });
+
+
+        res.status(200).json({
+          idToken: jwtBearerToken,
+          expiresIn: '24h'
+        });
+      }
+      else {
+        res.send(stringify("err"));
+      }
+
+
+
+      con.end(function (error) {
+        if (error) throw error;
+        console.log("connection End");
+      });
+    });
+  });
+
+});
 
 //Register Abfrage ob Username+Email bereits existieren (Unfertig -> ausbauen)
 app.get('/register', function (req, res) {
