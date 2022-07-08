@@ -61,9 +61,11 @@ app.post('/register', function (req, res) {
   // get all chats of a person:
   /*
   *
-    SELECT 22_DB_Gruppe3.chat.lastMessage, 22_DB_Gruppe3.chat.fk_personid, 22_DB_Gruppe3.chat.fk_wgid, 22_DB_Gruppe3.users.email FROM 22_DB_Gruppe3.chat
-    INNER JOIN 22_DB_Gruppe3.users ON 22_DB_Gruppe3.chat.fk_personid=22_DB_Gruppe3.users.userid
-    WHERE email="testPerson2@gmail.com" ORDER BY lastMessage
+    SELECT 22_DB_Gruppe3.chat.lastMessage, 22_DB_Gruppe3.chat.fk_personid,22_DB_Gruppe3.chat.fk_wgid, userTable.email AS userMail, wgTable.email AS wgMail
+    FROM 22_DB_Gruppe3.chat
+    LEFT JOIN 22_DB_Gruppe3.users AS userTable ON fk_personid=userTable.userid
+    LEFT JOIN 22_DB_Gruppe3.users AS wgTable ON fk_wgid=wgTable.userid
+    WHERE userTable.email="hansi@hallo.de" OR wgTable.email="hansi@hallo.de";
    */
 
 
@@ -74,38 +76,12 @@ app.post('/register', function (req, res) {
       con.connect(function (error) {
         if (error) throw error;
         console.log("connected");
-        con.query('SELECT 22_DB_Gruppe3.chat.lastMessage, 22_DB_Gruppe3.chat.fk_personid, 22_DB_Gruppe3.chat.fk_wgid, 22_DB_Gruppe3.users.email FROM 22_DB_Gruppe3.chat INNER JOIN 22_DB_Gruppe3.users ON 22_DB_Gruppe3.chat.fk_personid=22_DB_Gruppe3.users.userid WHERE email="' + req.body.body.email + '" ORDER BY lastMessage',
+        con.query('SELECT 22_DB_Gruppe3.chat.lastMessage, 22_DB_Gruppe3.chat.fk_personid,22_DB_Gruppe3.chat.fk_wgid, userTable.email AS userMail, wgTable.email AS wgMail FROM 22_DB_Gruppe3.chat LEFT JOIN 22_DB_Gruppe3.users AS userTable ON fk_personid=userTable.userid LEFT JOIN 22_DB_Gruppe3.users AS wgTable ON fk_wgid=wgTable.userid WHERE userTable.email="' + req.body.body.email +'" OR wgTable.email="' + req.body.body.email +'"',
           function (error, results, fields) {
             if (error) throw error;
-            
+            console.log(req.body.body.email);
             console.log(results);
             res.send(stringify(results));
-            con.end(function (error) {
-              if (error) throw error;
-              console.log("connection End");
-            });
-          });
-      });
-  });
-
-// get all chats of a wg:
-  /*
-  *
-    SELECT 22_DB_Gruppe3.chat.lastMessage, 22_DB_Gruppe3.chat.fk_personid, 22_DB_Gruppe3.chat.fk_wgid, 22_DB_Gruppe3.users.email FROM 22_DB_Gruppe3.chat
-    INNER JOIN 22_DB_Gruppe3.users ON 22_DB_Gruppe3.chat.fk_wgid=22_DB_Gruppe3.users.userid
-    WHERE email="testPerson2@gmail.com" ORDER BY lastMessage
-   */
-  app.post('/allChatsFromWG', function (req, res) {
-
-    var con = mysql.createConnection(conConfig);
-  
-      con.connect(function (error) {
-        if (error) throw error;
-        console.log("connected");
-        con.query('SELECT 22_DB_Gruppe3.chat.lastMessage, 22_DB_Gruppe3.chat.fk_personid, 22_DB_Gruppe3.chat.fk_wgid, 22_DB_Gruppe3.users.email FROM 22_DB_Gruppe3.chat INNER JOIN 22_DB_Gruppe3.users ON 22_DB_Gruppe3.chat.fk_wgid=22_DB_Gruppe3.users.userid WHERE email="' + req.body.body.email + '" ORDER BY lastMessage',
-          function (error, results, fields) {
-            if (error) throw error;
-            console.log(results);
             con.end(function (error) {
               if (error) throw error;
               console.log("connection End");

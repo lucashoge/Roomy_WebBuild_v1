@@ -1,1 +1,8 @@
-<p>chat works!</p>
+<br>
+<br>
+<br>
+<ul>
+    <li *ngFor="let resultObj of chatResult">
+        <button routerLink="chatverlaeufe" routerLinkActive="active"> {{ resultObj.userMail }} </button>
+    </li>
+</ul>

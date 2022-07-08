@@ -12,14 +12,14 @@ export class ChatComponent implements OnInit {
 
   constructor(private http: HttpClient, private router: Router) { }
 
-  ngOnInit(): void {
-    console.log("ngOnInit chat component");
-    this.getChats({email: "testPerson1@gmail.com"});
-  }
-
   chatResult: any;
   fetchError: any;
-  
+
+  ngOnInit(): void {
+    console.log("ngOnInit chat component");
+    this.getChats({email: "WGWGHansi@Hansihans.de"});
+  }
+
   getChats(data: any) {
     var config = { params: data };
 
