@@ -1,1 +1,14 @@
-<p>profile works!</p>
+<div class="tphoto"
+      [@cardAnimator]="animationState"
+      (@cardAnimator.done)="resetAnimationState($event)"
+      (swipeleft)='startAnimation("swipeleft")' 
+      (swiperight)='startAnimation("swiperight")'
+>
+    <img [src]="currentUser.picture" title="tphoto" alt="Tinder Photo" />
+    <div class="tname">
+        {{currentUser.name}}, <span class="age">{{currentUser.age}}</span>
+    </div>
+    <div class="tinfo">
+        <i class="fa fa-book" aria-hidden="true"> 0</i><i class="fa fa-users" aria-hidden="true"> 0</i>
+    </div>
+</div>
