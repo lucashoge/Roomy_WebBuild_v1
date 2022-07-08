@@ -123,6 +123,7 @@ app.get('/api/login', function (req, res) {
 
 });
 
+
 //Register Abfrage ob Username+Email bereits existieren (Unfertig -> ausbauen)
 app.get('/register', function (req, res) {
 

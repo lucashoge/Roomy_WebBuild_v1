@@ -51,27 +51,33 @@ import { AuthGuard } from './auth.guard.guard';
         component: RegisterComponent
       },{
         path: 'mainUI',
-        component: MainUiComponent
+        component: MainUiComponent,
+        canActivate: [AuthGuard]
       },
       {
         path: 'profileBox',
-        component: ProfileBoxComponent
+        component: ProfileBoxComponent,
+        canActivate: [AuthGuard]
       },
       {
         path: 'profile',
-        component: ProfileComponent
+        component: ProfileComponent,
+        canActivate: [AuthGuard]
       },
       {
         path: 'chat',
-        component: ChatComponent
+        component: ChatComponent,
+        canActivate: [AuthGuard]
       },
       {
         path: 'match',
-        component: MatchComponent
+        component: MatchComponent,
+        canActivate: [AuthGuard]
       },
       {
         path: 'settings',
-        component: SettingsEditingComponent
+        component: SettingsEditingComponent,
+        canActivate: [AuthGuard]
       },
       {
         path: '', //Hauptseite
