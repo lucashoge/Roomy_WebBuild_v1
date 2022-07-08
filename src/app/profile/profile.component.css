@@ -1,0 +1,21 @@
+.tphoto img {
+    height: 100%; 
+    width: 100%;
+
+
+    border-radius: 14px;
+
+    animation: img_intro 1s ease-in-out forwards;
+}
+
+@keyframes img_intro{
+    from{
+      opacity: 0;
+      transform: rotateY(90deg);
+    }
+    
+    to{
+      opacity: 1;
+      transform: rotateY(0deg);
+    }
+  }
