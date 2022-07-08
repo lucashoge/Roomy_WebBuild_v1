@@ -3,6 +3,7 @@
  var app      = express();                               // create our app w/ express 
  var path     = require('path'); 
  var mysql    = require('mysql'); 
+ var stringify = require('json-stringify-safe');
   
  bodyParser = require('body-parser');
  
@@ -73,10 +74,12 @@ app.post('/register', function (req, res) {
       con.connect(function (error) {
         if (error) throw error;
         console.log("connected");
-        con.query('SELECT 22_DB_Gruppe3.chat.lastMessage, 22_DB_Gruppe3.chat.fk_personid, 22_DB_Gruppe3.chat.fk_wgid, 22_DB_Gruppe3.users.email FROM 22_DB_Gruppe3.chat INNER JOIN 22_DB_Gruppe3.users ON 22_DB_Gruppe3.chat.fk_personid=22_DB_Gruppe3.users.userid WHERE email=' + req.body.body.Email + 'ORDER BY lastMessage',
+        con.query('SELECT 22_DB_Gruppe3.chat.lastMessage, 22_DB_Gruppe3.chat.fk_personid, 22_DB_Gruppe3.chat.fk_wgid, 22_DB_Gruppe3.users.email FROM 22_DB_Gruppe3.chat INNER JOIN 22_DB_Gruppe3.users ON 22_DB_Gruppe3.chat.fk_personid=22_DB_Gruppe3.users.userid WHERE email="' + req.body.body.email + '" ORDER BY lastMessage',
           function (error, results, fields) {
             if (error) throw error;
+            
             console.log(results);
+            res.send(stringify(results));
             con.end(function (error) {
               if (error) throw error;
               console.log("connection End");
@@ -99,7 +102,7 @@ app.post('/register', function (req, res) {
       con.connect(function (error) {
         if (error) throw error;
         console.log("connected");
-        con.query('SELECT 22_DB_Gruppe3.chat.lastMessage, 22_DB_Gruppe3.chat.fk_personid, 22_DB_Gruppe3.chat.fk_wgid, 22_DB_Gruppe3.users.email FROM 22_DB_Gruppe3.chat INNER JOIN 22_DB_Gruppe3.users ON 22_DB_Gruppe3.chat.fk_wgid=22_DB_Gruppe3.users.userid WHERE email=' + req.body.body.Email + 'ORDER BY lastMessage',
+        con.query('SELECT 22_DB_Gruppe3.chat.lastMessage, 22_DB_Gruppe3.chat.fk_personid, 22_DB_Gruppe3.chat.fk_wgid, 22_DB_Gruppe3.users.email FROM 22_DB_Gruppe3.chat INNER JOIN 22_DB_Gruppe3.users ON 22_DB_Gruppe3.chat.fk_wgid=22_DB_Gruppe3.users.userid WHERE email="' + req.body.body.email + '" ORDER BY lastMessage',
           function (error, results, fields) {
             if (error) throw error;
             console.log(results);
@@ -112,7 +115,6 @@ app.post('/register', function (req, res) {
   });
 
 
- 
   // application -------------------------------------------------------------
  app.get('/', function(req,res) 
  {     
@@ -120,14 +122,6 @@ app.post('/register', function (req, res) {
        res.sendFile('index.html', { root: __dirname+'/dist/my-new-angular-app' });    //TODO rename to your app-name
  });
  
-
-
-
-
-
-
-
-
 
  // listen (start app with node server.js) ======================================
 
