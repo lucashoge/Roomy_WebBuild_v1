@@ -26,11 +26,14 @@
   
   
     <!-- Swipe Window -->
-    <div class="swipebox">
+    <div class="swipebox" >
   
       <!-- [ngStyle]="{'display':'none'}" -->
-  
-      <img @fadeIn  id="boxImg" src={{titleImg}} alt="03" [ngStyle]="{'display': displayVal}">
+      <div style="height: 100%; width: 100%;">
+        <app-profile  [parentSubject]="parentSubject" style="height: 100%; width: 100%;">
+        </app-profile>
+      </div>
+      
   
     </div>
   
@@ -38,14 +41,14 @@
     <div class="card-container">
       
   
-      <a class="card" target="_blank" rel="noopener" (click)="open02()" (click)="event">
+      <a class="card" target="_blank" rel="noopener" (click)='cardAnimation("swipeleft")'>
         <svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 34 34">
           <path id="yes" d="M17,0A17,17,0,1,1,0,17,17,17,0,0,1,17,0Z" fill="#00ff0a"/>
         </svg>
         
       </a>
   
-      <a class="card" target="_blank" rel="noopener" (click)="open03()" @fadeIn>
+      <a class="card" target="_blank" rel="noopener" (click)='cardAnimation("swiperight")'>
         
         <svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 34 34">
           <path id="no" d="M17,0A17,17,0,1,1,0,17,17,17,0,0,1,17,0Z" fill="red"/>

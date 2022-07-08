@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { Subject} from 'rxjs';
+
 import { 
   style,
   trigger,
@@ -12,26 +14,15 @@ import { ForwardRefHandling } from '@angular/compiler';
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css'],
-  // animations: [
-  //   trigger('fadeIn', [
-  //     transition(':enter', [
-  //       style({opacity: 0}),
-  //       animate('1000ms', style({opacity: 1}))
-
-  //     ])
-
-  //   ])
-  // ]
-
-  // animations: [
-  //   state('')
-  // ]
-  
   
 
 })
 export class AppComponent {
   title = 'my-new-angular-app';
+
+  
+
+ 
 
 
   
