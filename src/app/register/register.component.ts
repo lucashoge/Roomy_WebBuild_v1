@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Router } from "@angular/router";
+import { mergeNsAndName } from '@angular/compiler';
 
 @Component({
   selector: 'app-register',
@@ -15,8 +16,12 @@ export class RegisterComponent implements OnInit {
   ngOnInit(): void {
   }
 
+  showPerson:boolean=true;
+  showWG:boolean=false;
+
   users: any;
   registerDenied: any;
+
   Username: any;
   Email: any;
   Nachname: any;
@@ -25,11 +30,39 @@ export class RegisterComponent implements OnInit {
   PasswortBest: any;
   passwordError: any;
   registerSuccessful: any;
+
+  Geschlecht: any;
+  Geburtsdatum: any;
+
+  WGName: any;
+  Postleitzahl: any;
+  Stadt: any;
+  Land: any;
+
+  kindOfUser: any ='person';
+
+  pushPerson(){
+    this.showPerson=true;
+    this.showWG=false;
+    this.kindOfUser = 'person';
+    console.log(this.kindOfUser);
+  }
+  pushWG(){
+    this.showPerson=false;
+    this.showWG=true;
+    this.kindOfUser = 'wg';
+    console.log(this.kindOfUser);
+  }
   
   
   sendRegister(data: any) {
-    var config = { params: data };
+    var userFlag = {
+      "kindOfUser":this.kindOfUser
+    };
+    var merged = Object.assign(data, userFlag);
+    var config = { params: merged}; 
 
+    console.log(config);
     //Abfrage ob Passwörter übereinstimmen
     if (data.Passwort != data.PasswortBest) {
       this.passwordError = "Passwörter stimmen nicht überein.";
@@ -60,7 +93,7 @@ export class RegisterComponent implements OnInit {
     //Dann Nachricht, dass Registrierung erfolgreich
     //und Weiterleitung zum Login
 
-    //Wenn nicht frei -> Nachricht(?) dass Name/Email bereits vergeben sind
+    //Wenn nicht frei -> Nachricht dass Name/Email bereits vergeben sind
 
 
   }

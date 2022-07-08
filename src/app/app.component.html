@@ -3,13 +3,14 @@
 <div class="toolbar" role="banner">
 
   <ul>
+    <a *ngIf="!auth.loggedIn()" routerLink="register" routerLinkActive="active">register</a>
+    <a *ngIf="!auth.loggedIn()" routerLink="login" routerLinkActive="active">login</a>
+    <a style="cursor:pointer" *ngIf="auth.loggedIn()" (click)="auth.logout()">Logout</a>
     <a routerLink="chat" routerLinkActive="active">chat</a>
-    <a routerLink="login" routerLinkActive="active">login</a>
     <a routerLink="mainUI" routerLinkActive="active">main_ui</a>
     <a routerLink="match" routerLinkActive="active">match</a>
     <a routerLink="profile" routerLinkActive="active">profile</a>
     <a routerLink="profileBox" routerLinkActive="active">profile-box</a>
-    <a routerLink="register" routerLinkActive="active">register</a>
     <a routerLink="settings" routerLinkActive="active">settings-editing</a>
 
 
