@@ -18,6 +18,8 @@ import { LoginComponent } from './login/login.component';
 import { ProfileComponent } from './profile/profile.component';
 import { HashLocationStrategy, LocationStrategy } from '@angular/common'
 import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
+import { AuthInterceptor } from './auth-interceptor.interceptor';
+import { AuthGuard } from './auth.guard.guard';
 
 @NgModule({
   declarations: [
@@ -80,7 +82,13 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
     {   //Verhindert, dass Unterseiten beim Neuladen nicht gefunden werden
     provide: LocationStrategy,
     useClass: HashLocationStrategy
-    }
+    },
+    AuthGuard,
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: AuthInterceptor,
+      multi: true
+    },
   ],
   bootstrap: [AppComponent]
 })

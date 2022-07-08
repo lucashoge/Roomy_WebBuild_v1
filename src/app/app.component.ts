@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { AuthService } from './auth.service';
 import { 
   style,
   trigger,
@@ -35,7 +36,7 @@ export class AppComponent {
 
 
   
-  
+  constructor( public auth: AuthService) { }
 }
 
 
