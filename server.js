@@ -133,8 +133,6 @@ app.get('/register', function (req, res) {
   con.connect(function (error) {
     if (error) throw error;
     console.log("connected");
-    //console.log("Username: " + req.query.Username);
-
     //Abfragen ob Username / Email existieren
     if (!req.query.Username) {
       username = "";
@@ -199,7 +197,7 @@ app.post('/register', function (req, res) {
       con.connect(function (error) {
         if (error) throw error;
         console.log("connected");
-        con.query('INSERT INTO users SET ?;INSERT INTO person(personid)  select MAX(userid) as newid FROM users; UPDATE person SET ? where personid = (SELECT MAX(userid) FROM users); ', [{ username: req.body.body.Username, email: req.body.body.Email, password: req.body.body.Passwort },{ firstname: req.body.body.Vorname, surname: req.body.body.Nachname, gender: req.body.body.Geschlecht, birthdate: req.body.body.Geburtsdatum }],
+        con.query('INSERT INTO users SET ?;INSERT INTO person(personid)  select MAX(userid) as newid FROM users; UPDATE person SET ? where personid = (SELECT MAX(userid) FROM users); ', [{ username: req.body.body.Username, email: req.body.body.Email, password: req.body.body.Passwort, usertype: req.body.body.kindOfUser },{ firstname: req.body.body.Vorname, surname: req.body.body.Nachname, gender: req.body.body.Geschlecht, birthdate: req.body.body.Geburtsdatum }],
         //con.query('INSERT INTO person SET ?; INSERT INTO users SET ? ', [{ personid: 'SELECT userid FROM users WHERE userid=LAST_INSERT_ID()', firstname: req.body.body.Vorname, surname: req.body.body.Nachname, gender: req.body.body.Geschlecht, birthdate: req.body.body.Geburtsdatum },{ username: req.body.body.Username, email: req.body.body.Email, password: req.body.body.Passwort }],
           function (error, results, fields) {
             if (error) throw error;
@@ -220,7 +218,7 @@ app.post('/register', function (req, res) {
         con.connect(function (error) {
           if (error) throw error;
           console.log("connected");
-          con.query('INSERT INTO users SET ?;INSERT INTO wg(wgid)  select MAX(userid) as newid FROM users; UPDATE wg SET ? where wgid = (SELECT MAX(userid) FROM users); ', [{ username: req.body.body.Username, email: req.body.body.Email, password: req.body.body.Passwort },{ wgname: req.body.body.WGName, postcode: req.body.body.Postleitzahl, city: req.body.body.Stadt, country: req.body.body.Land }],
+          con.query('INSERT INTO users SET ?;INSERT INTO wg(wgid)  select MAX(userid) as newid FROM users; UPDATE wg SET ? where wgid = (SELECT MAX(userid) FROM users); ', [{ username: req.body.body.Username, email: req.body.body.Email, password: req.body.body.Passwort, usertype: req.body.body.kindOfUser },{ wgname: req.body.body.WGName, postcode: req.body.body.Postleitzahl, city: req.body.body.Stadt, country: req.body.body.Land }],
             function (error, results, fields) {
               if (error) throw error;
               console.log(results[0]);
@@ -233,6 +231,51 @@ app.post('/register', function (req, res) {
             });
         });
   }
+      
+    });
+
+    //Userdaten für Settings abrufen und ändern      Work in progress
+    app.get('/settings', verifyToken, function (req, res) {
+
+      var userData = [req.userId];
+    
+      if (req.query.flag == "getUserData") {
+        var con = mysql.createConnection(conConfig);
+        con.connect(function (error) {
+          if (error) throw error;
+          console.log("connected");
+          con.query("SELECT userid, username, email FROM users WHERE userid = ? ;", userData,
+            function (error, results, fields) {
+              if (error) throw error;
+              res.send(stringify(results));
+              con.end(function (error) {
+                if (error) throw error;
+                console.log("connection End");
+              });
+            });
+        });
+      }
+    
+      else if (req.query.flag == "getFollows") {
+        var con = mysql.createConnection(conConfig);
+        con.connect(function (error) {
+          if (error) throw error;
+          console.log("connected");
+          con.query("SELECT f.username from users AS u LEFT JOIN follow ON u.user_id = follow.fk_user_id LEFT JOIN users AS f ON follow.fk_followed_user_id = f.user_id WHERE u.user_id = ? ; ", userData,
+            function (error, results, fields) {
+              if (error) throw error;
+              res.send(results);
+              con.end(function (error) {
+                if (error) throw error;
+                console.log("connection End");
+              });
+            });
+        });
+      }
+      else {
+        res.status(400).send("Bad Request");
+      }
+    
       
     });
 
