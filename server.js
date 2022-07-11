@@ -241,7 +241,7 @@ app.post('/register', function (req, res) {
   // get all chats of a person:
   /*
   *
-    SELECT 22_DB_Gruppe3.chat.lastMessage, 22_DB_Gruppe3.chat.fk_personid,22_DB_Gruppe3.chat.fk_wgid, userTable.email AS userMail, wgTable.email AS wgMail
+    SELECT 22_DB_Gruppe3.chat.chatid,22_DB_Gruppe3.chat.lastMessage, 22_DB_Gruppe3.chat.fk_personid,22_DB_Gruppe3.chat.fk_wgid, userTable.email AS userMail, wgTable.email AS wgMail
     FROM 22_DB_Gruppe3.chat
     LEFT JOIN 22_DB_Gruppe3.users AS userTable ON fk_personid=userTable.userid
     LEFT JOIN 22_DB_Gruppe3.users AS wgTable ON fk_wgid=wgTable.userid
@@ -256,7 +256,7 @@ app.post('/register', function (req, res) {
       con.connect(function (error) {
         if (error) throw error;
         console.log("connected");
-        con.query('SELECT 22_DB_Gruppe3.chat.lastMessage, 22_DB_Gruppe3.chat.fk_personid,22_DB_Gruppe3.chat.fk_wgid, userTable.email AS userMail, wgTable.email AS wgMail FROM 22_DB_Gruppe3.chat LEFT JOIN 22_DB_Gruppe3.users AS userTable ON fk_personid=userTable.userid LEFT JOIN 22_DB_Gruppe3.users AS wgTable ON fk_wgid=wgTable.userid WHERE userTable.email="' + req.body.body.email +'" OR wgTable.email="' + req.body.body.email +'"',
+        con.query('SELECT 22_DB_Gruppe3.chat.chatid,22_DB_Gruppe3.chat.lastMessage, 22_DB_Gruppe3.chat.fk_personid,22_DB_Gruppe3.chat.fk_wgid, userTable.email AS userMail, wgTable.email AS wgMail FROM 22_DB_Gruppe3.chat LEFT JOIN 22_DB_Gruppe3.users AS userTable ON fk_personid=userTable.userid LEFT JOIN 22_DB_Gruppe3.users AS wgTable ON fk_wgid=wgTable.userid WHERE userTable.email="' + req.body.body.email +'" OR wgTable.email="' + req.body.body.email +'"',
           function (error, results, fields) {
             if (error) throw error;
             console.log(req.body.body.email);
@@ -269,6 +269,172 @@ app.post('/register', function (req, res) {
           });
       });
   });
+
+  // get all chat entries of a specified chat
+  /*
+  *
+    SELECT 22_DB_Gruppe3.chateintrag.msgDate, 22_DB_Gruppe3.chateintrag.msgText,22_DB_Gruppe3.chateintrag.from_id, 22_DB_Gruppe3.chateintrag.chatid, userTable.email AS userMail
+    FROM 22_DB_Gruppe3.chateintrag
+    LEFT JOIN 22_DB_Gruppe3.users AS userTable ON from_id=userTable.userid
+    WHERE 22_DB_Gruppe3.chateintrag.chatid=1
+   */
+
+
+    app.post('/chatEntriesFromID', function (req, res) {
+
+      var con = mysql.createConnection(conConfig);
+    
+        con.connect(function (error) {
+          if (error) throw error;
+          console.log("connected");
+          con.query('SELECT 22_DB_Gruppe3.chateintrag.msgDate, 22_DB_Gruppe3.chateintrag.msgText,22_DB_Gruppe3.chateintrag.from_id, 22_DB_Gruppe3.chateintrag.chatid, userTable.email AS userMail FROM 22_DB_Gruppe3.chateintrag LEFT JOIN 22_DB_Gruppe3.users AS userTable ON from_id=userTable.userid WHERE 22_DB_Gruppe3.chateintrag.chatid=' + req.body.body.chatid + ' ORDER BY msgDate',
+            function (error, results, fields) {
+              if (error) throw error;
+              console.log(req.body.body.chatid);
+              console.log(results);
+              res.send(stringify(results));
+              con.end(function (error) {
+                if (error) throw error;
+                console.log("connection End");
+              });
+            });
+        });
+    });
+
+
+    //Add a chat entry
+    /*
+    INSERT INTO 22_DB_Gruppe3.chateintrag (msgDate, msgText, from_id, chatid)
+    VALUES ("2022-06-07 11:07:03", "Hello4", 18, 1) 
+  */
+
+    app.post('/submitChatMessage', function (req, res) {
+
+      var con = mysql.createConnection(conConfig);
+    
+        con.connect(function (error) {
+          if (error) throw error;
+          console.log("connected");
+          con.query('INSERT INTO 22_DB_Gruppe3.chateintrag SET ?', [{ msgDate: req.body.body.msgDate, msgText: req.body.body.msgText, from_id: req.body.body.from_id, chatid: req.body.body.chatid,}],
+            function (error, results, fields) {
+              if (error) throw error;
+              console.log(req.body.body.msgText);
+              console.log(results);
+              res.send(stringify(results));
+              con.end(function (error) {
+                if (error) throw error;
+                console.log("connection End");
+              });
+            });
+        });
+    });
+
+
+    //Get All matches
+    /*
+    SELECT 22_DB_Gruppe3.match.fk_personid, 22_DB_Gruppe3.match.fk_wgid, 22_DB_Gruppe3.match.wgmatch, 22_DB_Gruppe3.match.personmatch,userTable.email AS userMail, wgTable.email AS wgMail
+    FROM 22_DB_Gruppe3.match 
+    LEFT JOIN 22_DB_Gruppe3.users AS userTable ON fk_personid=userTable.userid
+    LEFT JOIN 22_DB_Gruppe3.users AS wgTable ON fk_wgid=wgTable.userid
+    WHERE (userTable.email="hansi@hallo.de" OR wgTable.email="hansi@hallo.de") AND (22_DB_Gruppe3.match.wgmatch=1 AND 22_DB_Gruppe3.match.personmatch=1);
+    */
+
+    app.post('/getMatchesByMail', function (req, res) {
+
+      var con = mysql.createConnection(conConfig);
+    
+        con.connect(function (error) {
+          if (error) throw error;
+          console.log("connected");
+          var sqlQuery = 'SELECT 22_DB_Gruppe3.match.fk_personid, 22_DB_Gruppe3.match.fk_wgid, 22_DB_Gruppe3.match.wgmatch, 22_DB_Gruppe3.match.personmatch,userTable.email AS userMail, wgTable.email AS wgMail'
+            + ' FROM 22_DB_Gruppe3.match'
+            + ' LEFT JOIN 22_DB_Gruppe3.users AS userTable ON fk_personid=userTable.userid'
+            + ' LEFT JOIN 22_DB_Gruppe3.users AS wgTable ON fk_wgid=wgTable.userid'
+            + ' WHERE (userTable.email="' + req.body.body.email + '" OR wgTable.email="' + req.body.body.email + '") AND (22_DB_Gruppe3.match.wgmatch=1 AND 22_DB_Gruppe3.match.personmatch=1)';
+
+          con.query(sqlQuery,
+            function (error, results, fields) {
+              if (error) throw error;
+              console.log(req.body.body.email);
+              console.log(results);
+              res.send(stringify(results));
+              con.end(function (error) {
+                if (error) throw error;
+                console.log("connection End");
+              });
+            });
+        });
+    });
+
+
+    //Get All possible matches for a person
+    /*
+    SELECT *
+    FROM 22_DB_Gruppe3.match 
+    LEFT JOIN 22_DB_Gruppe3.users AS userTable ON fk_personid=userTable.userid
+    WHERE userTable.email="hansi@hallo.de" AND (22_DB_Gruppe3.match.wgmatch=1 AND 22_DB_Gruppe3.match.personmatch=0)
+    */
+
+    app.post('/getPossiblePersonMatchesByMail', function (req, res) {
+
+      var con = mysql.createConnection(conConfig);
+    
+        con.connect(function (error) {
+          if (error) throw error;
+          console.log("connected");
+          var sqlQuery = 'SELECT *'
+            + ' FROM 22_DB_Gruppe3.match'
+            + ' LEFT JOIN 22_DB_Gruppe3.users AS userTable ON fk_personid=userTable.userid'
+            + ' WHERE userTable.email="' + req.body.body.email + '" AND (22_DB_Gruppe3.match.wgmatch=1 AND 22_DB_Gruppe3.match.personmatch=0)';
+
+          con.query(sqlQuery,
+            function (error, results, fields) {
+              if (error) throw error;
+              console.log(req.body.body.email);
+              console.log(results);
+              res.send(stringify(results));
+              con.end(function (error) {
+                if (error) throw error;
+                console.log("connection End");
+              });
+            });
+        });
+    });
+
+
+    //Get All possible matches for a WG
+    /*
+    SELECT *
+    FROM 22_DB_Gruppe3.match 
+    LEFT JOIN 22_DB_Gruppe3.users AS userTable ON fk_personid=userTable.userid
+    WHERE userTable.email="hansi@hallo.de" AND (22_DB_Gruppe3.match.wgmatch=0 AND 22_DB_Gruppe3.match.personmatch=1)
+    */
+
+    app.post('/getPossibleWgMatchesByMail', function (req, res) {
+
+      var con = mysql.createConnection(conConfig);
+    
+        con.connect(function (error) {
+          if (error) throw error;
+          console.log("connected");
+          var sqlQuery = 'SELECT *'
+            + ' FROM 22_DB_Gruppe3.match'
+            + ' LEFT JOIN 22_DB_Gruppe3.users AS userTable ON fk_wgid=userTable.userid'
+            + ' WHERE userTable.email="' + req.body.body.email + '" AND (22_DB_Gruppe3.match.wgmatch=0 AND 22_DB_Gruppe3.match.personmatch=1)';
+
+          con.query(sqlQuery,
+            function (error, results, fields) {
+              if (error) throw error;
+              console.log(req.body.body.email);
+              console.log(results);
+              res.send(stringify(results));
+              con.end(function (error) {
+                if (error) throw error;
+                console.log("connection End");
+              });
+            });
+        });
+    });
 
 
   // application -------------------------------------------------------------

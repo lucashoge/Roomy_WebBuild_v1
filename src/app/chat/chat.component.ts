@@ -38,7 +38,7 @@ export class ChatComponent implements OnInit {
 
   onChatClick(data: any){
     console.log(data);
-    localStorage.setItem("currentChat", data.email);
+    localStorage.setItem("currentChat", data.chatid);
     this.router.navigate(['/chatverlaeufe']);
   }
   
