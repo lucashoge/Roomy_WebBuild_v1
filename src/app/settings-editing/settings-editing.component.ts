@@ -3,6 +3,7 @@ import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http
 import { Observable } from 'rxjs';
 import { Router } from "@angular/router";
 import { mergeNsAndName } from '@angular/compiler';
+import {MDCSlider} from '@material/slider';
 
 @Component({
   selector: 'app-settings-editing',

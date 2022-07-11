@@ -21,6 +21,7 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ChatverlaeufeComponent } from './chatverlaeufe/chatverlaeufe.component';
 import { AuthInterceptor } from './auth-interceptor.interceptor';
 import { AuthGuard } from './auth.guard.guard';
+import {MatSliderModule} from '@angular/material/slider'; 
 
 @NgModule({
   declarations: [
@@ -41,6 +42,7 @@ import { AuthGuard } from './auth.guard.guard';
     BrowserAnimationsModule,
     FormsModule,
     HttpClientModule,
+    MatSliderModule,
     RouterModule.forRoot([     //Abkürzungen für die Links zu den Components | Später wichtig für die Login Überwachung
       {
         path: 'login',
