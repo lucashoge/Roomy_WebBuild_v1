@@ -14,6 +14,7 @@ export class ChatComponent implements OnInit {
 
   chatResult: any;
   fetchError: any;
+  currentChatView = "";
 
   ngOnInit(): void {
     console.log("ngOnInit chat component");
@@ -35,6 +36,12 @@ export class ChatComponent implements OnInit {
   };
 
 
+  onChatClick(data: any){
+    console.log(data);
+    localStorage.setItem("currentChat", data.email);
+    this.router.navigate(['/chatverlaeufe']);
+  }
+  
 
     //Dann Nachricht, dass Registrierung erfolgreich
     //und Weiterleitung zum Login

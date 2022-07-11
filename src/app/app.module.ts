@@ -66,6 +66,10 @@ import { AuthGuard } from './auth.guard.guard';
         component: ChatComponent
       },
       {
+        path: 'chatverlaeufe',
+        component: ChatverlaeufeComponent
+      },
+      {
         path: 'match',
         component: MatchComponent
       },
