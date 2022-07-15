@@ -463,6 +463,7 @@ app.post('/register', function (req, res) {
           if (error) throw error;
           console.log("connected");
           var sqlQuery = 'SELECT * FROM 22_DB_Gruppe3.users'
+          + ' LEFT JOIN 22_DB_Gruppe3.person AS personTable ON userid=personTable.personid'
           + ' WHERE usertype="' + userType + '" AND userid>' + minUserID
           + ' limit ' + limit + ';';
 
