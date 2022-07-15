@@ -21,7 +21,7 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ChatverlaeufeComponent } from './chatverlaeufe/chatverlaeufe.component';
 import { AuthInterceptor } from './auth-interceptor.interceptor';
 import { AuthGuard } from './auth.guard.guard';
-import { DatePipe } from '@angular/common'
+import { DatePipe } from '@angular/common';
 import {MatSliderModule} from '@angular/material/slider'; 
 
 @NgModule({

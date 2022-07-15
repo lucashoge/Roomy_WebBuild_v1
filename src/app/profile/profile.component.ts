@@ -62,7 +62,7 @@ export class ProfileComponent {
         this.getNewUsersForMatching();
       }else{
         this.currentUser = this.users[this.index]; 
-        console.log(this.currentUser.profilepic)
+        console.log("profilePicture: " + this.currentUser.profilepic)
       }
       this.switch = false
     }else{
@@ -84,8 +84,8 @@ export class ProfileComponent {
       console.log(result);
       if(this.users.length > 0){
         this.currentUser = this.users[0]; 
-        console.log(this.currentUser)
-        this.userID = this.users[this.users.length-1];
+        console.log("currentUser from profiles" + this.currentUser)
+        this.userID = this.users[this.users.length-1].userid;
       }
       
     }); 
