@@ -437,6 +437,50 @@ app.post('/register', function (req, res) {
     });
 
 
+    //Get 20 users from ID upwards
+    /*
+    SELECT *
+    FROM 22_DB_Gruppe3.match 
+    LEFT JOIN 22_DB_Gruppe3.users AS userTable ON fk_personid=userTable.userid
+    WHERE userTable.email="hansi@hallo.de" AND (22_DB_Gruppe3.match.wgmatch=0 AND 22_DB_Gruppe3.match.personmatch=1)
+    */
+
+    app.post('/getUsersFromIdUpwards', function (req, res) {
+
+      var userType = "";
+      var limit = req.body.body.limit;
+      var minUserID = req.body.body.userId;
+
+      if(req.body.body.usertype == "wg"){
+        userType = "person";
+      }else{
+        userType = "wg";
+      }
+
+      var con = mysql.createConnection(conConfig);
+    
+        con.connect(function (error) {
+          if (error) throw error;
+          console.log("connected");
+          var sqlQuery = 'SELECT * FROM 22_DB_Gruppe3.users'
+          + ' WHERE usertype="' + userType + '" AND userid>' + minUserID
+          + ' limit ' + limit + ';';
+
+          con.query(sqlQuery,
+            function (error, results, fields) {
+              if (error) throw error;
+              console.log(req.body.body.email);
+              console.log(results);
+              res.send(stringify(results));
+              con.end(function (error) {
+                if (error) throw error;
+                console.log("connection End");
+              });
+            });
+        });
+    });
+
+
   // application -------------------------------------------------------------
  app.get('/', function(req,res) 
  {     
