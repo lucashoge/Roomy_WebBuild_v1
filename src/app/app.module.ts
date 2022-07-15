@@ -22,6 +22,7 @@ import { ChatverlaeufeComponent } from './chatverlaeufe/chatverlaeufe.component'
 import { AuthInterceptor } from './auth-interceptor.interceptor';
 import { AuthGuard } from './auth.guard.guard';
 import { DatePipe } from '@angular/common'
+import {MatSliderModule} from '@angular/material/slider'; 
 
 @NgModule({
   declarations: [
@@ -42,6 +43,7 @@ import { DatePipe } from '@angular/common'
     BrowserAnimationsModule,
     FormsModule,
     HttpClientModule,
+    MatSliderModule,
     RouterModule.forRoot([     //Abkürzungen für die Links zu den Components | Später wichtig für die Login Überwachung
       {
         path: 'login',
@@ -52,19 +54,23 @@ import { DatePipe } from '@angular/common'
         component: RegisterComponent
       },{
         path: 'mainUI',
-        component: MainUiComponent
+        component: MainUiComponent,
+        canActivate: [AuthGuard]
       },
       {
         path: 'profileBox',
-        component: ProfileBoxComponent
+        component: ProfileBoxComponent,
+        canActivate: [AuthGuard]
       },
       {
         path: 'profile',
-        component: ProfileComponent
+        component: ProfileComponent,
+        canActivate: [AuthGuard]
       },
       {
         path: 'chat',
-        component: ChatComponent
+        component: ChatComponent,
+        canActivate: [AuthGuard]
       },
       {
         path: 'chatverlaeufe',
@@ -72,11 +78,13 @@ import { DatePipe } from '@angular/common'
       },
       {
         path: 'match',
-        component: MatchComponent
+        component: MatchComponent,
+        canActivate: [AuthGuard]
       },
       {
         path: 'settings',
-        component: SettingsEditingComponent
+        component: SettingsEditingComponent,
+        canActivate: [AuthGuard]
       },
       {
         path: '', //Hauptseite
