@@ -3,7 +3,6 @@ import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http
 import { Observable } from 'rxjs';
 import { Router } from "@angular/router";
 import { mergeNsAndName } from '@angular/compiler';
-import {MDCSlider} from '@material/slider';
 
 @Component({
   selector: 'app-settings-editing',
@@ -23,7 +22,7 @@ export class SettingsEditingComponent implements OnInit {
   follows: any;
 
   ngOnInit(): void {
-    this.loadUserData();
+    this.getUser();
   }
 
   showPerson:boolean=true;
@@ -31,45 +30,120 @@ export class SettingsEditingComponent implements OnInit {
 
   users: any;
   registerDenied: any;
+  registerSuccessful: any;
 
-  Username: any = "Placeholder";
+  //Account
+  Username: any;
   Email: any;
-  Nachname: any;
-  Vorname: any;
   Passwort: any;
   PasswortBest: any;
   passwordError: any;
-  registerSuccessful: any;
 
+  //Profil
+    //Person
+  Nachname: any;
+  Vorname: any;
   Geschlecht: any;
   Geburtsdatum: any;
-
+  Job: any;
+  Hobby: any;
+    //WG
   WGName: any;
   Postleitzahl: any;
   Stadt: any;
   Land: any;
+  FreieSlots: any;
+  SlotsGesamt: any;
+  Preis: any;
+    //beide
+  Raucher: any;
+  Lautstaerke: any;
+  Sauberkeit: any;
+  Kochen: any;
+  //Profilbild: any;
+  AktuellSuchend: any;
 
-  kindOfUser: any ='person';
+  kindOfUser: any;
 
-  loadUserData() {
-
+  getUser(){
     var sendData = {
-      flag: "getUserData"
+      flag: "getKindOfUser"
     }
 
     var config = {
       params: sendData
     };
 
-
+    //Anfragen welcher Usertyp der Benutzer ist (WG oder Person)
     this.http.get("settings", config).subscribe(result => {
       var jas = JSON.parse(JSON.stringify(result))[0];
-      this.userId = jas.user_id;
-      this.Username = jas.username;
-      this.Vorname = jas.vorname;
-      this.Nachname = jas.nachname;
-      this.user_status = jas.user_status;
-      this.Email = jas.email;
+      this.kindOfUser = jas.usertype;
+      this.loadUserData();
+    },
+      err => {
+        if (err instanceof HttpErrorResponse) {
+          if (err.status === 401) {
+            this.router.navigate(['/login']);
+          }
+        }
+      });
+  }
+
+  loadUserData() {
+    var usertype: string = this.kindOfUser;
+    var sendData = {
+      flag: "getUserData",
+      kindOfUser: usertype
+    }
+
+    var config = {
+      params: sendData
+    };
+
+    //Userdaten anfragen
+    this.http.get("settings", config).subscribe(result => {
+      //Daten von User in passendes Format umwandeln und in Variablen speichern
+      var userData = JSON.parse(JSON.stringify(JSON.parse(JSON.stringify(result))[0]))[0];
+      console.log(userData);
+      this.Username = userData.username;
+      this.Email = userData.email;
+      this.Raucher = userData.smoker;
+      this.Lautstaerke = userData.volume;
+      this.Sauberkeit = userData.tidiness;
+      this.Kochen = userData.cook;
+      this.AktuellSuchend = userData.searching;
+
+      if(this.kindOfUser=="person"){
+        //Daten von Person in passendes Format umwandeln und in Variablen speichern
+      var personData = JSON.parse(JSON.stringify(JSON.parse(JSON.stringify(result))[1]))[0];
+      console.log(personData);
+      this.Vorname = personData.firstname;
+      this.Nachname = personData.surname;
+      this.Geschlecht = personData.gender;
+      this.Geburtsdatum = personData.birthdate;
+      this.Job = personData.job;
+      this.Hobby = personData.hobby;
+      }
+      else if(this.kindOfUser=="wg"){
+        //Daten von WG in passendes Format umwandeln und in Variablen speichern
+      var wgData = JSON.parse(JSON.stringify(JSON.parse(JSON.stringify(result))[1]))[0];
+      console.log(wgData);
+      this.WGName = wgData.wgname;
+      this.Postleitzahl = wgData.postcode;
+      this.Stadt = wgData.city;
+      this.Land = wgData.country;
+      this.FreieSlots = wgData.spotsfree;
+      this.SlotsGesamt = wgData.spotstotal;
+      this.Preis = wgData.price;
+      }
+      else{
+        console.log("Fehler beim Laden. \nDer Benutzertyp konnte nicht korrekt zugeordnet werden.");
+      }
+      
+      
+      
+
+
     },
       err => {
         if (err instanceof HttpErrorResponse) {

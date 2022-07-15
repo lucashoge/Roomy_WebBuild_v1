@@ -238,15 +238,17 @@ app.post('/register', function (req, res) {
     app.get('/settings', verifyToken, function (req, res) {
 
       var userData = [req.userId];
-    
-      if (req.query.flag == "getUserData") {
+
+      if (req.query.flag == "getKindOfUser") {
         var con = mysql.createConnection(conConfig);
         con.connect(function (error) {
           if (error) throw error;
           console.log("connected");
-          con.query("SELECT userid, username, email FROM users WHERE userid = ? ;", userData,
+          con.query("SELECT usertype  FROM users WHERE userid = ?;", userData,
             function (error, results, fields) {
               if (error) throw error;
+              console.log("sending back");
+              console.log(results);
               res.send(stringify(results));
               con.end(function (error) {
                 if (error) throw error;
@@ -256,26 +258,40 @@ app.post('/register', function (req, res) {
         });
       }
     
-      else if (req.query.flag == "getFollows") {
+      else if (req.query.flag == "getUserData") {
         var con = mysql.createConnection(conConfig);
-        con.connect(function (error) {
-          if (error) throw error;
-          console.log("connected");
-          con.query("SELECT f.username from users AS u LEFT JOIN follow ON u.user_id = follow.fk_user_id LEFT JOIN users AS f ON follow.fk_followed_user_id = f.user_id WHERE u.user_id = ? ; ", userData,
-            function (error, results, fields) {
-              if (error) throw error;
-              res.send(results);
-              con.end(function (error) {
-                if (error) throw error;
-                console.log("connection End");
-              });
-            });
-        });
-      }
-      else {
-        res.status(400).send("Bad Request");
-      }
-    
+        if(req.query.kindOfUser == "person"){
+          con.connect(function (error) {
+                    if (error) throw error;
+                    console.log("connected");
+                    con.query("SELECT username, email, smoker, volume, tidiness, cook, searching  FROM users WHERE userid = ?; SELECT firstname, surname, gender, birthdate, job, hobby FROM person WHERE personid = ?", [userData, userData],
+                      function (error, results, fields) {
+                        if (error) throw error;
+                        console.log(results[0], results[1]);
+                        res.send(stringify(results));
+                        con.end(function (error) {
+                          if (error) throw error;
+                          console.log("connection End");
+                        });
+                      });
+                  });
+                }
+        }
+        else if(req.query.kindOfUser == "wg"){
+          con.connect(function (error) {
+                    if (error) throw error;
+                    console.log("connected");
+                    con.query("SELECT username, email, smoker, volume, tidiness, cook, searching  FROM users WHERE userid = ?;", userData,
+                      function (error, results, fields) {
+                        if (error) throw error;
+                        res.send(stringify(results));
+                        con.end(function (error) {
+                          if (error) throw error;
+                          console.log("connection End");
+                        });
+                      });
+                  });
+                }
       
     });
 
