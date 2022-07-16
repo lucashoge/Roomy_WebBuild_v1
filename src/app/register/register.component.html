@@ -44,7 +44,7 @@
       Es wurde kein Geschlecht angegeben.
     </div> <br>
 
-    Geburtsdatum (YYYY.MM.DD): <input type="text" name="Geburtsdatum" required
+    Geburtsdatum: <input type="date" name="Geburtsdatum" required
                 [(ngModel)]="Geburtsdatum" #geburtsdatum="ngModel"> <br>
     <div *ngIf="geburtsdatum.invalid && (geburtsdatum.dirty||  geburtsdatum.touched)">
       Es wurde kein Geburtsdatum angegeben.

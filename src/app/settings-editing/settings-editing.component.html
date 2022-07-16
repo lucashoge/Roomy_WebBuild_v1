@@ -1,7 +1,7 @@
 <br>
 <br>
 <br>
-<button (click)="accountbtn()">Account</button>   <span></span>   <button (click)="profilbtn()">Profil</button>   <span></span>   <button (click)="matchingbtn()">Matching</button>
+<button (click)="accountbtn()" [disabled]="disableAccountbtn">Account</button>   <span></span>   <button (click)="profilbtn()"[disabled]="disableProfilbtn">Profil</button>   <span></span>   <button (click)="matchingbtn()" [disabled]="disableMatchingbtn">Matching</button>
 
 
 <!--______________________________________________Formular Accountdaten__________________________________________________________________________________________-->
@@ -100,7 +100,7 @@
                     [(ngModel)]="Geschlecht" #geschlecht="ngModel"> <br>
         <br>
     
-        Geburtsdatum (YYYY.MM.DD): <input type="text" name="Geburtsdatum" required
+        Geburtsdatum: <input type="date" name="Geburtsdatum" required
                     [(ngModel)]="Geburtsdatum" #geburtsdatum="ngModel"> <br>
         <div *ngIf="geburtsdatum.invalid && (geburtsdatum.dirty||  geburtsdatum.touched)">
           Es wurde kein Geburtsdatum angegeben.
@@ -184,9 +184,9 @@
   Kochen: 1<mat-slider min="1" max="10" step="1" value={{Kochen}} thumbLabel (input)="activateSubmitButton($event)"></mat-slider>10
   <br>
   <!--Checkboxen funktionieren noch nicht richtig-->
-  Raucher: <mat-checkbox (click)="changeRaucherCheck(Raucher)" (change)="activateSubmitButtonCheckbox($event)"></mat-checkbox> 
+  Raucher: <mat-checkbox  name ="raucherCheck" [(ngModel)]="Raucher" (click)="changeRaucherCheck(Raucher)" (change)="activateSubmitButtonCheckbox($event)"></mat-checkbox> {{Raucher}}
   <br>
-  Suchend: <mat-checkbox (click)="changeSuchendCheck(AktuellSuchend)" (change)="activateSubmitButtonCheckbox($event)"></mat-checkbox>
+  Suchend: <mat-checkbox name="suchendCheck" [(ngModel)]="AktuellSuchend" (click)="changeSuchendCheck(AktuellSuchend)" (change)="activateSubmitButtonCheckbox($event)"></mat-checkbox>{{AktuellSuchend}}
   <br>
   <button (click)="submitMatchingbtn()" [disabled]="matchingSubmitbtn">Änderungen Speichern</button>
 

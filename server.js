@@ -267,7 +267,7 @@ app.get('/settings', verifyToken, function (req, res) {
       con.connect(function (error) {
                 if (error) throw error;
                 console.log("connected");
-                con.query("SELECT username, email, smoker, volume, tidiness, cook, searching  FROM users WHERE userid = ?; SELECT firstname, surname, gender, birthdate, job, hobby FROM person WHERE personid = ?", [userid, userid],
+                con.query("SELECT username, email, smoker, volume, tidiness, cook, searching, profilepic  FROM users WHERE userid = ?; SELECT firstname, surname, gender, birthdate, job, hobby FROM person WHERE personid = ?", [userid, userid],
                   function (error, results, fields) {
                     if (error) throw error;
                     console.log(results[0], results[1]);

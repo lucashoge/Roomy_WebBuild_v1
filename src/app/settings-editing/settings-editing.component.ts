@@ -4,6 +4,7 @@ import { Observable } from 'rxjs';
 import { Router } from "@angular/router";
 import { MatSliderChange } from '@angular/material/slider';
 import { MatCheckboxChange } from '@angular/material/checkbox';
+import { NativeDateAdapter } from '@angular/material/core';
 
 @Component({
   selector: 'app-settings-editing',
@@ -29,7 +30,7 @@ export class SettingsEditingComponent implements OnInit {
       CtrlNachname: any;
       CtrlVorname: any;
       CtrlGeschlecht: any;
-      CtrlGeburtsdatum: any;
+      CtrlGeburtsdatum: Date= new Date();
       CtrlJob: any;
       CtrlHobby: any;
       //WG
@@ -45,7 +46,7 @@ export class SettingsEditingComponent implements OnInit {
       CtrlLautstaerke: any;
       CtrlSauberkeit: any;
       CtrlKochen: any;
-    //CtrlProfilbild: any;
+      CtrlProfilbild: any;
       CtrlAktuellSuchend: boolean = false;
 
   //Form Variablen
@@ -54,6 +55,9 @@ export class SettingsEditingComponent implements OnInit {
   emailMessage: any;
   passwortMessage: any;
   matchingSubmitbtn: boolean = true;
+  disableAccountbtn: boolean = true;
+  disableProfilbtn: boolean = false;
+  disableMatchingbtn: boolean = false;
 
   //Account
   Username: any;
@@ -69,7 +73,7 @@ export class SettingsEditingComponent implements OnInit {
   Nachname: any;
   Vorname: any;
   Geschlecht: any;
-  Geburtsdatum: any;
+  Geburtsdatum: Date= new Date();
   Job: any;
   Hobby: any;
     //WG
@@ -85,7 +89,7 @@ export class SettingsEditingComponent implements OnInit {
   Lautstaerke: any;
   Sauberkeit: any;
   Kochen: any;
-  //Profilbild: any;
+  Profilbild: any;
   AktuellSuchend: boolean = false;
 
   kindOfUser: any;
@@ -140,6 +144,7 @@ export class SettingsEditingComponent implements OnInit {
       this.Sauberkeit = this.CtrlSauberkeit = userData.tidiness;
       this.Kochen = this.CtrlKochen = userData.cook;
       this.AktuellSuchend = this.CtrlAktuellSuchend = userData.searching;
+      this.Profilbild = this.CtrlProfilbild = userData.profilepic;
 
       if(this.kindOfUser=="person"){
         //Daten von Person in passendes Format umwandeln und in Variablen speichern
@@ -185,12 +190,21 @@ export class SettingsEditingComponent implements OnInit {
 
   accountbtn(){
     this.showForm = "account";
+    this.disableAccountbtn = true;
+    this.disableProfilbtn = false;
+    this.disableMatchingbtn = false;
   }
   profilbtn(){
     this.showForm = "profil";
+    this.disableAccountbtn = false;
+    this.disableProfilbtn = true;
+    this.disableMatchingbtn = false;
   }
   matchingbtn(){
     this.showForm = "matching";
+    this.disableAccountbtn = false;
+    this.disableProfilbtn = false;
+    this.disableMatchingbtn = true;
     this.matchingSubmitbtn = true;
   }
   passwortbtn(){
@@ -312,11 +326,9 @@ export class SettingsEditingComponent implements OnInit {
 
   //_____________________________________________Formular Matchingdaten__________________________________________________________________________________________
   changeRaucherCheck(value: boolean) {
-    this.Raucher = !value;
     this.matchingSubmitbtn = false;
   }
   changeSuchendCheck(value: boolean) {
-    this.AktuellSuchend = !value;
     this.matchingSubmitbtn = false;
   }
   activateSubmitButton(event: MatSliderChange){
