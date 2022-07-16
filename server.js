@@ -455,7 +455,6 @@ app.get('/settings', verifyToken, function (req, res) {
         con.query('SELECT 22_DB_Gruppe3.chat.chatid,22_DB_Gruppe3.chat.lastMessage, 22_DB_Gruppe3.chat.fk_personid,22_DB_Gruppe3.chat.fk_wgid, userTable.email AS userMail, wgTable.email AS wgMail FROM 22_DB_Gruppe3.chat LEFT JOIN 22_DB_Gruppe3.users AS userTable ON fk_personid=userTable.userid LEFT JOIN 22_DB_Gruppe3.users AS wgTable ON fk_wgid=wgTable.userid WHERE userTable.userid="' + userid +'" OR wgTable.userid="' + userid +'"',
           function (error, results, fields) {
             if (error) throw error;
-            console.log(req.body.body.email);
             console.log(results);
             res.send(stringify(results));
             con.end(function (error) {
@@ -555,7 +554,6 @@ app.get('/settings', verifyToken, function (req, res) {
           con.query(sqlQuery,
             function (error, results, fields) {
               if (error) throw error;
-              console.log(req.body.body.email);
               console.log(results);
               res.send(stringify(results));
               con.end(function (error) {
@@ -592,7 +590,6 @@ app.get('/settings', verifyToken, function (req, res) {
           con.query(sqlQuery,
             function (error, results, fields) {
               if (error) throw error;
-              console.log(req.body.body.email);
               console.log(results);
               res.send(stringify(results));
               con.end(function (error) {
@@ -629,7 +626,6 @@ app.get('/settings', verifyToken, function (req, res) {
           con.query(sqlQuery,
             function (error, results, fields) {
               if (error) throw error;
-              console.log(req.body.body.email);
               console.log(results);
               res.send(stringify(results));
               con.end(function (error) {
@@ -684,7 +680,6 @@ app.get('/settings', verifyToken, function (req, res) {
           con.query(sqlQuery,
             function (error, results, fields) {
               if (error) throw error;
-              console.log(req.body.body.email);
               console.log(results);
               res.send(stringify(results));
               con.end(function (error) {
