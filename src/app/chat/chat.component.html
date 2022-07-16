@@ -3,6 +3,6 @@
 <br>
 <ul>
     <li *ngFor="let resultObj of chatResult">
-        <button routerLink="chatverlaeufe" routerLinkActive="active"> {{ resultObj.userMail }} </button>
+        <button (click)="onChatClick(resultObj)"> {{ resultObj.userMail }} </button>
     </li>
 </ul>

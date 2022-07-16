@@ -1,1 +1,15 @@
-<p>chatverlaeufe works!</p>
+<br>
+<br>
+<br>
+
+
+<div class="imessage" *ngFor="let message of chatMessages">
+    <p class="from-me" *ngIf="message.userMail == loggedInUser.email">{{message.msgText}}</p>
+    <p class="from-them" *ngIf="message.userMail != loggedInUser.email">{{message.msgText}}</p>
+</div>
+
+
+<form (submit)="submitMessage($event)">
+    <input type="text" id="msgText">
+    <input type="Submit" value="Senden">
+</form>

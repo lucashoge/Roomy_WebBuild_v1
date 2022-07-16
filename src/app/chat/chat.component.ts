@@ -14,10 +14,15 @@ export class ChatComponent implements OnInit {
 
   chatResult: any;
   fetchError: any;
+  currentChatView = "";
+  loggedInUser: any;
 
   ngOnInit(): void {
     console.log("ngOnInit chat component");
-    this.getChats({email: "WGWGHansi@Hansihans.de"});
+    this.loggedInUser = localStorage.getItem('loggedInUser');
+    this.loggedInUser = JSON.parse(this.loggedInUser);
+
+    this.getChats(this.loggedInUser);
   }
 
   getChats(data: any) {
@@ -35,6 +40,12 @@ export class ChatComponent implements OnInit {
   };
 
 
+  onChatClick(data: any){
+    console.log(data);
+    localStorage.setItem("currentChat", data.chatid);
+    this.router.navigate(['/chatverlaeufe']);
+  }
+  
 
     //Dann Nachricht, dass Registrierung erfolgreich
     //und Weiterleitung zum Login
