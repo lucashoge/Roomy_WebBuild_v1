@@ -5,6 +5,7 @@ import { Router } from "@angular/router";
 import { MatSliderChange } from '@angular/material/slider';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { NativeDateAdapter } from '@angular/material/core';
+import { DatePipe } from '@angular/common';
 
 @Component({
   selector: 'app-settings-editing',
@@ -13,7 +14,7 @@ import { NativeDateAdapter } from '@angular/material/core';
 })
 export class SettingsEditingComponent implements OnInit {
 
-  constructor(private http: HttpClient, private router: Router) { }
+  constructor(private http: HttpClient, private router: Router, public datepipe: DatePipe) { }
 
 
   ngOnInit(): void {
@@ -30,7 +31,7 @@ export class SettingsEditingComponent implements OnInit {
       CtrlNachname: any;
       CtrlVorname: any;
       CtrlGeschlecht: any;
-      CtrlGeburtsdatum: Date= new Date();
+      CtrlGeburtsdatum: any;//Date= new Date();
       CtrlJob: any;
       CtrlHobby: any;
       //WG
@@ -73,7 +74,7 @@ export class SettingsEditingComponent implements OnInit {
   Nachname: any;
   Vorname: any;
   Geschlecht: any;
-  Geburtsdatum: Date= new Date();
+  Geburtsdatum: any;//= new Date();
   Job: any;
   Hobby: any;
     //WG
@@ -163,6 +164,9 @@ export class SettingsEditingComponent implements OnInit {
       this.Nachname = this.CtrlNachname = userData.surname;
       this.Geschlecht = this.CtrlGeschlecht = userData.gender;
       this.Geburtsdatum = this.CtrlGeburtsdatum = userData.birthdate;
+
+      this.Geburtsdatum = this.CtrlGeburtsdatum = this.datepipe.transform(this.Geburtsdatum, 'yyyy-MM-dd');
+
       this.Job = this.CtrlJob = userData.job;
       this.Hobby = this.CtrlHobby = userData.hobby;
       }
