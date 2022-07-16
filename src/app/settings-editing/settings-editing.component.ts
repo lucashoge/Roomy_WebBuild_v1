@@ -2,7 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Router } from "@angular/router";
-import { mergeNsAndName } from '@angular/compiler';
+import { MatSliderChange } from '@angular/material/slider';
+import { MatCheckboxChange } from '@angular/material/checkbox';
 
 @Component({
   selector: 'app-settings-editing',
@@ -13,31 +14,55 @@ export class SettingsEditingComponent implements OnInit {
 
   constructor(private http: HttpClient, private router: Router) { }
 
-  //Userdaten
-  userId = "";
-  username = "";
-  vorname = "";
-  nachname = "";
-  user_status: any;
-  follows: any;
 
   ngOnInit(): void {
     this.getUser();
   }
 
-  showPerson:boolean=true;
-  showWG:boolean=false;
+  //Kontroll Variablen
+    //Account
+    CtrlUsername: any;
+    CtrlEmail: any;
 
-  users: any;
-  registerDenied: any;
-  registerSuccessful: any;
+    //Profil
+      //Person
+      CtrlNachname: any;
+      CtrlVorname: any;
+      CtrlGeschlecht: any;
+      CtrlGeburtsdatum: any;
+      CtrlJob: any;
+      CtrlHobby: any;
+      //WG
+      CtrlWGName: any;
+      CtrlPostleitzahl: any;
+      CtrlStadt: any;
+      CtrlLand: any;
+      CtrlFreieSlots: any;
+      CtrlSlotsGesamt: any;
+      CtrlPreis: any;
+      //beide
+      CtrlRaucher: boolean = false;
+      CtrlLautstaerke: any;
+      CtrlSauberkeit: any;
+      CtrlKochen: any;
+    //CtrlProfilbild: any;
+      CtrlAktuellSuchend: boolean = false;
+
+  //Form Variablen
+  showForm: any = "account";
+  userMessage: any;
+  emailMessage: any;
+  passwortMessage: any;
+  matchingSubmitbtn: boolean = true;
 
   //Account
   Username: any;
   Email: any;
-  Passwort: any;
+  PasswortAlt: any;
+  PasswortNeu: any;
   PasswortBest: any;
-  passwordError: any;
+  PasswortError: any;
+  PasswortAendernbtn: boolean = false;
 
   //Profil
     //Person
@@ -56,16 +81,18 @@ export class SettingsEditingComponent implements OnInit {
   SlotsGesamt: any;
   Preis: any;
     //beide
-  Raucher: any;
+  Raucher: boolean = false;
   Lautstaerke: any;
   Sauberkeit: any;
   Kochen: any;
   //Profilbild: any;
-  AktuellSuchend: any;
+  AktuellSuchend: boolean = false;
 
   kindOfUser: any;
 
+  //Laden der Userdaten
   getUser(){
+    console.log("Getting Userdatas");
     var sendData = {
       flag: "getKindOfUser"
     }
@@ -88,7 +115,7 @@ export class SettingsEditingComponent implements OnInit {
         }
       });
   }
-
+  //Anfragen der Userdaten entsprechend des Usertyps
   loadUserData() {
     var usertype: string = this.kindOfUser;
     var sendData = {
@@ -104,46 +131,45 @@ export class SettingsEditingComponent implements OnInit {
     this.http.get("settings", config).subscribe(result => {
       //Daten von User in passendes Format umwandeln und in Variablen speichern
       var userData = JSON.parse(JSON.stringify(JSON.parse(JSON.stringify(result))[0]))[0];
+      console.log("Getting Userdata");
       console.log(userData);
-      this.Username = userData.username;
-      this.Email = userData.email;
-      this.Raucher = userData.smoker;
-      this.Lautstaerke = userData.volume;
-      this.Sauberkeit = userData.tidiness;
-      this.Kochen = userData.cook;
-      this.AktuellSuchend = userData.searching;
+      this.Username = this.CtrlUsername = userData.username;
+      this.Email = this.CtrlEmail = userData.email;
+      this.Raucher = this.CtrlRaucher = userData.smoker;
+      this.Lautstaerke = this.CtrlLautstaerke = userData.volume;
+      this.Sauberkeit = this.CtrlSauberkeit = userData.tidiness;
+      this.Kochen = this.CtrlKochen = userData.cook;
+      this.AktuellSuchend = this.CtrlAktuellSuchend = userData.searching;
 
       if(this.kindOfUser=="person"){
         //Daten von Person in passendes Format umwandeln und in Variablen speichern
       var personData = JSON.parse(JSON.stringify(JSON.parse(JSON.stringify(result))[1]))[0];
+      console.log("Getting Persondata");
       console.log(personData);
-      this.Vorname = personData.firstname;
-      this.Nachname = personData.surname;
-      this.Geschlecht = personData.gender;
-      this.Geburtsdatum = personData.birthdate;
-      this.Job = personData.job;
-      this.Hobby = personData.hobby;
+      this.Vorname = this.CtrlVorname = personData.firstname;
+      this.Nachname = this.CtrlNachname = personData.surname;
+      this.Geschlecht = this.CtrlGeschlecht = personData.gender;
+      this.Geburtsdatum = this.CtrlGeburtsdatum = personData.birthdate;
+      this.Job = this.CtrlJob = personData.job;
+      this.Hobby = this.CtrlHobby = personData.hobby;
       }
       else if(this.kindOfUser=="wg"){
         //Daten von WG in passendes Format umwandeln und in Variablen speichern
       var wgData = JSON.parse(JSON.stringify(JSON.parse(JSON.stringify(result))[1]))[0];
+      console.log("Getting WGdata");
       console.log(wgData);
-      this.WGName = wgData.wgname;
-      this.Postleitzahl = wgData.postcode;
-      this.Stadt = wgData.city;
-      this.Land = wgData.country;
-      this.FreieSlots = wgData.spotsfree;
-      this.SlotsGesamt = wgData.spotstotal;
-      this.Preis = wgData.price;
+      this.WGName = this.CtrlWGName = wgData.wgname;
+      this.Postleitzahl = this.CtrlPostleitzahl = wgData.postcode;
+      this.Stadt = this.CtrlStadt = wgData.city;
+      this.Land = this.CtrlLand = wgData.country;
+      this.FreieSlots = this.CtrlFreieSlots = wgData.spotsfree;
+      this.SlotsGesamt = this.CtrlSlotsGesamt = wgData.spotstotal;
+      this.Preis = this.CtrlPreis = wgData.price;
       }
       else{
-        console.log("Fehler beim Laden. \nDer Benutzertyp konnte nicht korrekt zugeordnet werden.");
+        console.log("Fehler beim Laden. \nDer Benutzertyp konnte nicht korrekt zugeordnet werden. \nKontaktieren Sie einen Administrator.");
       }
       
-      
-      
-
-
     },
       err => {
         if (err instanceof HttpErrorResponse) {
@@ -157,60 +183,155 @@ export class SettingsEditingComponent implements OnInit {
 
 
 
-  pushPerson(){
-    this.showPerson=true;
-    this.showWG=false;
-    this.kindOfUser = 'person';
-    console.log(this.kindOfUser);
+  accountbtn(){
+    this.showForm = "account";
   }
-  pushWG(){
-    this.showPerson=false;
-    this.showWG=true;
-    this.kindOfUser = 'wg';
-    console.log(this.kindOfUser);
+  profilbtn(){
+    this.showForm = "profil";
+  }
+  matchingbtn(){
+    this.showForm = "matching";
+    this.matchingSubmitbtn = true;
+  }
+  passwortbtn(){
+    this.PasswortAendernbtn = !this.PasswortAendernbtn;
   }
   
-  
-  sendSettings(data: any) {
-    var userFlag = {
-      "kindOfUser":this.kindOfUser
-    };
-    var merged = Object.assign(data, userFlag);
-    var config = { params: merged}; 
+  //_____________________________________________Formular Accountdaten__________________________________________________________________________________________
+  sendUserForm(data: any) {
+    var sendData;
+    var config;
+    //Check Email
+    if(this.CtrlEmail != data.Email){
+      sendData = {
+        flag: "checkMail",
+        Email: data.Email
+      }
+      config = {
+        params: sendData
+      };
+      //Get abfrage, ob Username und Email vorhanden sind
+      this.http.get("settings", config).subscribe(result => {
+        console.log("result");
+        console.log(result);
+        //Wenn Email frei -> Eintragen der Daten in die Datenbank
+        if (result == "emailAllowed") {
+          console.log("Email Allowed");
+          this.emailMessage = "Email geändert.";
+          //this.http.post<any>("settings", { body: data }).subscribe((result) => console.log("Result vom Post" + result));
+        }
+        else {
+          this.emailMessage = "Email bereits vergeben.";
+          
+          console.log("Email Vergeben");
+        }
+        return;
+      });
+    }
 
-    console.log(config);
-    //Abfrage ob Passwörter übereinstimmen
-    if (data.Passwort != data.PasswortBest) {
-      this.passwordError = "Passwörter stimmen nicht überein.";
+
+    //Check Username
+    if(this.CtrlUsername != data.Username){
+      sendData = {
+        flag: "checkUsername",
+        Username: data.Username
+      }
+      config = {
+        params: sendData
+      };
+      //Get abfrage, ob Username und Email vorhanden sind
+      this.http.get("settings", config).subscribe(result => {
+        console.log("result");
+        console.log(result);
+        //Wenn Email frei -> Eintragen der Daten in die Datenbank
+        if (result == "usernameAllowed") {
+          console.log("Username Allowed");
+          this.userMessage = "Username geändert.";
+          //this.http.post<any>("settings", { body: data }).subscribe((result) => console.log("Result vom Post" + result));
+        }
+        else {
+          this.userMessage = "Username bereits vergeben.";
+          
+          console.log("Username Vergeben");
+        }
+        return;
+      });
+    }
+  }
+
+  sendPassword(data: any) {
+    var sendData;
+    var config;
+    
+
+    console.log("sending password");
+    console.log(data.PasswortAlt);
+    //Abfrage ob Passwörter im Formular übereinstimmen
+    if (data.PasswortNeu != data.PasswortBest) {
+      this.PasswortError = "Passwörter stimmen nicht überein.";
       return;
     }
     else {
-      this.passwordError = "";
+      this.PasswortError = "";
     }
 
+    //Check Passwort
+    sendData = {
+      flag: "checkPassword",
+      passwort: data.PasswortAlt
+    }
+    config = {
+      params: sendData
+    };
     //Get abfrage, ob Username und Email vorhanden sind
     this.http.get("settings", config).subscribe(result => {
-      //Wenn Username und Email frei -> Eintragen der Daten in die Datenbank
-      if (result == "registerAllowed") {
-        this.http.post<any>("settings", { body: data }).subscribe((result) => console.log("Result vom Post" + result));
-        this.router.navigate(['/login']);
+      console.log("result");
+      console.log(result);
+      //Wenn Passwort richtig -> Änderung in Datenbank
+      if (result == "passwordCorrect") {
+        console.log("passwordCorrect");
+        //this.http.post<any>("settings", { body: data }).subscribe((result) => console.log("Result vom Post" + result));
       }
-      else if (result == "usernameUsed") {
-        this.registerDenied = "Username bereits vergeben.";
-      }
-      else if (result == "emailUsed") {
-        this.registerDenied = "Email bereits vergeben.";
+      else {
+        this.passwortMessage = "Passwort ist nicht korrekt.";
+        
+        console.log("Passwort falsch");
       }
       return;
     });
+  }
 
 
+  //_____________________________________________Formular Profildaten__________________________________________________________________________________________
+  sendProfil(data: any){
+    //Senden der Profildaten an die Datenbank
 
-    //Dann Nachricht, dass Registrierung erfolgreich
-    //und Weiterleitung zum Login
 
-    //Wenn nicht frei -> Nachricht dass Name/Email bereits vergeben sind
+  }
 
+
+  //_____________________________________________Formular Matchingdaten__________________________________________________________________________________________
+  changeRaucherCheck(value: boolean) {
+    this.Raucher = !value;
+    this.matchingSubmitbtn = false;
+  }
+  changeSuchendCheck(value: boolean) {
+    this.AktuellSuchend = !value;
+    this.matchingSubmitbtn = false;
+  }
+  activateSubmitButton(event: MatSliderChange){
+    this.matchingSubmitbtn = false;
+    console.log("change");
+  }
+  activateSubmitButtonCheckbox(event: MatCheckboxChange){
+    this.matchingSubmitbtn = false;
+    console.log("changeee");
+  }
+
+  submitMatchingbtn(){
+    //Senden der Matchingdaten an die Datenbank
+    console.log(this.Raucher);
+    console.log(this.AktuellSuchend);
 
   }
   
