@@ -150,9 +150,11 @@ export class SettingsEditingComponent implements OnInit {
       this.AktuellSuchend = this.CtrlAktuellSuchend = userData.searching;
       this.Profilbild = this.CtrlProfilbild = userData.profilepic;
 
-      console.log("this.kindOfUser: "+this.kindOfUser)
+      console.log("this.kindOfUser: "+this.kindOfUser);
+      console.log("usertype: "+userData.usertype);
+      console.log("usertype: "+userData.usertype);
 
-      if(userData.usertype=="person"){
+      if(this.kindOfUser=="person"){
         //Daten von Person in passendes Format umwandeln und in Variablen speichern
       //var personData = JSON.parse(JSON.stringify(JSON.parse(JSON.stringify(result))[1]))[0];
       console.log("Getting Persondata");
