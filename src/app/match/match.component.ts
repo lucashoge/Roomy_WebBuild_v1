@@ -13,16 +13,15 @@ export class MatchComponent implements OnInit {
   constructor(private http: HttpClient, private router: Router) { }
 
   matchResult: any;
-  currentUser: any;
+  loggedInUser: any;
 
   ngOnInit(): void {
 
     //get current user
-    this.currentUser = {email: "WGWGHansi@Hansihans.de", userid: 31, username: "HansiWGWG", usertype: "wg"};
-
+    this.loggedInUser = localStorage.getItem('loggedInUser');
+    this.loggedInUser = JSON.parse(this.loggedInUser);
+    console.log(this.loggedInUser);
     this.getPossibleMatches();
-
-
   }
 
 
@@ -31,16 +30,16 @@ export class MatchComponent implements OnInit {
     console.log("getPossibleMatches()");
 
     //check if current user is WG or Person
-    if(this.currentUser.usertype == "wg"){
+    if(this.loggedInUser.usertype == "wg"){
 
-      this.http.post<any>("getPossibleWgMatchesByMail", { body: this.currentUser }).subscribe((result) => {
+      this.http.post<any>("getPossibleWgMatchesByMail", { body: this.loggedInUser }).subscribe((result) => {
       
         this.matchResult = result;
         console.log(this.matchResult);
       });
 
     }else{
-      this.http.post<any>("getPossiblePersonMatchesByMail", { body: this.currentUser }).subscribe((result) => {
+      this.http.post<any>("getPossiblePersonMatchesByMail", { body: this.loggedInUser }).subscribe((result) => {
       
         this.matchResult = result;
         console.log(this.matchResult);

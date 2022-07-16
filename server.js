@@ -267,7 +267,14 @@ app.get('/settings', verifyToken, function (req, res) {
       con.connect(function (error) {
                 if (error) throw error;
                 console.log("connected");
-                con.query("SELECT username, email, smoker, volume, tidiness, cook, searching  FROM users WHERE userid = ?; SELECT firstname, surname, gender, birthdate, job, hobby FROM person WHERE personid = ?", [userid, userid],
+
+                var sqlQuery = 'SELECT username, email, profilepic, smoker, volume, tidiness, cook, searching, usertype, firstname, surname, gender, birthdate, job, hobby'
+                    + ' FROM 22_DB_Gruppe3.users'
+                    + ' LEFT JOIN 22_DB_Gruppe3.person AS personTable ON userid=personTable.personid'
+                    + ' WHERE 22_DB_Gruppe3.users.userid=' + userid;
+
+
+                con.query(sqlQuery,
                   function (error, results, fields) {
                     if (error) throw error;
                     console.log(results[0], results[1]);
@@ -286,7 +293,13 @@ app.get('/settings', verifyToken, function (req, res) {
       con.connect(function (error) {
                 if (error) throw error;
                 console.log("connected");
-                con.query("SELECT username, email, smoker, volume, tidiness, cook, searching  FROM users WHERE userid = ?;", userid,
+
+                var sqlQuery = 'SELECT username, email, profilepic, smoker, volume, tidiness, cook, searching, usertype, wgname, postcode, city, country, spotfree, spotstotal, price'
+                    + ' FROM 22_DB_Gruppe3.users'
+                    + ' LEFT JOIN 22_DB_Gruppe3.wg AS wgTable ON userid=wgTable.wgid'
+                    + ' WHERE 22_DB_Gruppe3.users.userid=' + userid;
+
+                con.query(sqlQuery,
                   function (error, results, fields) {
                     if (error) throw error;
                     res.send(stringify(results));
@@ -430,14 +443,16 @@ app.get('/settings', verifyToken, function (req, res) {
    */
 
 
-  app.post('/allChatsFromPerson', function (req, res) {
+  app.post('/allChatsFromPerson', verifyToken, function (req, res) {
+
+    var userid = [req.userId];
 
     var con = mysql.createConnection(conConfig);
   
       con.connect(function (error) {
         if (error) throw error;
         console.log("connected");
-        con.query('SELECT 22_DB_Gruppe3.chat.chatid,22_DB_Gruppe3.chat.lastMessage, 22_DB_Gruppe3.chat.fk_personid,22_DB_Gruppe3.chat.fk_wgid, userTable.email AS userMail, wgTable.email AS wgMail FROM 22_DB_Gruppe3.chat LEFT JOIN 22_DB_Gruppe3.users AS userTable ON fk_personid=userTable.userid LEFT JOIN 22_DB_Gruppe3.users AS wgTable ON fk_wgid=wgTable.userid WHERE userTable.email="' + req.body.body.email +'" OR wgTable.email="' + req.body.body.email +'"',
+        con.query('SELECT 22_DB_Gruppe3.chat.chatid,22_DB_Gruppe3.chat.lastMessage, 22_DB_Gruppe3.chat.fk_personid,22_DB_Gruppe3.chat.fk_wgid, userTable.email AS userMail, wgTable.email AS wgMail FROM 22_DB_Gruppe3.chat LEFT JOIN 22_DB_Gruppe3.users AS userTable ON fk_personid=userTable.userid LEFT JOIN 22_DB_Gruppe3.users AS wgTable ON fk_wgid=wgTable.userid WHERE userTable.userid="' + userid +'" OR wgTable.userid="' + userid +'"',
           function (error, results, fields) {
             if (error) throw error;
             console.log(req.body.body.email);
@@ -489,14 +504,16 @@ app.get('/settings', verifyToken, function (req, res) {
     VALUES ("2022-06-07 11:07:03", "Hello4", 18, 1) 
   */
 
-    app.post('/submitChatMessage', function (req, res) {
+    app.post('/submitChatMessage', verifyToken, function (req, res) {
+
+      var userid = [req.userId];
 
       var con = mysql.createConnection(conConfig);
     
         con.connect(function (error) {
           if (error) throw error;
           console.log("connected");
-          con.query('INSERT INTO 22_DB_Gruppe3.chateintrag SET ?', [{ msgDate: req.body.body.msgDate, msgText: req.body.body.msgText, from_id: req.body.body.from_id, chatid: req.body.body.chatid,}],
+          con.query('INSERT INTO 22_DB_Gruppe3.chateintrag SET ?', [{ msgDate: req.body.body.msgDate, msgText: req.body.body.msgText, from_id: userid, chatid: req.body.body.chatid,}],
             function (error, results, fields) {
               if (error) throw error;
               console.log(req.body.body.msgText);
@@ -520,7 +537,9 @@ app.get('/settings', verifyToken, function (req, res) {
     WHERE (userTable.email="hansi@hallo.de" OR wgTable.email="hansi@hallo.de") AND (22_DB_Gruppe3.match.wgmatch=1 AND 22_DB_Gruppe3.match.personmatch=1);
     */
 
-    app.post('/getMatchesByMail', function (req, res) {
+    app.post('/getMatchesByMail', verifyToken, function (req, res) {
+
+      var userid = [req.userId];
 
       var con = mysql.createConnection(conConfig);
     
@@ -531,7 +550,7 @@ app.get('/settings', verifyToken, function (req, res) {
             + ' FROM 22_DB_Gruppe3.match'
             + ' LEFT JOIN 22_DB_Gruppe3.users AS userTable ON fk_personid=userTable.userid'
             + ' LEFT JOIN 22_DB_Gruppe3.users AS wgTable ON fk_wgid=wgTable.userid'
-            + ' WHERE (userTable.email="' + req.body.body.email + '" OR wgTable.email="' + req.body.body.email + '") AND (22_DB_Gruppe3.match.wgmatch=1 AND 22_DB_Gruppe3.match.personmatch=1)';
+            + ' WHERE (userTable.userid="' + userid + '" OR wgTable.userid="' + userid + '") AND (22_DB_Gruppe3.match.wgmatch=1 AND 22_DB_Gruppe3.match.personmatch=1)';
 
           con.query(sqlQuery,
             function (error, results, fields) {
@@ -556,7 +575,9 @@ app.get('/settings', verifyToken, function (req, res) {
     WHERE userTable.email="hansi@hallo.de" AND (22_DB_Gruppe3.match.wgmatch=1 AND 22_DB_Gruppe3.match.personmatch=0)
     */
 
-    app.post('/getPossiblePersonMatchesByMail', function (req, res) {
+    app.post('/getPossiblePersonMatchesByMail', verifyToken, function (req, res) {
+
+      var userid = [req.userId];
 
       var con = mysql.createConnection(conConfig);
     
@@ -566,7 +587,7 @@ app.get('/settings', verifyToken, function (req, res) {
           var sqlQuery = 'SELECT *'
             + ' FROM 22_DB_Gruppe3.match'
             + ' LEFT JOIN 22_DB_Gruppe3.users AS userTable ON fk_personid=userTable.userid'
-            + ' WHERE userTable.email="' + req.body.body.email + '" AND (22_DB_Gruppe3.match.wgmatch=1 AND 22_DB_Gruppe3.match.personmatch=0)';
+            + ' WHERE userTable.userid="' + userid + '" AND (22_DB_Gruppe3.match.wgmatch=1 AND 22_DB_Gruppe3.match.personmatch=0)';
 
           con.query(sqlQuery,
             function (error, results, fields) {
@@ -591,7 +612,9 @@ app.get('/settings', verifyToken, function (req, res) {
     WHERE userTable.email="hansi@hallo.de" AND (22_DB_Gruppe3.match.wgmatch=0 AND 22_DB_Gruppe3.match.personmatch=1)
     */
 
-    app.post('/getPossibleWgMatchesByMail', function (req, res) {
+    app.post('/getPossibleWgMatchesByMail', verifyToken, function (req, res) {
+
+      var userid = [req.userId];
 
       var con = mysql.createConnection(conConfig);
     
@@ -601,7 +624,7 @@ app.get('/settings', verifyToken, function (req, res) {
           var sqlQuery = 'SELECT *'
             + ' FROM 22_DB_Gruppe3.match'
             + ' LEFT JOIN 22_DB_Gruppe3.users AS userTable ON fk_wgid=userTable.userid'
-            + ' WHERE userTable.email="' + req.body.body.email + '" AND (22_DB_Gruppe3.match.wgmatch=0 AND 22_DB_Gruppe3.match.personmatch=1)';
+            + ' WHERE userTable.userid="' + userid + '" AND (22_DB_Gruppe3.match.wgmatch=0 AND 22_DB_Gruppe3.match.personmatch=1)';
 
           con.query(sqlQuery,
             function (error, results, fields) {

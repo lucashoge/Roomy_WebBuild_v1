@@ -34,6 +34,8 @@ export class AuthService {
     localStorage.removeItem("expires_at");
     localStorage.removeItem("visitedUser");
     localStorage.removeItem("currentChat");
+    localStorage.removeItem("loggedInUser");
+    
 
     this.router.navigate(['/']);
   }

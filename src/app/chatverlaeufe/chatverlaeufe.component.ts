@@ -14,14 +14,14 @@ export class ChatverlaeufeComponent implements OnInit {
   
   chatid: String|null = "";// = "";
   chatMessages: any;
-  currentUser: any;
+  loggedInUser: any;
 
   constructor(private http: HttpClient, private router: Router, public datepipe: DatePipe) { }
 
   ngOnInit(): void {
-    //this.currentUser = localStorage.getItem('currentUser');
-    //TEST
-    this.currentUser = {email: "WGWGHansi@Hansihans.de", userid: 31, username: "HansiWGWG"};
+    this.loggedInUser = localStorage.getItem('loggedInUser');
+    this.loggedInUser = JSON.parse(this.loggedInUser);
+
     this.chatid = localStorage.getItem('currentChat');
 
     console.log("getChatEntries from chatID: " + this.chatid);
@@ -44,7 +44,6 @@ export class ChatverlaeufeComponent implements OnInit {
     var messageForDB = {
       chateintragid: 0,
       chatid: this.chatid,
-      from_id: this.currentUser.userid,
       msgText: msgText,
       msgDate: formatDate
     };

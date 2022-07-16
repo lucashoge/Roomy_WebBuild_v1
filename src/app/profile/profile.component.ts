@@ -41,7 +41,10 @@ export class ProfileComponent {
     this.parentSubject.subscribe(event => {
       this.startAnimation(event)
     });
-    this.loggedInUser = {email: "WGWGHansi@Hansihans.de", userid: 31, username: "HansiWGWG", usertype: "person"};
+    this.loggedInUser = localStorage.getItem('loggedInUser');
+    this.loggedInUser = JSON.parse(this.loggedInUser);
+
+    console.log("profileComp loggedInUser: " + this.loggedInUser)
 
     this.getNewUsersForMatching();  
   }
@@ -62,7 +65,6 @@ export class ProfileComponent {
         this.getNewUsersForMatching();
       }else{
         this.currentUser = this.users[this.index]; 
-        console.log("profilePicture: " + this.currentUser.profilepic)
       }
       this.switch = false
     }else{
@@ -81,11 +83,14 @@ export class ProfileComponent {
     this.http.post<any>("getUsersFromIdUpwards", { body: httpPostData}).subscribe((result) => {
       
       this.users = result;
-      console.log(result);
+      console.log("getNewUsersForMatching result:");
+      console.log(this.users);
       if(this.users.length > 0){
         this.currentUser = this.users[0]; 
         console.log("currentUser from profiles" + this.currentUser)
+        console.log(this.currentUser)
         this.userID = this.users[this.users.length-1].userid;
+        console.log("profilePicture: " + this.currentUser.profilepic)
       }
       
     }); 

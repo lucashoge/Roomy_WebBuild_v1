@@ -43,6 +43,7 @@ export class LoginComponent implements OnInit {
       else {
         //Login erfolgreich
         this.auth.setSession(result);
+        this.getUser();
         this.router.navigate(['/mainUI']);
       }
     });
@@ -85,11 +86,13 @@ export class LoginComponent implements OnInit {
 
     //Userdaten anfragen
     this.http.get("settings", config).subscribe(result => {
-      //localStorage.setItem("loggedInUser", result);
+      let resultArray: any;
+      resultArray = result;
 
+      localStorage.setItem("loggedInUser", JSON.stringify(resultArray[0]));
+      console.log("loggedInUser: ");
+      console.log(JSON.stringify(resultArray[0]));
     });
-
-  
-
+  }
 
 }

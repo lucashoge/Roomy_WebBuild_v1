@@ -130,7 +130,11 @@ export class SettingsEditingComponent implements OnInit {
     //Userdaten anfragen
     this.http.get("settings", config).subscribe(result => {
       //Daten von User in passendes Format umwandeln und in Variablen speichern
-      var userData = JSON.parse(JSON.stringify(JSON.parse(JSON.stringify(result))[0]))[0];
+      
+      let resultArray: any;
+      resultArray = result;
+      var userData = resultArray[0];//JSON.parse(JSON.stringify(JSON.parse(JSON.stringify(result))[0]))[0];
+
       console.log("Getting Userdata");
       console.log(userData);
       this.Username = this.CtrlUsername = userData.username;
@@ -141,30 +145,32 @@ export class SettingsEditingComponent implements OnInit {
       this.Kochen = this.CtrlKochen = userData.cook;
       this.AktuellSuchend = this.CtrlAktuellSuchend = userData.searching;
 
-      if(this.kindOfUser=="person"){
+      console.log("this.kindOfUser: "+this.kindOfUser)
+
+      if(userData.usertype=="person"){
         //Daten von Person in passendes Format umwandeln und in Variablen speichern
-      var personData = JSON.parse(JSON.stringify(JSON.parse(JSON.stringify(result))[1]))[0];
+      //var personData = JSON.parse(JSON.stringify(JSON.parse(JSON.stringify(result))[1]))[0];
       console.log("Getting Persondata");
-      console.log(personData);
-      this.Vorname = this.CtrlVorname = personData.firstname;
-      this.Nachname = this.CtrlNachname = personData.surname;
-      this.Geschlecht = this.CtrlGeschlecht = personData.gender;
-      this.Geburtsdatum = this.CtrlGeburtsdatum = personData.birthdate;
-      this.Job = this.CtrlJob = personData.job;
-      this.Hobby = this.CtrlHobby = personData.hobby;
+      //console.log(personData);
+      this.Vorname = this.CtrlVorname = userData.firstname;
+      this.Nachname = this.CtrlNachname = userData.surname;
+      this.Geschlecht = this.CtrlGeschlecht = userData.gender;
+      this.Geburtsdatum = this.CtrlGeburtsdatum = userData.birthdate;
+      this.Job = this.CtrlJob = userData.job;
+      this.Hobby = this.CtrlHobby = userData.hobby;
       }
       else if(this.kindOfUser=="wg"){
         //Daten von WG in passendes Format umwandeln und in Variablen speichern
-      var wgData = JSON.parse(JSON.stringify(JSON.parse(JSON.stringify(result))[1]))[0];
+      //var wgData = JSON.parse(JSON.stringify(JSON.parse(JSON.stringify(result))[1]))[0];
       console.log("Getting WGdata");
-      console.log(wgData);
-      this.WGName = this.CtrlWGName = wgData.wgname;
-      this.Postleitzahl = this.CtrlPostleitzahl = wgData.postcode;
-      this.Stadt = this.CtrlStadt = wgData.city;
-      this.Land = this.CtrlLand = wgData.country;
-      this.FreieSlots = this.CtrlFreieSlots = wgData.spotsfree;
-      this.SlotsGesamt = this.CtrlSlotsGesamt = wgData.spotstotal;
-      this.Preis = this.CtrlPreis = wgData.price;
+      //console.log(wgData);
+      this.WGName = this.CtrlWGName = userData.wgname;
+      this.Postleitzahl = this.CtrlPostleitzahl = userData.postcode;
+      this.Stadt = this.CtrlStadt = userData.city;
+      this.Land = this.CtrlLand = userData.country;
+      this.FreieSlots = this.CtrlFreieSlots = userData.spotsfree;
+      this.SlotsGesamt = this.CtrlSlotsGesamt = userData.spotstotal;
+      this.Preis = this.CtrlPreis = userData.price;
       }
       else{
         console.log("Fehler beim Laden. \nDer Benutzertyp konnte nicht korrekt zugeordnet werden. \nKontaktieren Sie einen Administrator.");
