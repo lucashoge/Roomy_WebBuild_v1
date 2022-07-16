@@ -236,6 +236,9 @@ app.post('/register', function (req, res) {
 
 //Userdaten für Settings abrufen und ändern      Work in progress
 app.get('/settings', verifyToken, function (req, res) {
+  console.log("Start Settings");
+  console.log("kindOfUser: "+req.query.kindOfUser);
+  console.log("flag: "+req.query.flag);
 
   var userid = [req.userId];
 //___________________________________________________________________________Usertyp abfragen
@@ -261,14 +264,16 @@ app.get('/settings', verifyToken, function (req, res) {
 //___________________________________________________________________________Userdaten abfragen
   else if (req.query.flag == "getUserData") {
     var con = mysql.createConnection(conConfig);
-
+    
+    console.log("inside GetUserData");
     //Wenn User eine Person ist
     if(req.query.kindOfUser == "person"){
+      console.log("inside Person");
       con.connect(function (error) {
                 if (error) throw error;
                 console.log("connected");
 
-                var sqlQuery = 'SELECT username, email, profilepic, smoker, volume, tidiness, cook, searching, usertype, firstname, surname, gender, birthdate, job, hobby'
+                var sqlQuery = 'SELECT username, email, profilepic, smoker, volume, tidiness, cook, searching, usertype, firstname, surname, gender, birthdate, job, hobby, searchpostcode, searchcity, searchcountry'
                     + ' FROM 22_DB_Gruppe3.users'
                     + ' LEFT JOIN 22_DB_Gruppe3.person AS personTable ON userid=personTable.personid'
                     + ' WHERE 22_DB_Gruppe3.users.userid=' + userid;
@@ -277,7 +282,7 @@ app.get('/settings', verifyToken, function (req, res) {
                 con.query(sqlQuery,
                   function (error, results, fields) {
                     if (error) throw error;
-                    console.log(results[0], results[1]);
+                    console.log(results);
                     res.send(stringify(results));
                     con.end(function (error) {
                       if (error) throw error;
@@ -286,29 +291,34 @@ app.get('/settings', verifyToken, function (req, res) {
                   });
               });
             }
-    }
+    
 
-    //Wenn user eine WG ist
-    else if(req.query.kindOfUser == "wg"){
-      con.connect(function (error) {
-                if (error) throw error;
-                console.log("connected");
+      //Wenn user eine WG ist
+      else if(req.query.kindOfUser == "wg"){
+        
+      console.log("inside WG");
+        console.log("get wg data");
+        con.connect(function (error) {
+                  if (error) throw error;
+                  console.log("connected");
 
-                var sqlQuery = 'SELECT username, email, profilepic, smoker, volume, tidiness, cook, searching, usertype, wgname, postcode, city, country, spotfree, spotstotal, price'
-                    + ' FROM 22_DB_Gruppe3.users'
-                    + ' LEFT JOIN 22_DB_Gruppe3.wg AS wgTable ON userid=wgTable.wgid'
-                    + ' WHERE 22_DB_Gruppe3.users.userid=' + userid;
+                  var sqlQuery = 'SELECT username, email, profilepic, smoker, volume, tidiness, cook, searching, usertype, wgname, postcode, city, country, spotfree, spotstotal, price, searchpostcode, searchcity, searchcountry'
+                      + ' FROM 22_DB_Gruppe3.users'
+                      + ' LEFT JOIN 22_DB_Gruppe3.wg AS wgTable ON userid=wgTable.wgid'
+                      + ' WHERE 22_DB_Gruppe3.users.userid=' + userid;
 
-                con.query(sqlQuery,
-                  function (error, results, fields) {
-                    if (error) throw error;
-                    res.send(stringify(results));
-                    con.end(function (error) {
+                  con.query(sqlQuery,
+                    function (error, results, fields) {
                       if (error) throw error;
-                      console.log("connection End");
+                      res.send(stringify(results));
+                      con.end(function (error) {
+                        if (error) throw error;
+                        console.log("connection End");
+                      });
                     });
-                  });
-              });
+                });
+      }
+      else{console.log("No Person No WG");}
     }
     //___________________________________________________________________________Änderungen Prüfen_______________________________________________________
 
@@ -415,6 +425,7 @@ app.get('/settings', verifyToken, function (req, res) {
         });
       });
     }
+    else{console.log("nothing done");}
 
     //___________________________________________________________________________Änderungen Vornehmen_______________________________________________________
 
@@ -455,7 +466,6 @@ app.get('/settings', verifyToken, function (req, res) {
         con.query('SELECT 22_DB_Gruppe3.chat.chatid,22_DB_Gruppe3.chat.lastMessage, 22_DB_Gruppe3.chat.fk_personid,22_DB_Gruppe3.chat.fk_wgid, userTable.email AS userMail, wgTable.email AS wgMail FROM 22_DB_Gruppe3.chat LEFT JOIN 22_DB_Gruppe3.users AS userTable ON fk_personid=userTable.userid LEFT JOIN 22_DB_Gruppe3.users AS wgTable ON fk_wgid=wgTable.userid WHERE userTable.userid="' + userid +'" OR wgTable.userid="' + userid +'"',
           function (error, results, fields) {
             if (error) throw error;
-            console.log(req.body.body.email);
             console.log(results);
             res.send(stringify(results));
             con.end(function (error) {
