@@ -159,9 +159,6 @@ export class SettingsEditingComponent implements OnInit {
       this.Kochen = this.CtrlKochen = userData.cook;
       this.AktuellSuchend = this.CtrlAktuellSuchend = userData.searching;
       this.Profilbild = this.CtrlProfilbild = userData.profilepic;
-      this.SuchePostleitzahl = this.CtrlSuchePostleitzahl = userData.searchpostcode;
-      this.SucheStadt = this.CtrlSucheStadt = userData.searchcity;
-      this.SucheLand = this.CtrlLand = userData.searchcountry;
 
       console.log("this.kindOfUser: "+this.kindOfUser);
       console.log("search city: "+userData.searchcity);
@@ -176,12 +173,12 @@ export class SettingsEditingComponent implements OnInit {
       this.Vorname = this.CtrlVorname = userData.firstname;
       this.Nachname = this.CtrlNachname = userData.surname;
       this.Geschlecht = this.CtrlGeschlecht = userData.gender;
-      this.Geburtsdatum = this.CtrlGeburtsdatum = userData.birthdate;
-
       this.Geburtsdatum = this.CtrlGeburtsdatum = this.datepipe.transform(this.Geburtsdatum, 'yyyy-MM-dd');
-
       this.Job = this.CtrlJob = userData.job;
       this.Hobby = this.CtrlHobby = userData.hobby;
+      this.SuchePostleitzahl = this.CtrlSuchePostleitzahl = userData.searchpostcode;
+      this.SucheStadt = this.CtrlSucheStadt = userData.searchcity;
+      this.SucheLand = this.CtrlLand = userData.searchcountry;
       }
       else if(this.kindOfUser=="wg"){
         //Daten von WG in passendes Format umwandeln und in Variablen speichern

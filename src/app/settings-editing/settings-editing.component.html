@@ -176,27 +176,27 @@
 <div *ngIf="showForm=='matching'">  
   <H2>Matching Einstellungen</H2>
   
-  <form #profilWGForm="ngForm" (ngSubmit)="sendProfil(profilWGForm.value)">
+  <div *ngIf="kindOfUser=='person'">
+      Postleitzahl: <input type="text" name="SuchePostleitzahl" required
+                      [(ngModel)]="SuchePostleitzahl" #suchepostleitzahl="ngModel"> <br>
+      <div *ngIf="suchepostleitzahl.invalid && (suchepostleitzahl.dirty||  suchepostleitzahl.touched)">
+        Es wurde keine Postleitzahl angegeben.
+      </div> <br>
 
-    Postleitzahl: <input type="text" name="SuchePostleitzahl" required
-                  [(ngModel)]="SuchePostleitzahl" #suchepostleitzahl="ngModel"> <br>
-  <div *ngIf="suchepostleitzahl.invalid && (suchepostleitzahl.dirty||  suchepostleitzahl.touched)">
-    Es wurde keine Postleitzahl angegeben.
-  </div> <br>
+      Stadt: <input type="text" name="SucheStadt" required
+                      [(ngModel)]="SucheStadt" #suchestadt="ngModel"> <br>
+      <div *ngIf="suchestadt.invalid && (suchestadt.dirty||  suchestadt.touched)">
+        Es wurde keine Stadt angegeben.
+      </div> <br>
 
-  Stadt: <input type="text" name="SucheStadt" required
-                  [(ngModel)]="SucheStadt" #suchestadt="ngModel"> <br>
-  <div *ngIf="suchestadt.invalid && (suchestadt.dirty||  suchestadt.touched)">
-    Es wurde keine Stadt angegeben.
-  </div> <br>
-
-  Land: <input type="text" name="SucheLand" required
-                  [(ngModel)]="SucheLand" #sucheland="ngModel"> <br>
-  <div *ngIf="sucheland.invalid && (sucheland.dirty||  sucheland.touched)">
-    Es wurde kein Land angegeben.
-  </div> 
-  </form>
-  <br>
+      Land: <input type="text" name="SucheLand" required
+                      [(ngModel)]="SucheLand" #sucheland="ngModel"> <br>
+      <div *ngIf="sucheland.invalid && (sucheland.dirty||  sucheland.touched)">
+        Es wurde kein Land angegeben.
+      </div> 
+      <br>
+  </div>
+  
   Lautstärker: 0<mat-slider min="0" max="10" step="1" value={{Lautstaerke}} thumbLabel (input)="activateSubmitButton($event)"></mat-slider>10
   <br>
   Sauberkeit: 0<mat-slider min="0" max="10" step="1" value={{Sauberkeit}} thumbLabel (input)="activateSubmitButton($event)"></mat-slider>10

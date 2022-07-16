@@ -302,7 +302,7 @@ app.get('/settings', verifyToken, function (req, res) {
                   if (error) throw error;
                   console.log("connected");
 
-                  var sqlQuery = 'SELECT username, email, profilepic, smoker, volume, tidiness, cook, searching, usertype, wgname, postcode, city, country, spotfree, spotstotal, price, searchpostcode, searchcity, searchcountry'
+                  var sqlQuery = 'SELECT username, email, profilepic, smoker, volume, tidiness, cook, searching, usertype, wgname, postcode, city, country, spotfree, spotstotal, price'
                       + ' FROM 22_DB_Gruppe3.users'
                       + ' LEFT JOIN 22_DB_Gruppe3.wg AS wgTable ON userid=wgTable.wgid'
                       + ' WHERE 22_DB_Gruppe3.users.userid=' + userid;
