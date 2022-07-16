@@ -1,0 +1,13 @@
+
+
+input.ng-dirty.ng-touched
+ {
+    border-color: #51ff00;
+}
+
+input.ng-invalid.ng-touched,
+input.ng-invalid:focus
+ {
+    border-color: #ff4c6a;
+}
+

@@ -1,15 +1,17 @@
 <br>
 <br>
 <br>
-<button (click)="pushPerson()">Accountdaten</button>    <button (click)="pushWG()">Match Präferenzen</button>
-
-<div *ngIf="showPerson">
-  <mat-slider min="1" max="5" step="0.5" value="1.5"></mat-slider>
+<button (click)="accountbtn()">Account</button>   <span></span>   <button (click)="profilbtn()">Profil</button>   <span></span>   <button (click)="matchingbtn()">Matching</button>
 
 
-  <H2>Als Person Registrieren</H2>
-  <form #settingsForm="ngForm" (ngSubmit)="sendSettings(settingsForm.value)">
-    Username:  <input type="text" name="Username" required minlength="4"
+<!--______________________________________________Formular Accountdaten__________________________________________________________________________________________-->
+<div *ngIf="showForm=='account'">
+
+  <H2>Account Einstellungen</H2>
+
+  <form #userForm="ngForm" (ngSubmit)="sendUserForm(userForm.value)">
+
+    Username:  <input class="form-control" type="text" name="Username" required minlength="4"
                       [(ngModel)]="Username" #username="ngModel"><br>
     <div *ngIf="username.invalid && (username.dirty||  username.touched)">
       <div *ngIf="username.errors?.['required']">
@@ -20,66 +22,172 @@
       </div>
     </div> <br>
 
-
     Email: <input type="email" name="Email" required
                   [(ngModel)]="Email" #email="ngModel"> <br>
     <div *ngIf="email.invalid && (email.dirty||  email.touched)">
       Es wurde keine Email Adresse angegeben.
-    </div> <br>
-
-
-    Nachname: <input type="text" name="Nachname" required
-                    [(ngModel)]="Nachname" #nachname="ngModel"> <br>
-    <div *ngIf="nachname.invalid && (nachname.dirty||  nachname.touched)">
-      Es wurde kein Nachname angegeben.
-    </div> <br>
-
-
-    Name: <input type="text" name="Vorname" required
-                [(ngModel)]="Vorname" #vorname="ngModel"> <br>
-    <div *ngIf="vorname.invalid && (vorname.dirty||  vorname.touched)">
-      Es wurde kein Vorname angegeben.
-    </div> <br>
-
-    Geschlecht: <input type="text" name="Geschlecht" required
-                [(ngModel)]="Geschlecht" #geschlecht="ngModel"> <br>
-    <div *ngIf="geschlecht.invalid && (geschlecht.dirty||  geschlecht.touched)">
-      Es wurde kein Geschlecht angegeben.
-    </div> <br>
-
-    Geburtsdatum (YYYY.MM.DD): <input type="text" name="Geburtsdatum" required
-                [(ngModel)]="Geburtsdatum" #geburtsdatum="ngModel"> <br>
-    <div *ngIf="geburtsdatum.invalid && (geburtsdatum.dirty||  geburtsdatum.touched)">
-      Es wurde kein Geburtsdatum angegeben.
-    </div> <br>
-
-    Passwort: <input type="password" name="Passwort" required minlength="8"
-                    [(ngModel)]="Passwort" #passwort="ngModel"> <br>
-    <div *ngIf="passwort.invalid && (passwort.dirty||  passwort.touched)">
-      <div *ngIf="passwort.errors?.['required']">
-        Es wurde kein Passwort angegeben.
-      </div>
-      <div *ngIf="passwort.errors?.['minlength']">
-        Ihr Passwort muss mindestens 8 Zeichen enthalten.
-      </div>
-    </div> <br>
-
-
-    Passwort bestätigen: <input type="password" name="PasswortBest" required
-                                [(ngModel)]="PasswortBest" #passwortBest="ngModel"> <br>
-    <div *ngIf="passwortBest.invalid && (passwortBest.dirty||  passwortBest.touched)">
-      Es wurde keine Passwortbestätigung angegeben.
-    </div> <br>
-
-
-    <br> <br>
-    <button [disabled]="settingsForm.invalid"> Änderungen speichern</button>
-
+    </div> 
+    <br>
+    <button [disabled]="userForm.invalid || userForm.pristine"> Änderungen speichern</button>
   </form>
+  {{userMessage}}<br>
+  {{emailMessage}}
+  
+  <br>
 
+  <button (click)="passwortbtn()">Passwort Ändern</button>
   <br>
-  <br>
-  {{passwordError}}
-  <br>
-  {{registerDenied}}
+  
+  <div *ngIf="PasswortAendernbtn==true">
+    <form #passwortForm="ngForm" (ngSubmit)="sendPassword(passwortForm.value)">
+
+      Altes Passwort: <input type="password" name="PasswortAlt" required minlength="8"
+                      [(ngModel)]="PasswortAlt" #passwortAlt="ngModel"> <br>
+      <div *ngIf="passwortAlt.invalid && (passwortAlt.dirty||  passwortAlt.touched)">
+        <div *ngIf="passwortAlt.errors?.['required']">
+          Sie müssen ihr aktuelles Passwort eingeben.
+        </div>
+      </div>
+      {{passwortMessage}}
+      <br>
+
+      Passwort: <input type="password" name="PasswortNeu" required minlength="8"
+                      [(ngModel)]="PasswortNeu" #passwortNeu="ngModel"> <br>
+      <div *ngIf="passwortNeu.invalid && (passwortNeu.dirty||  passwortNeu.touched)">
+        <div *ngIf="passwortNeu.errors?.['required']">
+          Es wurde kein Passwort angegeben.
+        </div>
+        <div *ngIf="passwortNeu.errors?.['minlength']">
+          Ihr Passwort muss mindestens 8 Zeichen enthalten.
+        </div>
+      </div>
+      <br>
+
+      Passwort bestätigen: <input type="password" name="PasswortBest" required
+                                  [(ngModel)]="PasswortBest" #passwortBest="ngModel"> <br>
+      <div *ngIf="passwortBest.invalid && (passwortBest.dirty||  passwortBest.touched)">
+        Es wurde keine Passwortbestätigung angegeben.
+      </div> 
+      {{PasswortError}}<br>
+    <button [disabled]="passwortForm.invalid"> Passwort speichern</button>
+    </form>
   </div>
+</div>
+
+
+
+<!--______________________________________________Formular Profildaten__________________________________________________________________________________________-->
+  <div *ngIf="showForm=='profil'">  
+    <H2>Profil Einstellungen</H2>
+
+    <!--_______________________Einstellungen Person____________________________________________________________-->
+    <div *ngIf="kindOfUser=='person'">
+      <form #profilPersonForm="ngForm" (ngSubmit)="sendProfil(profilPersonForm.value)">
+        Nachname: <input type="text" name="Nachname" required
+                        [(ngModel)]="Nachname" #nachname="ngModel"> <br>
+        <div *ngIf="nachname.invalid && (nachname.dirty||  nachname.touched)">
+          Es wurde kein Nachname angegeben.
+        </div> <br>
+    
+    
+        Vorname: <input type="text" name="Vorname" required
+                    [(ngModel)]="Vorname" #vorname="ngModel"> <br>
+        <div *ngIf="vorname.invalid && (vorname.dirty||  vorname.touched)">
+          Es wurde kein Vorname angegeben.
+        </div> <br>
+    
+        Geschlecht: <input type="text" name="Geschlecht"
+                    [(ngModel)]="Geschlecht" #geschlecht="ngModel"> <br>
+        <br>
+    
+        Geburtsdatum (YYYY.MM.DD): <input type="text" name="Geburtsdatum" required
+                    [(ngModel)]="Geburtsdatum" #geburtsdatum="ngModel"> <br>
+        <div *ngIf="geburtsdatum.invalid && (geburtsdatum.dirty||  geburtsdatum.touched)">
+          Es wurde kein Geburtsdatum angegeben.
+        </div> <br>
+
+        Job: <input type="text" name="Job"
+                    [(ngModel)]="Job" #job="ngModel"> <br>
+        <br>
+
+        Hobbys: <input type="text" name="Hobby"
+                    [(ngModel)]="Hobby" #hobby="ngModel"> <br>
+        <br>
+    
+        <br> <br>
+        <button [disabled]="profilPersonForm.invalid || profilPersonForm.pristine"> Änderungen speichern</button>
+    
+      </form>
+    </div>
+
+<!--_______________________Einstellungen WG____________________________________________________________-->
+    <div *ngIf="kindOfUser=='wg'">
+      <form #profilWGForm="ngForm" (ngSubmit)="sendProfil(profilWGForm.value)">
+        WG Name: <input type="text" name="WGName" required
+                        [(ngModel)]="WGName" #wgname="ngModel"> <br>
+        <div *ngIf="wgname.invalid && (wgname.dirty||  wgname.touched)">
+          Es wurde kein WG Name angegeben.
+        </div> <br>
+
+        Postleitzahl: <input type="text" name="Postleitzahl" required
+                      [(ngModel)]="Postleitzahl" #postleitzahl="ngModel"> <br>
+      <div *ngIf="postleitzahl.invalid && (postleitzahl.dirty||  postleitzahl.touched)">
+        Es wurde keine Postleitzahl angegeben.
+      </div> <br>
+  
+      Stadt: <input type="text" name="Stadt" required
+                      [(ngModel)]="Stadt" #stadt="ngModel"> <br>
+      <div *ngIf="stadt.invalid && (stadt.dirty||  stadt.touched)">
+        Es wurde keine Stadt angegeben.
+      </div> <br>
+
+      Land: <input type="text" name="Land" required
+                      [(ngModel)]="Land" #land="ngModel"> <br>
+      <div *ngIf="land.invalid && (land.dirty||  land.touched)">
+        Es wurde kein Land angegeben.
+      </div> <br>
+
+      Plätze gesamt: <input type="number" name="SlotsGesamt" required
+                      [(ngModel)]="SlotsGesamt" #slotsGesamt="ngModel"> <br>
+      <div *ngIf="slotsGesamt.invalid && (slotsGesamt.dirty||  slotsGesamt.touched)">
+        Es wurde keine Angaben zu Plätzchen gemacht.
+      </div> <br>
+  
+      Freie Plätze: <input type="number" name="FreieSlots" required
+                      [(ngModel)]="FreieSlots" #freieSlots="ngModel"> <br>
+      <div *ngIf="freieSlots.invalid && (freieSlots.dirty||  freieSlots.touched)">
+        Es wurde keine Angaben zu freien Plätzen gemacht.
+      </div> <br>
+
+      Preis: <input type="number" name="Preis" required
+                      [(ngModel)]="Preis" #preis="ngModel"> <br>
+      <div *ngIf="preis.invalid && (preis.dirty||  preis.touched)">
+        Es wurde kein Preis angegeben.
+      </div> <br>
+    
+        <br> <br>
+        <button [disabled]="profilWGForm.invalid || profilWGForm.pristine"> Änderungen speichern</button>
+    
+      </form>
+    </div>
+</div>
+
+<!--______________________________________________Formular Matchdaten__________________________________________________________________________________________-->
+<div *ngIf="showForm=='matching'">  
+  <H2>Matching Einstellungen</H2>
+  
+  
+  Lautstärker: 1<mat-slider min="1" max="10" step="1" value={{Lautstaerke}} thumbLabel (input)="activateSubmitButton($event)"></mat-slider>10
+  <br>
+  Sauberkeit: 1<mat-slider min="1" max="10" step="1" value={{Sauberkeit}} thumbLabel (input)="activateSubmitButton($event)"></mat-slider>10
+  <br>
+  Kochen: 1<mat-slider min="1" max="10" step="1" value={{Kochen}} thumbLabel (input)="activateSubmitButton($event)"></mat-slider>10
+  <br>
+  <!--Checkboxen funktionieren noch nicht richtig-->
+  Raucher: <mat-checkbox (click)="changeRaucherCheck(Raucher)" (change)="activateSubmitButtonCheckbox($event)"></mat-checkbox> 
+  <br>
+  Suchend: <mat-checkbox (click)="changeSuchendCheck(AktuellSuchend)" (change)="activateSubmitButtonCheckbox($event)"></mat-checkbox>
+  <br>
+  <button (click)="submitMatchingbtn()" [disabled]="matchingSubmitbtn">Änderungen Speichern</button>
+
+</div>
