@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../auth.service';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Router } from "@angular/router";
 
 @Component({
@@ -17,6 +17,7 @@ export class LoginComponent implements OnInit {
 
 
   loginMessage: any;
+  kindOfUser: any;
 
   loginUser(event: any) {
     event.preventDefault();
@@ -46,6 +47,47 @@ export class LoginComponent implements OnInit {
       }
     });
   }
+
+  getUser(){
+    var sendData = {
+      flag: "getKindOfUser"
+    }
+
+    var config = {
+      params: sendData
+    };
+
+    //Anfragen welcher Usertyp der Benutzer ist (WG oder Person)
+    this.http.get("settings", config).subscribe(result => {
+      var jas = JSON.parse(JSON.stringify(result))[0];
+      this.kindOfUser = jas.usertype;
+      this.loadUserData();
+    },
+      err => {
+        if (err instanceof HttpErrorResponse) {
+          if (err.status === 401) {
+            this.router.navigate(['/login']);
+          }
+        }
+      });
+  }
+
+  loadUserData() {
+    var usertype: string = this.kindOfUser;
+    var sendData = {
+      flag: "getUserData",
+      kindOfUser: usertype
+    }
+
+    var config = {
+      params: sendData
+    };
+
+    //Userdaten anfragen
+    this.http.get("settings", config).subscribe(result => {
+      //localStorage.setItem("loggedInUser", result);
+
+    });
 
   
 

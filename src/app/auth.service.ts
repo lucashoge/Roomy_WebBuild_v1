@@ -33,6 +33,8 @@ export class AuthService {
     localStorage.removeItem("id_token");
     localStorage.removeItem("expires_at");
     localStorage.removeItem("visitedUser");
+    localStorage.removeItem("currentChat");
+
     this.router.navigate(['/']);
   }
 

@@ -511,10 +511,23 @@ app.post('/register', function (req, res) {
       var limit = req.body.body.limit;
       var minUserID = req.body.body.userId;
 
+      var sqlQuery = "";
+
       if(req.body.body.usertype == "wg"){
         userType = "person";
+
+        sqlQuery = 'SELECT * FROM 22_DB_Gruppe3.users'
+        + ' LEFT JOIN 22_DB_Gruppe3.person AS personTable ON userid=personTable.personid'
+        + ' WHERE usertype="' + userType + '" AND userid>' + minUserID
+        + ' limit ' + limit + ';';
+
       }else{
         userType = "wg";
+
+        sqlQuery = 'SELECT * FROM 22_DB_Gruppe3.users'
+        + ' LEFT JOIN 22_DB_Gruppe3.wg AS wgTable ON userid=wgTable.wgid'
+        + ' WHERE usertype="' + userType + '" AND userid>' + minUserID
+        + ' limit ' + limit + ';';
       }
 
       var con = mysql.createConnection(conConfig);
@@ -522,10 +535,7 @@ app.post('/register', function (req, res) {
         con.connect(function (error) {
           if (error) throw error;
           console.log("connected");
-          var sqlQuery = 'SELECT * FROM 22_DB_Gruppe3.users'
-          + ' LEFT JOIN 22_DB_Gruppe3.person AS personTable ON userid=personTable.personid'
-          + ' WHERE usertype="' + userType + '" AND userid>' + minUserID
-          + ' limit ' + limit + ';';
+         
 
           con.query(sqlQuery,
             function (error, results, fields) {
