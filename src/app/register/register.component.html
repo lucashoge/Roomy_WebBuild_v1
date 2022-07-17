@@ -1,163 +1,231 @@
-<br>
-<br>
-<br>
-<button (click)="pushPerson()">Person</button>    <button (click)="pushWG()">WG</button>
-
-<div *ngIf="showPerson">
-  <H2>Als Person Registrieren</H2>
-  <form #registerForm="ngForm" (ngSubmit)="sendRegister(registerForm.value)">
-    Username:  <input type="text" name="Username" required minlength="4"
-                      [(ngModel)]="Username" #username="ngModel"><br>
-    <div *ngIf="username.invalid && (username.dirty||  username.touched)">
-      <div *ngIf="username.errors?.['required']">
-        Es wurde kein Username angegeben.
-      </div>
-      <div *ngIf="username.errors?.['minlength']">
-        Ihr Username muss mindestens 4 Zeichen enthalten.
-      </div>
-    </div> <br>
 
 
-    Email: <input type="email" name="Email" required
-                  [(ngModel)]="Email" #email="ngModel"> <br>
-    <div *ngIf="email.invalid && (email.dirty||  email.touched)">
-      Es wurde keine Email Adresse angegeben.
-    </div> <br>
+
+<!-- <button (click)="pushPerson()">Person</button>    <button (click)="pushWG()">WG</button> -->
+
+<div class="login-page">
+  <div class="form">
+    <div class="login-form">
+
+      <button (click)="pushPerson()">Person</button>    
+      <button (click)="pushWG()">WG</button>
 
 
-    Nachname: <input type="text" name="Nachname" required
-                    [(ngModel)]="Nachname" #nachname="ngModel"> <br>
-    <div *ngIf="nachname.invalid && (nachname.dirty||  nachname.touched)">
-      Es wurde kein Nachname angegeben.
-    </div> <br>
-
-
-    Name: <input type="text" name="Vorname" required
-                [(ngModel)]="Vorname" #vorname="ngModel"> <br>
-    <div *ngIf="vorname.invalid && (vorname.dirty||  vorname.touched)">
-      Es wurde kein Vorname angegeben.
-    </div> <br>
-
-    Geschlecht: <input type="text" name="Geschlecht" required
-                [(ngModel)]="Geschlecht" #geschlecht="ngModel"> <br>
-    <div *ngIf="geschlecht.invalid && (geschlecht.dirty||  geschlecht.touched)">
-      Es wurde kein Geschlecht angegeben.
-    </div> <br>
-
-    Geburtsdatum: <input type="date" name="Geburtsdatum" required
-                [(ngModel)]="Geburtsdatum" #geburtsdatum="ngModel"> <br>
-    <div *ngIf="geburtsdatum.invalid && (geburtsdatum.dirty||  geburtsdatum.touched)">
-      Es wurde kein Geburtsdatum angegeben.
-    </div> <br>
-
-    Passwort: <input type="password" name="Passwort" required minlength="8"
-                    [(ngModel)]="Passwort" #passwort="ngModel"> <br>
-    <div *ngIf="passwort.invalid && (passwort.dirty||  passwort.touched)">
-      <div *ngIf="passwort.errors?.['required']">
-        Es wurde kein Passwort angegeben.
-      </div>
-      <div *ngIf="passwort.errors?.['minlength']">
-        Ihr Passwort muss mindestens 8 Zeichen enthalten.
-      </div>
-    </div> <br>
-
-
-    Passwort bestätigen: <input type="password" name="PasswortBest" required
-                                [(ngModel)]="PasswortBest" #passwortBest="ngModel"> <br>
-    <div *ngIf="passwortBest.invalid && (passwortBest.dirty||  passwortBest.touched)">
-      Es wurde keine Passwortbestätigung angegeben.
-    </div> <br>
-
-
-    <br> <br>
-    <button [disabled]="registerForm.invalid"> Registrieren</button>
-
-  </form>
-
-  <br>
-  <br>
-  {{passwordError}}
-  <br>
-  {{registerDenied}}
-  </div>
-
-
-  <div *ngIf="showWG">
-    <H2>Als WG Registrieren</H2>
-    <form #registerForm="ngForm" (ngSubmit)="sendRegister(registerForm.value)">
-      Username:  <input type="text" name="Username" required minlength="4"
-                        [(ngModel)]="Username" #username="ngModel"><br>
-      <div *ngIf="username.invalid && (username.dirty||  username.touched)">
-        <div *ngIf="username.errors?.['required']">
-          Es wurde kein Username angegeben.
-        </div>
-        <div *ngIf="username.errors?.['minlength']">
-          Ihr Username muss mindestens 4 Zeichen enthalten.
-        </div>
-      </div> <br>
-  
-  
-      Email: <input type="email" name="Email" required
-                    [(ngModel)]="Email" #email="ngModel"> <br>
-      <div *ngIf="email.invalid && (email.dirty||  email.touched)">
-        Es wurde keine Email Adresse angegeben.
-      </div> <br>
+      <div *ngIf="showPerson">
+        <!-- <H2>Als Person Registrieren</H2> -->
+        
+        <form class="login-form" #registerForm="ngForm" (ngSubmit)="sendRegister(registerForm.value)">
+          <input type="text" name="Username" placeholder="Username" required minlength="4"
+                            [(ngModel)]="Username" #username="ngModel">
+          <div *ngIf="username.invalid && (username.dirty||  username.touched)">
+            <div *ngIf="username.errors?.['required']">
+              <p class="message" style="color: red;">
+                Es wurde kein Username angegeben.
+              </p>
+            </div>
+            <div *ngIf="username.errors?.['minlength']">
+              <p class="message" style="color: red;">
+                Ihr Username muss mindestens 4 Zeichen enthalten.
+              </p>
+            </div>
+          </div> 
       
-
-      WG Name: <input type="text" name="WGName" required
-                  [(ngModel)]="WGName" #wgname="ngModel"> <br>
-      <div *ngIf="wgname.invalid && (wgname.dirty||  wgname.touched)">
-        Es wurde kein WG Namen angegeben.
-      </div> <br>
-
-  
-      Postleitzahl: <input type="text" name="Postleitzahl" required
-                      [(ngModel)]="Postleitzahl" #postleitzahl="ngModel"> <br>
-      <div *ngIf="postleitzahl.invalid && (postleitzahl.dirty||  postleitzahl.touched)">
-        Es wurde keine Postleitzahl angegeben.
-      </div> <br>
-  
-      Stadt: <input type="text" name="Stadt" required
-                      [(ngModel)]="Stadt" #stadt="ngModel"> <br>
-      <div *ngIf="stadt.invalid && (stadt.dirty||  stadt.touched)">
-        Es wurde keine Stadt angegeben.
-      </div> <br>
-
-      Land: <input type="text" name="Land" required
-                      [(ngModel)]="Land" #land="ngModel"> <br>
-      <div *ngIf="land.invalid && (land.dirty||  land.touched)">
-        Es wurde kein Land angegeben.
-      </div> <br>
       
-  
-  
-      Passwort: <input type="password" name="Passwort" required minlength="8"
-                      [(ngModel)]="Passwort" #passwort="ngModel"> <br>
-      <div *ngIf="passwort.invalid && (passwort.dirty||  passwort.touched)">
-        <div *ngIf="passwort.errors?.['required']">
-          Es wurde kein Passwort angegeben.
-        </div>
-        <div *ngIf="passwort.errors?.['minlength']">
-          Ihr Passwort muss mindestens 8 Zeichen enthalten.
-        </div>
-      </div> <br>
-  
-  
-      Passwort bestätigen: <input type="password" name="PasswortBest" required
-                                  [(ngModel)]="PasswortBest" #passwortBest="ngModel"> <br>
-      <div *ngIf="passwortBest.invalid && (passwortBest.dirty||  passwortBest.touched)">
-        Es wurde keine Passwortbestätigung angegeben.
-      </div> <br>
-  
-  
-      <br> <br>
-      <button [disabled]="registerForm.invalid"> Registrieren</button>
-  
-    </form>
-  
-    <br>
-    <br>
-    {{passwordError}}
-    <br>
-    {{registerDenied}}
+          <input type="email" name="Email" placeholder="Email" required
+                        [(ngModel)]="Email" #email="ngModel"> 
+          <div *ngIf="email.invalid && (email.dirty||  email.touched)">
+            <p class="message" style="color: red;">
+              Es wurde keine Email Adresse angegeben.
+            </p>
+          </div> 
+      
+      
+          <input type="text" name="Nachname" placeholder="Nachname" required
+                          [(ngModel)]="Nachname" #nachname="ngModel"> 
+          <div *ngIf="nachname.invalid && (nachname.dirty||  nachname.touched)">
+            
+            <p class="message" style="color: red;">
+              Es wurde kein Nachname angegeben.
+            </p>
+          </div> 
+      
+      
+          <input type="text" name="Vorname" placeholder="Vorname" required
+                      [(ngModel)]="Vorname" #vorname="ngModel"> 
+          <div *ngIf="vorname.invalid && (vorname.dirty||  vorname.touched)">
+            
+            <p class="message" style="color: red;">
+              Es wurde kein Vorname angegeben.
+            </p>
+          </div> 
+      
+          <input type="text" name="Geschlecht" placeholder="Geschlecht" required
+                      [(ngModel)]="Geschlecht" #geschlecht="ngModel"> 
+          <div *ngIf="geschlecht.invalid && (geschlecht.dirty||  geschlecht.touched)">
+            <p class="message" style="color: red;">
+              Es wurde kein Geschlecht angegeben.
+            </p>
+          </div> 
+      
+          <input type="date" name="Geburtsdatum" placeholder="Geburtsdatum" required
+                      [(ngModel)]="Geburtsdatum" #geburtsdatum="ngModel"> 
+          <div *ngIf="geburtsdatum.invalid && (geburtsdatum.dirty||  geburtsdatum.touched)">
+            <p class="message" style="color: red;">
+              Es wurde kein Geburtsdatum angegeben.
+            </p>
+          </div> 
+      
+          <input type="password" name="Passwort" placeholder="Passwort" required minlength="8"
+                          [(ngModel)]="Passwort" #passwort="ngModel"> 
+          <div *ngIf="passwort.invalid && (passwort.dirty||  passwort.touched)">
+            <div *ngIf="passwort.errors?.['required']">
+              
+              <p class="message" style="color: red;">
+                Es wurde kein Passwort angegeben.
+              </p>
+            </div>
+            <div *ngIf="passwort.errors?.['minlength']">
+              
+              <p class="message" style="color: red;">
+                Ihr Passwort muss mindestens 8 Zeichen enthalten.
+              </p>
+            </div>
+          </div> 
+      
+      
+          <input type="password" name="PasswortBest" placeholder="Passwort bestätigen" required
+                                      [(ngModel)]="PasswortBest" #passwortBest="ngModel"> 
+          <div *ngIf="passwortBest.invalid && (passwortBest.dirty||  passwortBest.touched)">
+            <p class="message" style="color: red;">
+              Es wurde keine Passwortbestätigung angegeben.
+            </p>
+          </div>
+      
+          <button [disabled]="registerForm.invalid"> Registrieren</button>
+      
+        </form>
+    
+        {{passwordError}}
+        {{registerDenied}}
+        
+          
+        
+        
+      </div>
+      
+      
+      <div *ngIf="showWG">
+        <!-- <H2>Als WG Registrieren</H2> -->
+        <form class="login-form" #registerForm="ngForm" (ngSubmit)="sendRegister(registerForm.value)">
+          <input type="text" name="Username" placeholder="Username" required minlength="4"
+                            [(ngModel)]="Username" #username="ngModel">
+          <div *ngIf="username.invalid && (username.dirty||  username.touched)">
+            <div *ngIf="username.errors?.['required']">
+              
+              <p class="message" style="color: red;">
+                Es wurde kein Username angegeben.
+              </p>
+            </div>
+            <div *ngIf="username.errors?.['minlength']">
+              
+              <p class="message" style="color: red;">
+                Ihr Username muss mindestens 4 Zeichen enthalten.
+              </p>
+            </div>
+          </div> 
+      
+      
+          <input type="email" name="Email" placeholder="Mail" required
+                        [(ngModel)]="Email" #email="ngModel"> 
+          <div *ngIf="email.invalid && (email.dirty||  email.touched)">
+            
+            <p class="message" style="color: red;">
+              Es wurde keine Email Adresse angegeben.
+            </p>
+          </div> 
+          
+      
+          <input type="text" name="WGName" placeholder="WG Name" required
+                      [(ngModel)]="WGName" #wgname="ngModel"> 
+          <div *ngIf="wgname.invalid && (wgname.dirty||  wgname.touched)">
+            
+            <p class="message" style="color: red;">
+              Es wurde kein WG Namen angegeben.
+            </p>
+          </div> 
+      
+      
+          <input type="text" name="Postleitzahl" placeholder="Postleitzahl" required
+                          [(ngModel)]="Postleitzahl" #postleitzahl="ngModel"> 
+          <div *ngIf="postleitzahl.invalid && (postleitzahl.dirty||  postleitzahl.touched)">
+            
+            <p class="message" style="color: red;">
+              Es wurde keine Postleitzahl angegeben.
+            </p>
+          </div> 
+      
+          <input type="text" name="Stadt" placeholder="Stadt" required
+                          [(ngModel)]="Stadt" #stadt="ngModel"> 
+          <div *ngIf="stadt.invalid && (stadt.dirty||  stadt.touched)">
+            
+            <p class="message" style="color: red;">
+              Es wurde keine Stadt angegeben.
+            </p>
+          </div> 
+      
+          <input type="text" name="Land" placeholder="Land" required
+                          [(ngModel)]="Land" #land="ngModel"> 
+          <div *ngIf="land.invalid && (land.dirty||  land.touched)">
+            
+            <p class="message" style="color: red;">
+              Es wurde kein Land angegeben.
+            </p>
+          </div> 
+          
+      
+      
+          <input type="password" name="Passwort" placeholder="Passwort" required minlength="8"
+                          [(ngModel)]="Passwort" #passwort="ngModel"> 
+          <div *ngIf="passwort.invalid && (passwort.dirty||  passwort.touched)">
+            <div *ngIf="passwort.errors?.['required']">
+              
+              <p class="message" style="color: red;">
+                Es wurde kein Passwort angegeben.
+              </p>
+            </div>
+            <div *ngIf="passwort.errors?.['minlength']">
+              
+              <p class="message" style="color: red;">
+                Ihr Passwort muss mindestens 8 Zeichen enthalten.
+              </p>
+            </div>
+          </div> 
+      
+      
+          <input type="password" name="PasswortBest" placeholder="Passwort bestätigen" required
+                                      [(ngModel)]="PasswortBest" #passwortBest="ngModel"> 
+          <div *ngIf="passwortBest.invalid && (passwortBest.dirty||  passwortBest.touched)">
+            
+            <p class="message" style="color: red;">
+              Es wurde keine Passwortbestätigung angegeben.
+            </p>
+          </div> 
+      
+      
+           
+          <button [disabled]="registerForm.invalid"> Registrieren</button>
+      
+        </form>
+      
+        
+        
+        {{passwordError}}
+        
+        {{registerDenied}}
+      </div>
+
     </div>
+  </div>
+</div>
+
+

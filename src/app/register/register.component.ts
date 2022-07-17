@@ -16,7 +16,7 @@ export class RegisterComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  showPerson:boolean=true;
+  showPerson:boolean=false;
   showWG:boolean=false;
 
   users: any;
