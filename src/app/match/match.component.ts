@@ -2,6 +2,10 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Router } from "@angular/router";
+import { now } from 'moment';
+import { DatePipe } from '@angular/common';
+import { trigger, keyframes, animate, transition } from "@angular/animations";
+import { Subject } from 'rxjs';
 
 @Component({
   selector: 'app-match',
@@ -9,6 +13,9 @@ import { Router } from "@angular/router";
   styleUrls: ['./match.component.css']
 })
 export class MatchComponent implements OnInit {
+
+
+  parentSubject:Subject<string> = new Subject();
 
   constructor(private http: HttpClient, private router: Router) { }
 
@@ -29,24 +36,23 @@ export class MatchComponent implements OnInit {
 
     console.log("getPossibleMatches()");
 
+    console.log(this.loggedInUser);
     //check if current user is WG or Person
     if(this.loggedInUser.usertype == "wg"){
 
-      this.http.post<any>("getPossibleWgMatchesByMail", { body: this.loggedInUser }).subscribe((result) => {
+      this.http.post<any>("getPossibleWgMatchesByMail", { body: null }).subscribe((result) => {
       
         this.matchResult = result;
         console.log(this.matchResult);
       });
 
     }else{
-      this.http.post<any>("getPossiblePersonMatchesByMail", { body: this.loggedInUser }).subscribe((result) => {
+      this.http.post<any>("getPossiblePersonMatchesByMail", { body: null }).subscribe((result) => {
       
         this.matchResult = result;
         console.log(this.matchResult);
       });
     }
-    
-    //this.router.navigate(['/login']);
     
     return;
   };

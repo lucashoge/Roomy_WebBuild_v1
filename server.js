@@ -595,8 +595,8 @@ app.get('/settings', verifyToken, function (req, res) {
           console.log("connected");
           var sqlQuery = 'SELECT *'
             + ' FROM 22_DB_Gruppe3.match'
-            + ' LEFT JOIN 22_DB_Gruppe3.users AS userTable ON fk_personid=userTable.userid'
-            + ' WHERE userTable.userid="' + userid + '" AND (22_DB_Gruppe3.match.wgmatch=1 AND 22_DB_Gruppe3.match.personmatch=0)';
+            + ' LEFT JOIN 22_DB_Gruppe3.users AS userTable ON fk_wgid=userTable.userid'
+            + ' WHERE 22_DB_Gruppe3.match.fk_personid="' + userid + '" AND (22_DB_Gruppe3.match.wgmatch=1 AND 22_DB_Gruppe3.match.personmatch=0)';
 
           con.query(sqlQuery,
             function (error, results, fields) {
@@ -631,8 +631,8 @@ app.get('/settings', verifyToken, function (req, res) {
           console.log("connected");
           var sqlQuery = 'SELECT *'
             + ' FROM 22_DB_Gruppe3.match'
-            + ' LEFT JOIN 22_DB_Gruppe3.users AS userTable ON fk_wgid=userTable.userid'
-            + ' WHERE userTable.userid="' + userid + '" AND (22_DB_Gruppe3.match.wgmatch=0 AND 22_DB_Gruppe3.match.personmatch=1)';
+            + ' LEFT JOIN 22_DB_Gruppe3.users AS userTable ON fk_personid=userTable.userid'
+            + ' WHERE 22_DB_Gruppe3.match.fk_wgid="' + userid + '" AND (22_DB_Gruppe3.match.wgmatch=0 AND 22_DB_Gruppe3.match.personmatch=1)';
 
           con.query(sqlQuery,
             function (error, results, fields) {

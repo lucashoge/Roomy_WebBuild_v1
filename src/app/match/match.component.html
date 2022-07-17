@@ -3,6 +3,13 @@
 <br>
 <ul>
     <li *ngFor="let resultObj of matchResult">
-        <div> <br> {{ resultObj.userMail }} <br> {{ resultObj.username }} <br> <p>Udd Bild oder was auch immer </p></div>
+        <div> <br> {{ resultObj.userMail }} <br> {{ resultObj.username }} <br></div>
+        <br>
+        <br>
+        <!-- [ngStyle]="{'display':'none'}" -->
+        <!--<div style="height: 100%; width: 100%;">
+            <app-profile  [parentSubject]="resultObj" style="height: 100%; width: 100%;">
+            </app-profile>
+        </div>-->
     </li>
 </ul>
