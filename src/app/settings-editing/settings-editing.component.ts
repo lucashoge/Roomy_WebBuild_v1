@@ -6,6 +6,7 @@ import { MatSliderChange } from '@angular/material/slider';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { NativeDateAdapter } from '@angular/material/core';
 import { DatePipe } from '@angular/common';
+import { resetFakeAsyncZone } from '@angular/core/testing';
 
 @Component({
   selector: 'app-settings-editing',
@@ -500,7 +501,11 @@ export class SettingsEditingComponent implements OnInit {
       this.getUser();
       this.changeDoneMessage = "Änderungen gespeichert"
   }
+
+
   
 }
+
+
 
 

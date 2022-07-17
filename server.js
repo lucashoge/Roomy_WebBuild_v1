@@ -609,7 +609,10 @@ app.get('/settings', verifyToken, function (req, res) {
       console.log("Sauberkeit Int: "+parseInt(req.query.Sauberkeit));
       //Person
       if(req.query.kindOfUser=="person"){
-        if(!req.query.SuchePostleitzahl && !req.query.SucheStadt && !req.query.SucheLand){
+        if(!req.query.SuchePostleitzahl && !req.query.SucheStadt && !req.query.SucheLand && !req.query.Raucher && !req.query.Lautstaerke && !req.query.Kochen && !req.query.AktuellSuchend){
+          console.log("Alles Leer. Nichts gemacht.");
+        }
+        else if(!req.query.SuchePostleitzahl && !req.query.SucheStadt && !req.query.SucheLand){
           console.log("SuchePlz,SucheStadt und SucheLand leer");
           var con = mysql.createConnection(conConfig);    
           con.connect(function (error) {

@@ -9,7 +9,7 @@
 
   <H2>Account Einstellungen</H2>
 
-  <form #userForm="ngForm" (ngSubmit)="sendUserForm(userForm.value); userForm.resetForm()">
+  <form #userForm="ngForm" (ngSubmit)="sendUserForm(userForm.value); userForm.form.markAsPristine()">
 
     Username:  <input class="form-control" type="text" name="Username" required minlength="4"
                       [(ngModel)]="Username" #username="ngModel"><br>
@@ -40,7 +40,7 @@
   <br>
   
   <div *ngIf="PasswortAendernbtn==true">
-    <form #passwortForm="ngForm" (ngSubmit)="sendPassword(passwortForm.value); passwortForm.resetForm()">
+    <form #passwortForm="ngForm" (ngSubmit)="sendPassword(passwortForm.value); passwortForm.form.markAsPristine()">
 
       Altes Passwort: <input type="password" name="PasswortAlt" required minlength="8"
                       [(ngModel)]="PasswortAlt" #passwortAlt="ngModel"> <br>
@@ -84,7 +84,7 @@
 
     <!--_______________________Einstellungen Person____________________________________________________________-->
     <div *ngIf="kindOfUser=='person'">
-      <form #profilPersonForm="ngForm" (ngSubmit)="sendProfil(profilPersonForm.value); profilPersonForm.resetForm()">
+      <form #profilPersonForm="ngForm" (ngSubmit)="sendProfil(profilPersonForm.value); profilPersonForm.form.markAsPristine()">
         Nachname: <input type="text" name="Nachname" required
                         [(ngModel)]="Nachname" #nachname="ngModel"> <br>
         <div *ngIf="nachname.invalid && (nachname.dirty||  nachname.touched)">
@@ -126,7 +126,7 @@
 
 <!--_______________________Einstellungen WG____________________________________________________________-->
     <div *ngIf="kindOfUser=='wg'">
-      <form #profilWGForm="ngForm" (ngSubmit)="sendProfil(profilWGForm.value); profilWGForm.resetForm()">
+      <form #profilWGForm="ngForm" (ngSubmit)="sendProfil(profilWGForm.value); profilWGForm.form.markAsPristine()">
         WG Name: <input type="text" name="WGName" required
                         [(ngModel)]="WGName" #wgname="ngModel"> <br>
         <div *ngIf="wgname.invalid && (wgname.dirty||  wgname.touched)">
@@ -215,7 +215,7 @@
   <br>
   Suchend: <mat-checkbox name="suchendCheck" [(ngModel)]="AktuellSuchend" (click)="changeSuchendCheck(AktuellSuchend)" (change)="activateSubmitButtonCheckbox($event)"></mat-checkbox>{{AktuellSuchend}}
   <br>
-  <button (click)="submitMatchingbtn();matchingForm.resetForm()" [disabled]="matchingSubmitbtn"[disabled]="matchingForm.invalid || matchingForm.pristine"  >Änderungen Speichern</button>
+  <button (click)="submitMatchingbtn();matchingForm.form.markAsPristine()" [disabled]="matchingSubmitbtn"[disabled]="matchingForm.invalid || matchingForm.pristine"  >Änderungen Speichern</button>
   <br>
   {{changeDoneMessage}}
 </form>
