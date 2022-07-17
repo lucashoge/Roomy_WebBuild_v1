@@ -50,10 +50,18 @@ export class ProfileComponent {
   }
 
   startAnimation(state: any) {
+    console.log(state)
     if (!this.animationState) {
       this.animationState = state;
     }
+
     
+    if(state=="swiperight"){
+
+      this.http.post<any>("submitMatch", { body: {idToMatch: this.currentUser.userid, usertype: this.loggedInUser.usertype} }).subscribe((result) => {
+        console.log(result);
+      });
+    }  
   }
 
   resetAnimationState(state: any) {
@@ -79,7 +87,7 @@ export class ProfileComponent {
   }
 
   async getNewUsersForMatching() {
-    var httpPostData = {userId: this.userID, userType: this.loggedInUser.usertype, limit: "3"};
+    var httpPostData = {userId: this.userID, usertype: this.loggedInUser.usertype, limit: "3"};
     this.http.post<any>("getUsersFromIdUpwards", { body: httpPostData}).subscribe((result) => {
       
       this.users = result;

@@ -702,6 +702,108 @@ app.get('/settings', verifyToken, function (req, res) {
     });
 
 
+  //Add a chat entry
+    /*
+    INSERT INTO 22_DB_Gruppe3.chateintrag (msgDate, msgText, from_id, chatid)
+    VALUES ("2022-06-07 11:07:03", "Hello4", 18, 1) 
+  */
+
+    app.post('/submitMatch', verifyToken, function (req, res) {
+
+      var userid = [req.userId];
+
+      var queryParams = [{}];
+      var sqlQuery1 = '';
+      var sqlQuery2 = '';
+      var sqlQuery3 = '';
+
+      console.log(req.body.body.usertype)
+
+      if(req.body.body.usertype == "wg"){
+        queryParams = [{
+          fk_personid: req.body.body.idToMatch,
+          fk_wgid: userid,
+          wgmatch: 1,
+          personmatch: 0
+        }];
+        sqlQuery1 = "SELECT COUNT(*) AS 'countMatches' FROM 22_DB_Gruppe3.match WHERE fk_wgid = " + userid + " AND fk_personid = " + req.body.body.idToMatch + " AND personmatch=1";
+        sqlQuery2 = 'INSERT INTO 22_DB_Gruppe3.match SET fk_wgid='+userid+', fk_personid='+req.body.body.idToMatch+', personmatch=0, wgmatch=1';
+        sqlQuery3 = 'UPDATE 22_DB_Gruppe3.match SET wgmatch=1 WHERE fk_personid='+req.body.body.idToMatch+' AND fk_wgId='+userid+';'
+      }else{
+        queryParams = [{
+          fk_personid: userid,
+          fk_wgid: req.body.body.idToMatch,
+          personmatch: 1,
+          wgmatch: 0
+        }];
+        sqlQuery1 = "SELECT COUNT(*) AS 'countMatches' FROM 22_DB_Gruppe3.match WHERE fk_personid = " + userid + " AND fk_wgid = " + req.body.body.idToMatch + " AND wgmatch=1";
+        sqlQuery2 = 'INSERT INTO 22_DB_Gruppe3.match SET fk_personid='+userid+', fk_wgid='+req.body.body.idToMatch+', personmatch=1, wgmatch=0';
+        sqlQuery3 = 'UPDATE 22_DB_Gruppe3.match SET personmatch=1 WHERE fk_wgid='+req.body.body.idToMatch+' AND fk_personId='+userid+';'
+      }
+      var con = mysql.createConnection(conConfig);
+    
+        con.connect(function (error) {
+          if (error) throw error;
+          console.log("connected");
+
+          //check if match from other person/wg is available
+
+          con.query(sqlQuery1, function (error, results, fields) {
+            
+            console.log("Counted Matches: " + results[0].countMatches);
+            //Wenn keine matches gefunden wurden
+            if (results[0].countMatches == 0) {
+              console.log("kein match gefunden! insert: " + sqlQuery2);
+              console.log(sqlQuery2)
+              con.query(sqlQuery2, function (error, results, fields) {
+                  console.log(results);
+                  res.send(stringify(results));
+
+                  con.end(function (error) {
+                    if (error) throw error;
+                    console.log("connection End");
+                  });
+
+              });
+
+            //Wenn ein match gefunden wurde
+            }else{
+              console.log("match gefunden! update: " + sqlQuery3);
+              con.query(sqlQuery3, function (error, results, fields) {
+                if (error) throw error;
+
+                //Add Chat
+                var sqlQueryChat = "";
+                if(req.body.body.usertype == "wg"){
+                  sqlQueryChat='INSERT INTO 22_DB_Gruppe3.chat SET fk_wgid='+userid+', fk_personid='+req.body.body.idToMatch;
+                }else{
+                  sqlQueryChat='INSERT INTO 22_DB_Gruppe3.chat SET fk_personid='+userid+', fk_wgid='+req.body.body.idToMatch;
+                }
+
+                console.log("Add Chat!!: " + sqlQueryChat);
+                con.query(sqlQueryChat, function (error1, results, fields) {
+                  if (error1) 
+                    console.log(error1)
+                  console.log("chat added?");
+                  console.log(results);
+
+                  con.end(function (error) {
+                    if (error) throw error;
+                    console.log("connection End");
+                  });
+                });
+                
+                console.log(results);
+                res.send(stringify(results));
+              });
+
+            }  
+          });
+
+        });
+    });
+
+
   // application -------------------------------------------------------------
  app.get('/', function(req,res) 
  {     
