@@ -150,19 +150,19 @@
       Plätze gesamt: <input type="number" name="SlotsGesamt" required
                       [(ngModel)]="SlotsGesamt" #slotsGesamt="ngModel"> <br>
       <div *ngIf="slotsGesamt.invalid && (slotsGesamt.dirty||  slotsGesamt.touched)">
-        Es wurde keine Angaben zu Plätzchen gemacht.
+        Fehlerhafte Eingabe.
       </div> <br>
   
       Freie Plätze: <input type="number" name="FreieSlots" required
                       [(ngModel)]="FreieSlots" #freieSlots="ngModel"> <br>
       <div *ngIf="freieSlots.invalid && (freieSlots.dirty||  freieSlots.touched)">
-        Es wurde keine Angaben zu freien Plätzen gemacht.
+        Fehlerhafte Eingabe.
       </div> <br>
 
       Preis: <input type="number" name="Preis" required
                       [(ngModel)]="Preis" #preis="ngModel"> <br>
       <div *ngIf="preis.invalid && (preis.dirty||  preis.touched)">
-        Es wurde kein Preis angegeben.
+        Fehlerhafte Eingabe.
       </div> <br>
     
         <br> <br>
@@ -176,12 +176,32 @@
 <div *ngIf="showForm=='matching'">  
   <H2>Matching Einstellungen</H2>
   
+  <div *ngIf="kindOfUser=='person'">
+      Postleitzahl: <input type="text" name="SuchePostleitzahl" required
+                      [(ngModel)]="SuchePostleitzahl" #suchepostleitzahl="ngModel"> <br>
+      <div *ngIf="suchepostleitzahl.invalid && (suchepostleitzahl.dirty||  suchepostleitzahl.touched)">
+        Es wurde keine Postleitzahl angegeben.
+      </div> <br>
+
+      Stadt: <input type="text" name="SucheStadt" required
+                      [(ngModel)]="SucheStadt" #suchestadt="ngModel"> <br>
+      <div *ngIf="suchestadt.invalid && (suchestadt.dirty||  suchestadt.touched)">
+        Es wurde keine Stadt angegeben.
+      </div> <br>
+
+      Land: <input type="text" name="SucheLand" required
+                      [(ngModel)]="SucheLand" #sucheland="ngModel"> <br>
+      <div *ngIf="sucheland.invalid && (sucheland.dirty||  sucheland.touched)">
+        Es wurde kein Land angegeben.
+      </div> 
+      <br>
+  </div>
   
-  Lautstärker: 1<mat-slider min="1" max="10" step="1" value={{Lautstaerke}} thumbLabel (input)="activateSubmitButton($event)"></mat-slider>10
+  Lautstärker: 0<mat-slider min="0" max="10" step="1" value={{Lautstaerke}} thumbLabel (input)="activateSubmitButton($event)"></mat-slider>10
   <br>
-  Sauberkeit: 1<mat-slider min="1" max="10" step="1" value={{Sauberkeit}} thumbLabel (input)="activateSubmitButton($event)"></mat-slider>10
+  Sauberkeit: 0<mat-slider min="0" max="10" step="1" value={{Sauberkeit}} thumbLabel (input)="activateSubmitButton($event)"></mat-slider>10
   <br>
-  Kochen: 1<mat-slider min="1" max="10" step="1" value={{Kochen}} thumbLabel (input)="activateSubmitButton($event)"></mat-slider>10
+  Kochen: 0<mat-slider min="0" max="10" step="1" value={{Kochen}} thumbLabel (input)="activateSubmitButton($event)"></mat-slider>10
   <br>
   <!--Checkboxen funktionieren noch nicht richtig-->
   Raucher: <mat-checkbox  name ="raucherCheck" [(ngModel)]="Raucher" (click)="changeRaucherCheck(Raucher)" (change)="activateSubmitButtonCheckbox($event)"></mat-checkbox> {{Raucher}}

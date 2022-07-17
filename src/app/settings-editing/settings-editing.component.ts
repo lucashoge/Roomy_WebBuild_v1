@@ -34,6 +34,9 @@ export class SettingsEditingComponent implements OnInit {
       CtrlGeburtsdatum: any;//Date= new Date();
       CtrlJob: any;
       CtrlHobby: any;
+      CtrlSuchePostleitzahl: any;
+      CtrlSucheStadt: any;
+      CtrlSucheLand: any;
       //WG
       CtrlWGName: any;
       CtrlPostleitzahl: any;
@@ -92,12 +95,15 @@ export class SettingsEditingComponent implements OnInit {
   Kochen: any;
   Profilbild: any;
   AktuellSuchend: boolean = false;
+  SuchePostleitzahl: any;
+  SucheStadt: any;
+  SucheLand: any;
 
   kindOfUser: any;
 
   //Laden der Userdaten
   getUser(){
-    console.log("Getting Userdatas");
+    console.log("Getting Userdatas01");
     var sendData = {
       flag: "getKindOfUser"
     }
@@ -122,6 +128,7 @@ export class SettingsEditingComponent implements OnInit {
   }
   //Anfragen der Userdaten entsprechend des Usertyps
   loadUserData() {
+    console.log("start load user data");
     var usertype: string = this.kindOfUser;
     var sendData = {
       flag: "getUserData",
@@ -132,9 +139,11 @@ export class SettingsEditingComponent implements OnInit {
       params: sendData
     };
 
+    console.log("anfrage wird gesendet0");
     //Userdaten anfragen
     this.http.get("settings", config).subscribe(result => {
       //Daten von User in passendes Format umwandeln und in Variablen speichern
+    console.log("anfrage gesendet");
       
       let resultArray: any;
       resultArray = result;
@@ -151,9 +160,12 @@ export class SettingsEditingComponent implements OnInit {
       this.AktuellSuchend = this.CtrlAktuellSuchend = userData.searching;
       this.Profilbild = this.CtrlProfilbild = userData.profilepic;
 
-      console.log("this.kindOfUser: "+this.kindOfUser)
+      console.log("this.kindOfUser: "+this.kindOfUser);
+      console.log("search city: "+userData.searchcity);
+      console.log("search land: "+userData.searchcountry);
+      console.log("search plz: "+userData.searchpostcode);
 
-      if(userData.usertype=="person"){
+      if(this.kindOfUser=="person"){
         //Daten von Person in passendes Format umwandeln und in Variablen speichern
       //var personData = JSON.parse(JSON.stringify(JSON.parse(JSON.stringify(result))[1]))[0];
       console.log("Getting Persondata");
@@ -161,12 +173,12 @@ export class SettingsEditingComponent implements OnInit {
       this.Vorname = this.CtrlVorname = userData.firstname;
       this.Nachname = this.CtrlNachname = userData.surname;
       this.Geschlecht = this.CtrlGeschlecht = userData.gender;
-      this.Geburtsdatum = this.CtrlGeburtsdatum = userData.birthdate;
-
       this.Geburtsdatum = this.CtrlGeburtsdatum = this.datepipe.transform(this.Geburtsdatum, 'yyyy-MM-dd');
-
       this.Job = this.CtrlJob = userData.job;
       this.Hobby = this.CtrlHobby = userData.hobby;
+      this.SuchePostleitzahl = this.CtrlSuchePostleitzahl = userData.searchpostcode;
+      this.SucheStadt = this.CtrlSucheStadt = userData.searchcity;
+      this.SucheLand = this.CtrlLand = userData.searchcountry;
       }
       else if(this.kindOfUser=="wg"){
         //Daten von WG in passendes Format umwandeln und in Variablen speichern
@@ -187,6 +199,7 @@ export class SettingsEditingComponent implements OnInit {
       
     },
       err => {
+        console.log("Error");
         if (err instanceof HttpErrorResponse) {
           if (err.status === 401) {
             this.router.navigate(['/login']);
@@ -216,6 +229,8 @@ export class SettingsEditingComponent implements OnInit {
     this.disableProfilbtn = false;
     this.disableMatchingbtn = true;
     this.matchingSubmitbtn = true;
+    this.Raucher = this.CtrlRaucher;
+    this.AktuellSuchend = this.CtrlAktuellSuchend;
   }
   passwortbtn(){
     this.PasswortAendernbtn = !this.PasswortAendernbtn;
