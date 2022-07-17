@@ -95,4 +95,9 @@ export class LoginComponent implements OnInit {
     });
   }
 
+  openReg() {
+    this.router.navigate(['/register']);
+
+  }
+
 }
