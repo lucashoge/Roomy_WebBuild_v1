@@ -173,7 +173,7 @@ export class SettingsEditingComponent implements OnInit {
       this.Vorname = this.CtrlVorname = userData.firstname;
       this.Nachname = this.CtrlNachname = userData.surname;
       this.Geschlecht = this.CtrlGeschlecht = userData.gender;
-      this.Geburtsdatum = this.CtrlGeburtsdatum = this.datepipe.transform(this.Geburtsdatum, 'yyyy-MM-dd');
+      this.Geburtsdatum = this.CtrlGeburtsdatum = this.datepipe.transform(userData.birthdate, 'yyyy-MM-dd');
       this.Job = this.CtrlJob = userData.job;
       this.Hobby = this.CtrlHobby = userData.hobby;
       this.SuchePostleitzahl = this.CtrlSuchePostleitzahl = userData.searchpostcode;
