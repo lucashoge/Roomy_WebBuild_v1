@@ -62,6 +62,7 @@ export class SettingsEditingComponent implements OnInit {
   disableAccountbtn: boolean = true;
   disableProfilbtn: boolean = false;
   disableMatchingbtn: boolean = false;
+  changeDoneMessage: any;
 
   //Account
   Username: any;
@@ -80,6 +81,9 @@ export class SettingsEditingComponent implements OnInit {
   Geburtsdatum: any;//= new Date();
   Job: any;
   Hobby: any;
+  SuchePostleitzahl: any;
+  SucheStadt: any;
+  SucheLand: any;
     //WG
   WGName: any;
   Postleitzahl: any;
@@ -95,9 +99,6 @@ export class SettingsEditingComponent implements OnInit {
   Kochen: any;
   Profilbild: any;
   AktuellSuchend: boolean = false;
-  SuchePostleitzahl: any;
-  SucheStadt: any;
-  SucheLand: any;
 
   kindOfUser: any;
 
@@ -173,12 +174,13 @@ export class SettingsEditingComponent implements OnInit {
       this.Vorname = this.CtrlVorname = userData.firstname;
       this.Nachname = this.CtrlNachname = userData.surname;
       this.Geschlecht = this.CtrlGeschlecht = userData.gender;
+      this.Geburtsdatum = this.CtrlGeburtsdatum = userData.birthdate;
       this.Geburtsdatum = this.CtrlGeburtsdatum = this.datepipe.transform(this.Geburtsdatum, 'yyyy-MM-dd');
       this.Job = this.CtrlJob = userData.job;
       this.Hobby = this.CtrlHobby = userData.hobby;
       this.SuchePostleitzahl = this.CtrlSuchePostleitzahl = userData.searchpostcode;
       this.SucheStadt = this.CtrlSucheStadt = userData.searchcity;
-      this.SucheLand = this.CtrlLand = userData.searchcountry;
+      this.SucheLand = this.CtrlSucheLand = userData.searchcountry;
       }
       else if(this.kindOfUser=="wg"){
         //Daten von WG in passendes Format umwandeln und in Variablen speichern
@@ -189,7 +191,7 @@ export class SettingsEditingComponent implements OnInit {
       this.Postleitzahl = this.CtrlPostleitzahl = userData.postcode;
       this.Stadt = this.CtrlStadt = userData.city;
       this.Land = this.CtrlLand = userData.country;
-      this.FreieSlots = this.CtrlFreieSlots = userData.spotsfree;
+      this.FreieSlots = this.CtrlFreieSlots = userData.spotfree;
       this.SlotsGesamt = this.CtrlSlotsGesamt = userData.spotstotal;
       this.Preis = this.CtrlPreis = userData.price;
       }
@@ -216,12 +218,14 @@ export class SettingsEditingComponent implements OnInit {
     this.disableAccountbtn = true;
     this.disableProfilbtn = false;
     this.disableMatchingbtn = false;
+    this.changeDoneMessage = "";
   }
   profilbtn(){
     this.showForm = "profil";
     this.disableAccountbtn = false;
     this.disableProfilbtn = true;
     this.disableMatchingbtn = false;
+    this.changeDoneMessage = "";
   }
   matchingbtn(){
     this.showForm = "matching";
@@ -231,9 +235,11 @@ export class SettingsEditingComponent implements OnInit {
     this.matchingSubmitbtn = true;
     this.Raucher = this.CtrlRaucher;
     this.AktuellSuchend = this.CtrlAktuellSuchend;
+    this.changeDoneMessage = "";
   }
   passwortbtn(){
     this.PasswortAendernbtn = !this.PasswortAendernbtn;
+    this.changeDoneMessage = "";
   }
   
   //_____________________________________________Formular Accountdaten__________________________________________________________________________________________
@@ -256,8 +262,18 @@ export class SettingsEditingComponent implements OnInit {
         //Wenn Email frei -> Eintragen der Daten in die Datenbank
         if (result == "emailAllowed") {
           console.log("Email Allowed");
+          sendData = {
+            flag: "changeMail",
+            Email: data.Email
+          };
+          config = {
+            params: sendData
+          };
+          this.http.get("settings", config).subscribe(result => {
+          console.log("Mail Eintragen Ergebnis: "+result);
+          });
+          this.getUser();
           this.emailMessage = "Email geändert.";
-          //this.http.post<any>("settings", { body: data }).subscribe((result) => console.log("Result vom Post" + result));
         }
         else {
           this.emailMessage = "Email bereits vergeben.";
@@ -267,7 +283,6 @@ export class SettingsEditingComponent implements OnInit {
         return;
       });
     }
-
 
     //Check Username
     if(this.CtrlUsername != data.Username){
@@ -285,8 +300,18 @@ export class SettingsEditingComponent implements OnInit {
         //Wenn Email frei -> Eintragen der Daten in die Datenbank
         if (result == "usernameAllowed") {
           console.log("Username Allowed");
-          this.userMessage = "Username geändert.";
-          //this.http.post<any>("settings", { body: data }).subscribe((result) => console.log("Result vom Post" + result));
+          sendData = {
+            flag: "changeUsername",
+            Username: data.Username
+          };
+          config = {
+            params: sendData
+          };
+          this.http.get("settings", config).subscribe(result => {
+            console.log("Username Eintragen Ergebnis: "+result);
+            });
+            this.getUser();
+            this.userMessage = "Username geändert.";
         }
         else {
           this.userMessage = "Username bereits vergeben.";
@@ -296,6 +321,7 @@ export class SettingsEditingComponent implements OnInit {
         return;
       });
     }
+
   }
 
   sendPassword(data: any) {
@@ -329,7 +355,19 @@ export class SettingsEditingComponent implements OnInit {
       //Wenn Passwort richtig -> Änderung in Datenbank
       if (result == "passwordCorrect") {
         console.log("passwordCorrect");
-        //this.http.post<any>("settings", { body: data }).subscribe((result) => console.log("Result vom Post" + result));
+        sendData = {
+          flag: "changePasswort",
+          Passwort: data.PasswortNeu
+        };
+        config = {
+          params: sendData
+        };
+        this.http.get("settings", config).subscribe(result => {
+          console.log("Passwort Geändert Ergebnis: "+result);
+          });
+          this.getUser();
+          this.PasswortError="";
+          this.changeDoneMessage = "Passwort geändert"
       }
       else {
         this.passwortMessage = "Passwort ist nicht korrekt.";
@@ -344,9 +382,62 @@ export class SettingsEditingComponent implements OnInit {
   //_____________________________________________Formular Profildaten__________________________________________________________________________________________
   sendProfil(data: any){
     //Senden der Profildaten an die Datenbank
-
-
-  }
+    var sendData;
+    var config;
+    sendData = {
+      flag: "changeProfile",
+      kindOfUser: this.kindOfUser
+    };
+    if(this.Nachname!=this.CtrlNachname){
+      sendData = Object.assign(sendData, {Nachname: this.Nachname});
+    }
+    if(this.Vorname!=this.CtrlVorname){
+      sendData = Object.assign(sendData, {Vorname: this.Vorname});
+    }
+    if(this.Geschlecht!=this.CtrlGeschlecht){
+      sendData = Object.assign(sendData, {Geschlecht: this.Geschlecht});
+    }
+    if(this.Geburtsdatum!=this.CtrlGeburtsdatum){
+      sendData = Object.assign(sendData, {Geburtsdatum: this.Geburtsdatum});
+    }
+    if(this.Job!=this.CtrlJob){
+      sendData = Object.assign(sendData, {Job: this.Job});
+    }
+    if(this.Hobby!=this.CtrlHobby){
+      sendData = Object.assign(sendData, {Hobby: this.Hobby});
+    }
+    if(this.WGName!=this.CtrlWGName){
+      sendData = Object.assign(sendData, {WGName: this.WGName});
+    }
+    if(this.Postleitzahl!=this.CtrlPostleitzahl){
+      sendData = Object.assign(sendData, {Postleitzahl: this.Postleitzahl});
+    }
+    if(this.Stadt!=this.CtrlStadt){
+      sendData = Object.assign(sendData, {Stadt: this.Stadt});
+    }
+    if(this.Land!=this.CtrlLand){
+      sendData = Object.assign(sendData, {Land: this.Land});
+    }
+    if(this.FreieSlots!=this.CtrlFreieSlots){
+      sendData = Object.assign(sendData, {FreieSlots: this.FreieSlots});
+    }
+    if(this.SlotsGesamt!=this.CtrlSlotsGesamt){
+      sendData = Object.assign(sendData, {SlotsGesamt: this.SlotsGesamt});
+    }
+    if(this.Preis!=this.CtrlPreis){
+      sendData = Object.assign(sendData, {Preis: this.Preis});
+    }
+    config = {
+      params: sendData
+    };
+    console.log("SendData:");
+    console.log(sendData);
+    this.http.get("settings", config).subscribe(result => {
+      console.log("Ergebnis: "+result);
+      });
+      this.getUser();
+      this.changeDoneMessage = "Änderungen gespeichert"
+  } 
 
 
   //_____________________________________________Formular Matchingdaten__________________________________________________________________________________________
@@ -364,12 +455,50 @@ export class SettingsEditingComponent implements OnInit {
     this.matchingSubmitbtn = false;
     console.log("changeee");
   }
+  sendMatching(data: any){}
 
+  //Senden der Matchingdaten an die Datenbank
   submitMatchingbtn(){
-    //Senden der Matchingdaten an die Datenbank
-    console.log(this.Raucher);
-    console.log(this.AktuellSuchend);
-
+    var sendData;
+    var config;
+    sendData = {
+      flag: "changeMatching",
+      kindOfUser: this.kindOfUser
+    };
+    if(this.Raucher!=this.CtrlRaucher){
+      sendData = Object.assign(sendData, {Raucher: this.Raucher});
+    }
+    if(this.Lautstaerke!==this.CtrlLautstaerke){
+      sendData = Object.assign(sendData, {Lautstaerke: this.Lautstaerke});
+    }
+    if(this.Sauberkeit!=this.CtrlSauberkeit){
+      sendData = Object.assign(sendData, {Sauberkeit: this.Sauberkeit});
+    }
+    if(this.Kochen!=this.CtrlKochen){
+      sendData = Object.assign(sendData, {Kochen: this.Kochen});
+    }
+    if(this.AktuellSuchend!=this.CtrlAktuellSuchend){
+      sendData = Object.assign(sendData, {AktuellSuchend: this.AktuellSuchend});
+    }
+    if(this.SuchePostleitzahl!=this.CtrlSuchePostleitzahl){
+      sendData = Object.assign(sendData, {SuchePostleitzahl: this.SuchePostleitzahl});
+    }
+    if(this.SucheStadt!=this.CtrlSucheStadt){
+      sendData = Object.assign(sendData, {SucheStadt: this.SucheStadt});
+    }
+    if(this.SucheLand!=this.CtrlSucheLand){
+      sendData = Object.assign(sendData, {SucheLand: this.SucheLand});
+    }
+    config = {
+      params: sendData
+    };
+    console.log("SendData:");
+    console.log(sendData);
+    this.http.get("settings", config).subscribe(result => {
+      console.log("Ergebnis: "+result);
+      });
+      this.getUser();
+      this.changeDoneMessage = "Änderungen gespeichert"
   }
   
 }

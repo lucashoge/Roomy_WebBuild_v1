@@ -234,7 +234,7 @@ app.post('/register', function (req, res) {
     });
 
 
-//Userdaten für Settings abrufen und ändern      Work in progress
+//Userdaten für Settings abrufen/prüfen
 app.get('/settings', verifyToken, function (req, res) {
   console.log("Start Settings");
   console.log("kindOfUser: "+req.query.kindOfUser);
@@ -425,19 +425,278 @@ app.get('/settings', verifyToken, function (req, res) {
         });
       });
     }
+    //______________________________________________________Änderungen derr Settings in die Datenbank eintragen_______________________________________________________
+
+    //___________________________________________________________________________Email ändern
+    else if(req.query.flag =="changeMail"){
+      console.log("Email");
+      //email
+      var con = mysql.createConnection(conConfig);    
+        con.connect(function (error) {
+          if (error) throw error;
+          console.log("connected");
+          con.query('UPDATE users SET ? WHERE userid = ?;', [{ email: req.query.Email},userid],
+            function (error, results, fields) {
+              if (error) throw error;
+              console.log("Update Done");
+              con.end(function (error) {
+                if (error) throw error;
+                console.log("connection End");
+              });
+            });
+        });
+    }
+    //___________________________________________________________________________Usernamen ändern
+    else if(req.query.flag=="changeUsername"){
+      console.log("Change Username");
+      //Username
+      var con = mysql.createConnection(conConfig);    
+        con.connect(function (error) {
+          if (error) throw error;
+          console.log("connected");
+          con.query('UPDATE users SET ? where userid = ?;', [{ username: req.query.Username},userid],
+            function (error, results, fields) {
+              if (error) throw error;
+              console.log("Update Done");
+              con.end(function (error) {
+                if (error) throw error;
+                console.log("connection End");
+              });
+            });
+        });
+    }
+    //___________________________________________________________________________Passwort ändern
+    else if(req.query.flag=="changePasswort"){
+      console.log("Change Password");
+      //Username
+      var con = mysql.createConnection(conConfig);    
+        con.connect(function (error) {
+          if (error) throw error;
+          console.log("connected");
+          con.query('UPDATE users SET ? where userid = ?;', [{ password: req.query.Passwort},userid],
+            function (error, results, fields) {
+              if (error) throw error;
+              console.log("Update Done");
+              con.end(function (error) {
+                if (error) throw error;
+                console.log("connection End");
+              });
+            });
+        });
+    }
+    //___________________________________________________________________________Profil ändern 
+    else if(req.query.flag=="changeProfile"){
+      console.log("Change Profil");
+      //Prüfen welche Werte vorhanden sind
+      var valueList={};
+      if(req.query.Nachname){
+        valueList = Object.assign(valueList, {surname: req.query.Nachname});
+      }
+      if(req.query.Vorname){
+        valueList = Object.assign(valueList, {firstname: req.query.Vorname});
+      }
+      if(req.query.Geschlecht){
+        valueList = Object.assign(valueList, {gender: req.query.Geschlecht});
+      }
+      if(req.query.Geburtsdatum){
+        valueList = Object.assign(valueList, {birthdate: req.query.Geburtsdatum});
+      }
+      if(req.query.Job){
+        valueList = Object.assign(valueList, {job: req.query.Job});
+      }
+      if(req.query.Hobby){
+        valueList = Object.assign(valueList, {hobby: req.query.Hobby});
+      }
+      if(req.query.WGName){
+        valueList = Object.assign(valueList, {wgname: req.query.WGName});
+      }
+      if(req.query.Postleitzahl){
+        valueList = Object.assign(valueList, {postcode: req.query.Postleitzahl});
+      }
+      if(req.query.Stadt){
+        valueList = Object.assign(valueList, {city: req.query.Stadt});
+      }
+      if(req.query.Land){
+        valueList = Object.assign(valueList, {country: req.query.Land});
+      }
+      if(req.query.FreieSlots){
+        valueList = Object.assign(valueList, {spotfree: parseInt(req.query.FreieSlots)});
+      }
+      if(req.query.SlotsGesamt){
+        valueList = Object.assign(valueList, {spotstotal: parseInt(req.query.SlotsGesamt)});
+      }
+      if(req.query.Preis){
+        valueList = Object.assign(valueList, {price: parseFloat(req.query.Preis)});
+      }
+      //Person
+      if(req.query.kindOfUser=="person"){
+        var con = mysql.createConnection(conConfig);    
+        con.connect(function (error) {
+          if (error) throw error;
+          console.log("connected");
+          con.query('UPDATE person SET ? where personid = ?;', [valueList,userid],
+            function (error, results, fields) {
+              if (error) throw error;
+              console.log("Update Done");
+              con.end(function (error) {
+                if (error) throw error;
+                console.log("connection End");
+              });
+            });
+        });
+      }
+      //WG
+      if(req.query.kindOfUser=="wg"){
+        var con = mysql.createConnection(conConfig);    
+        con.connect(function (error) {
+          if (error) throw error;
+          console.log("connected");
+          con.query('UPDATE wg SET ? where wgid = ?;', [valueList,userid],
+            function (error, results, fields) {
+              if (error) throw error;
+              console.log("Update Done");
+              con.end(function (error) {
+                if (error) throw error;
+                console.log("connection End");
+              });
+            });
+        });
+      }
+    }
+
+    //___________________________________________________________________________Matching ändern 
+    else if(req.query.flag=="changeMatching"){
+      console.log("Change Matching");
+      console.log("Flag: "+req.query.flag);
+      console.log("Raucher: "+req.query.Raucher);
+      //Prüfen welche Werte vorhanden sind
+      var valueListUser={};
+      if(req.query.Raucher){
+        if(req.query.Raucher=="true"){
+          valueListUser = Object.assign(valueListUser, {smoker: true});
+        }
+        else if(req.query.Raucher=="false"){
+          valueListUser = Object.assign(valueListUser, {smoker: false});
+        }
+      }
+      if(req.query.Lautstaerke){
+        valueListUser = Object.assign(valueListUser, {volume: parseInt(req.query.Lautstaerke)});
+      }
+      if(req.query.Sauberkeit){
+        valueListUser = Object.assign(valueListUser, {tidiness: parseInt(req.query.Sauberkeit)});
+      }
+      if(req.query.Kochen){
+        valueListUser = Object.assign(valueListUser, {cook: parseInt(req.query.Kochen)});
+      }
+      if(req.query.AktuellSuchend=="true"){
+        valueListUser = Object.assign(valueListUser, {searching: true});
+      }
+      else if(req.query.AktuellSuchend=="false"){
+        valueListUser = Object.assign(valueListUser, {searching: false});
+      }
+
+      var valueListPerson={};
+      if(req.query.SuchePostleitzahl){
+        valueListPerson = Object.assign(valueListPerson, {searchpostcode: req.query.SuchePostleitzahl});
+      }
+      if(req.query.SucheStadt){
+        valueListPerson = Object.assign(valueListPerson, {searchcity: req.query.SucheStadt});
+      }
+      if(req.query.SucheLand){
+        valueListPerson = Object.assign(valueListPerson, {searchcountry: req.query.SucheLand});
+      }
+      console.log("Raucher: "+req.query.Raucher);
+      console.log("Sauberkeit Int: "+parseInt(req.query.Sauberkeit));
+      //Person
+      if(req.query.kindOfUser=="person"){
+        if(!req.query.SuchePostleitzahl && !req.query.SucheStadt && !req.query.SucheLand){
+          console.log("SuchePlz,SucheStadt und SucheLand leer");
+          var con = mysql.createConnection(conConfig);    
+          con.connect(function (error) {
+            if (error) throw error;
+            console.log("connected");
+            con.query('UPDATE users SET ? where userid = ?;', [valueListUser,userid],
+              function (error, results, fields) {
+                if (error) throw error;
+                console.log("Update Done");
+                con.end(function (error) {
+                  if (error) throw error;
+                  console.log("connection End");
+                });
+              });
+           }); 
+        }
+        else if(!req.query.Raucher && !req.query.Lautstaerke && !req.query.Kochen && !req.query.AktuellSuchend){
+          
+          console.log("Raucher, Lautstaerke,Kochen, Suchend leer");
+          var con = mysql.createConnection(conConfig);    
+          con.connect(function (error) {
+            if (error) throw error;
+            console.log("connected");
+            con.query('UPDATE person SET ? where personid = ?;', [valueListPerson,userid],
+              function (error, results, fields) {
+                if (error) throw error;
+                console.log("Update Done");
+                con.end(function (error) {
+                  if (error) throw error;
+                  console.log("connection End");
+                });
+              });
+           }); 
+        }
+        else{
+          console.log("Nichts leer");
+          var con = mysql.createConnection(conConfig);    
+          con.connect(function (error) {
+            if (error) throw error;
+            console.log("connected");
+            con.query('UPDATE users SET ? where userid = ?; UPDATE person SET ? where personid = ?;', [valueListUser,userid,valueListPerson, userid],
+              function (error, results, fields) {
+                if (error) throw error;
+                console.log("Update Done");
+                con.end(function (error) {
+                  if (error) throw error;
+                  console.log("connection End");
+                });
+              });
+          });
+        }
+        
+      }
+      //WG
+      if(req.query.kindOfUser=="wg"){
+        var con = mysql.createConnection(conConfig);    
+        con.connect(function (error) {
+          if (error) throw error;
+          console.log("connected");
+          con.query('UPDATE users SET ? where userid = ?;', [valueListUser,userid],
+            function (error, results, fields) {
+              if (error) throw error;
+              console.log("Update Done");
+              con.end(function (error) {
+                if (error) throw error;
+                console.log("connection End");
+              });
+            });
+        });
+      }
+      
+    }
+
+
+
+
     else{console.log("nothing done");}
 
-    //___________________________________________________________________________Änderungen Vornehmen_______________________________________________________
-
-    //___________________________________________________________________________Email Usernamen ändern
-
-
-
-
-
-
-
 });
+
+
+
+
+
+
+
+
 
 
 

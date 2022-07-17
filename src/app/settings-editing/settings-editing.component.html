@@ -9,7 +9,7 @@
 
   <H2>Account Einstellungen</H2>
 
-  <form #userForm="ngForm" (ngSubmit)="sendUserForm(userForm.value)">
+  <form #userForm="ngForm" (ngSubmit)="sendUserForm(userForm.value); userForm.resetForm()">
 
     Username:  <input class="form-control" type="text" name="Username" required minlength="4"
                       [(ngModel)]="Username" #username="ngModel"><br>
@@ -32,6 +32,7 @@
   </form>
   {{userMessage}}<br>
   {{emailMessage}}
+   
   
   <br>
 
@@ -39,7 +40,7 @@
   <br>
   
   <div *ngIf="PasswortAendernbtn==true">
-    <form #passwortForm="ngForm" (ngSubmit)="sendPassword(passwortForm.value)">
+    <form #passwortForm="ngForm" (ngSubmit)="sendPassword(passwortForm.value); passwortForm.resetForm()">
 
       Altes Passwort: <input type="password" name="PasswortAlt" required minlength="8"
                       [(ngModel)]="PasswortAlt" #passwortAlt="ngModel"> <br>
@@ -70,6 +71,7 @@
       </div> 
       {{PasswortError}}<br>
     <button [disabled]="passwortForm.invalid"> Passwort speichern</button>
+    {{changeDoneMessage}}
     </form>
   </div>
 </div>
@@ -82,7 +84,7 @@
 
     <!--_______________________Einstellungen Person____________________________________________________________-->
     <div *ngIf="kindOfUser=='person'">
-      <form #profilPersonForm="ngForm" (ngSubmit)="sendProfil(profilPersonForm.value)">
+      <form #profilPersonForm="ngForm" (ngSubmit)="sendProfil(profilPersonForm.value); profilPersonForm.resetForm()">
         Nachname: <input type="text" name="Nachname" required
                         [(ngModel)]="Nachname" #nachname="ngModel"> <br>
         <div *ngIf="nachname.invalid && (nachname.dirty||  nachname.touched)">
@@ -115,14 +117,16 @@
         <br>
     
         <br> <br>
-        <button [disabled]="profilPersonForm.invalid || profilPersonForm.pristine"> Änderungen speichern</button>
+        <button  [disabled]="profilPersonForm.invalid || profilPersonForm.pristine" > Änderungen speichern</button>
+        <br>
+        {{changeDoneMessage}}
     
       </form>
     </div>
 
 <!--_______________________Einstellungen WG____________________________________________________________-->
     <div *ngIf="kindOfUser=='wg'">
-      <form #profilWGForm="ngForm" (ngSubmit)="sendProfil(profilWGForm.value)">
+      <form #profilWGForm="ngForm" (ngSubmit)="sendProfil(profilWGForm.value); profilWGForm.resetForm()">
         WG Name: <input type="text" name="WGName" required
                         [(ngModel)]="WGName" #wgname="ngModel"> <br>
         <div *ngIf="wgname.invalid && (wgname.dirty||  wgname.touched)">
@@ -167,6 +171,8 @@
     
         <br> <br>
         <button [disabled]="profilWGForm.invalid || profilWGForm.pristine"> Änderungen speichern</button>
+        <br>
+        {{changeDoneMessage}}
     
       </form>
     </div>
@@ -176,6 +182,7 @@
 <div *ngIf="showForm=='matching'">  
   <H2>Matching Einstellungen</H2>
   
+  <form #matchingForm="ngForm" (ngSubmit)="sendMatching(matchingForm.value)">
   <div *ngIf="kindOfUser=='person'">
       Postleitzahl: <input type="text" name="SuchePostleitzahl" required
                       [(ngModel)]="SuchePostleitzahl" #suchepostleitzahl="ngModel"> <br>
@@ -197,17 +204,20 @@
       <br>
   </div>
   
-  Lautstärker: 0<mat-slider min="0" max="10" step="1" value={{Lautstaerke}} thumbLabel (input)="activateSubmitButton($event)"></mat-slider>10
+  Lautstärker: 0<mat-slider min="0" max="10" step="1" [(ngModel)]="Lautstaerke" thumbLabel (input)="activateSubmitButton($event)"></mat-slider>10
   <br>
-  Sauberkeit: 0<mat-slider min="0" max="10" step="1" value={{Sauberkeit}} thumbLabel (input)="activateSubmitButton($event)"></mat-slider>10
+  Sauberkeit: 0<mat-slider min="0" max="10" step="1" [(ngModel)]="Sauberkeit" thumbLabel (input)="activateSubmitButton($event)"></mat-slider>10
   <br>
-  Kochen: 0<mat-slider min="0" max="10" step="1" value={{Kochen}} thumbLabel (input)="activateSubmitButton($event)"></mat-slider>10
+  Kochen: 0<mat-slider min="0" max="10" step="1" [(ngModel)]="Kochen" thumbLabel (input)="activateSubmitButton($event)"></mat-slider>10
   <br>
   <!--Checkboxen funktionieren noch nicht richtig-->
   Raucher: <mat-checkbox  name ="raucherCheck" [(ngModel)]="Raucher" (click)="changeRaucherCheck(Raucher)" (change)="activateSubmitButtonCheckbox($event)"></mat-checkbox> {{Raucher}}
   <br>
   Suchend: <mat-checkbox name="suchendCheck" [(ngModel)]="AktuellSuchend" (click)="changeSuchendCheck(AktuellSuchend)" (change)="activateSubmitButtonCheckbox($event)"></mat-checkbox>{{AktuellSuchend}}
   <br>
-  <button (click)="submitMatchingbtn()" [disabled]="matchingSubmitbtn">Änderungen Speichern</button>
+  <button (click)="submitMatchingbtn();matchingForm.resetForm()" [disabled]="matchingSubmitbtn"[disabled]="matchingForm.invalid || matchingForm.pristine"  >Änderungen Speichern</button>
+  <br>
+  {{changeDoneMessage}}
+</form>
 
 </div>
