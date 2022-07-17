@@ -146,10 +146,10 @@ export class SettingsEditingComponent implements OnInit {
     this.http.get("settings", config).subscribe(result => {
       //Daten von User in passendes Format umwandeln und in Variablen speichern
     console.log("anfrage gesendet");
-      
       let resultArray: any;
       resultArray = result;
       var userData = resultArray[0];//JSON.parse(JSON.stringify(JSON.parse(JSON.stringify(result))[0]))[0];
+      localStorage.setItem("loggedInUser", JSON.stringify(resultArray[0]));
 
       console.log("Getting Userdata");
       console.log(userData);
