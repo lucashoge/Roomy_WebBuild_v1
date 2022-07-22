@@ -7,9 +7,11 @@
 <span></span>   
 <button (click)="matchingbtn()" [disabled]="disableMatchingbtn">Matching</button>
 
-
 <!--______________________________________________Formular Accountdaten__________________________________________________________________________________________-->
 <div class="login-page">
+
+  <input type="file" class="file-upload" onchange="handleFileInput(event.target.files)">
+
   <div class="form">
 
     <div *ngIf="showForm=='account'">

@@ -1066,6 +1066,27 @@ app.get('/settings', verifyToken, function (req, res) {
     });
 
 
+
+
+      //Upload photos for profiles
+
+    app.post('/uploadPhoto', verifyToken, function (req, res) {
+
+      var userid = [req.userId];
+
+      var form = new formidable.IncomingForm();
+      form.parse(req, function (err, fields, files) {
+        var oldpath = files.filetoupload.filepath;
+        var newpath = 'assets/'+userid+'/' + files.filetoupload.originalFilename;
+        fs.rename(oldpath, newpath, function (err) {
+          if (err) throw err;
+          res.write('File uploaded and moved!');
+          res.end();
+        });
+    });
+  });
+
+
   // application -------------------------------------------------------------
  app.get('/', function(req,res) 
  {     
