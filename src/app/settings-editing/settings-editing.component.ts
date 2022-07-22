@@ -15,8 +15,9 @@ import { resetFakeAsyncZone } from '@angular/core/testing';
 })
 export class SettingsEditingComponent implements OnInit {
 
-  constructor(private http: HttpClient, private router: Router, public datepipe: DatePipe) { }
+  fileToUpload: File | null = null;
 
+  constructor(private http: HttpClient, private router: Router, public datepipe: DatePipe) { }
 
   ngOnInit(): void {
     this.getUser();
@@ -501,7 +502,13 @@ export class SettingsEditingComponent implements OnInit {
       this.changeDoneMessage = "Änderungen gespeichert"
   }
 
+  handleFileInput(files: any) {
+    this.fileToUpload = files.item(0);
 
+    this.http.post<any>("uploadPhoto", { body: this.fileToUpload }).subscribe((result) => {
+      console.log(result);
+    });
+  }
   
 }
 
