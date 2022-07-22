@@ -48,24 +48,28 @@ var conConfig = {
 
 //Middleware -----------------------------------------------------------
 function verifyToken(req, res, next) {
-  if (!req.headers.authorization) {
+  try{
+    if (!req.headers.authorization) {
     console.log("Kein Token vorhanden");
     return res.status(401).send("Unauthorized request");
-  }
-  var token = req.headers.authorization.split(' ')[1];
-  if (token === 'null') {
-    console.log("Token leer");
-    return res.status(401).send("Unauthorized request");
-  }
-  const payload = jwt.verify(token, publicKey);
-  if (!payload || payload == 'undefined') {
-    console.log("Payload leer");
-    return res.status(401).send("Unauthorized request");
-  }
-  else {
+    }
+    var token = req.headers.authorization.split(' ')[1];
+    if (token === 'null') {
+      console.log("Token leer");
+      return res.status(401).send("Unauthorized request");
+    }
+    
+    const payload = jwt.verify(token, publicKey);
+    if (!payload || payload == 'undefined') {
+      console.log("Payload leer");
+      return res.status(401).send("Unauthorized request");
+    }
     req.userId = payload.sub;
     next();
+  }catch (err) {
+    throw new Error(err)
   }
+  
 
 
 }
