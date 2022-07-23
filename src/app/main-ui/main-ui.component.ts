@@ -6,6 +6,8 @@ import { now } from 'moment';
 import { DatePipe } from '@angular/common';
 import { trigger, keyframes, animate, transition } from "@angular/animations";
 import { Subject } from 'rxjs';
+import { AuthService } from '../auth.service';
+
 
 
 @Component({
@@ -20,7 +22,7 @@ export class MainUiComponent {
 
   parentSubject:Subject<string> = new Subject();
 
-  constructor(private http: HttpClient, private router: Router) { }
+  constructor(private http: HttpClient, private router: Router, public auth: AuthService) { }
 
   ngOnInit(): void {
     this.loggedInUser = localStorage.getItem('loggedInUser');

@@ -99,5 +99,8 @@ export class LoginComponent implements OnInit {
     this.router.navigate(['/register']);
 
   }
+  openMain(){
+    this.router.navigate(['/main-ui'])
+  }
 
 }
