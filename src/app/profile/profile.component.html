@@ -4,9 +4,9 @@
       (swipeleft)='startAnimation("swipeleft")' 
       (swiperight)='startAnimation("swiperight")'
 >
-    <td><img src="data:image/JPEG;base64,{{currentUser.profilepic.data}}" title="tphoto" alt="Tinder Photo" /></td>
+    <td><img src={{currentUser.profilepic}} title="tphoto" alt="Tinder Photo" /></td>
     <div class="tname">
-        {{currentUser.name}}, <span class="age">{{currentUser.age}}</span>
+        {{currentUser.username}}, <span class="age">{{currentUser.city}}</span>
     </div>
     <div class="tinfo">
         <i class="fa fa-book" aria-hidden="true"> 0</i><i class="fa fa-users" aria-hidden="true"> 0</i>

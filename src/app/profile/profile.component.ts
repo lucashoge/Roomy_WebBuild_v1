@@ -98,6 +98,9 @@ export class ProfileComponent {
         console.log("currentUser from profiles" + this.currentUser)
         console.log(this.currentUser)
         this.userID = this.users[this.users.length-1].userid;
+        if(this.currentUser.profilepic == ''){
+          this.currentUser.profilepic = 'assets/Profilbild_default.jpg'
+        }
         console.log("profilePicture: " + this.currentUser.profilepic)
       }
       

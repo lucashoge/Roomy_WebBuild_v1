@@ -11,6 +11,8 @@ var mysql = require('mysql');
 var stringify = require('json-stringify-safe');
 var jwt = require('jsonwebtoken');
 var fs = require("fs");
+var formidable = require('formidable');
+var glob = require("glob")
 
 // configuration =================
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -43,6 +45,9 @@ var conConfig = {
       password: "Ll12Z2>ftt-]hr>LU4uz",
       multipleStatements: true
     };
+
+
+
 
 
 
@@ -1063,6 +1068,82 @@ app.get('/settings', verifyToken, function (req, res) {
           });
 
         });
+    });
+
+
+
+
+      //Upload photos for profiles
+    app.post('/uploadProfilePic', verifyToken, function (req, res) {
+
+      var userid = [req.userId];
+      
+
+      var con = mysql.createConnection(conConfig);
+
+      con.connect(function (error) {
+        if (error) throw error;
+        console.log("connected");
+
+        var form = new formidable.IncomingForm();
+        form.parse(req, function (err, fields, files) {
+          console.log(files.file)
+          var oldpath = files.file.filepath;
+          console.log(oldpath)
+          var newpath = 'src/assets/'+userid+'/' //+ files.file.originalFilename;
+          console.log(newpath)
+  
+          fs.mkdir(newpath, err => { 
+            //if (err) throw err;
+            var dateiEndung = files.file.originalFilename;
+            if(dateiEndung.endsWith("jpg")){
+              dateiEndung = ".jpg"
+            }
+            if(dateiEndung.endsWith("png")){
+              dateiEndung = ".png"
+            }
+            if(dateiEndung.endsWith("jpeg")){
+              dateiEndung = ".jpeg"
+            }
+            if(dateiEndung.endsWith("svg")){
+              dateiEndung = ".svg"
+            }
+            if(dateiEndung.endsWith("img")){
+              dateiEndung = ".img"
+            }
+            newpath = 'src/assets/'+userid+'/Profilepic' + dateiEndung;
+
+            // options is optional
+            glob('src/assets/'+userid+'/Profilepic**', {}, function (er, files) {
+              for (const file of files) {
+                console.log("GLOB:");
+                console.log(file);
+                fs.unlinkSync(file);
+              }
+
+              fs.rename(oldpath, newpath, function (err) {
+
+                newpath = 'assets/'+userid+'/' + 'Profilepic' + dateiEndung;
+                var sqlQuery = 'UPDATE 22_DB_Gruppe3.users SET profilepic="'+newpath +'" WHERE userid='+userid+';';
+  
+                con.query(sqlQuery, function (error1, results, fields) {
+                  if (error1) 
+                    console.log(error1)
+                  console.log("profilepic set in users");
+                  console.log(results);
+
+                  res.send(stringify(results));
+  
+                  con.end(function (error) {
+                    if (error) throw error;
+                    console.log("connection End");
+                  });
+                });
+              });
+            })          
+          }); 
+        });
+      });
     });
 
 

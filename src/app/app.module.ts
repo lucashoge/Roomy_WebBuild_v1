@@ -24,6 +24,7 @@ import { AuthGuard } from './auth.guard.guard';
 import { DatePipe } from '@angular/common';
 import {MatSliderModule,} from '@angular/material/slider'; 
 import {MatCheckboxModule} from '@angular/material/checkbox';
+import { ProfileViewComponent } from './profile-view/profile-view.component';
 
 @NgModule({
   declarations: [
@@ -36,7 +37,8 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
      SettingsEditingComponent,
      LoginComponent,
      ProfileComponent,
-     ChatverlaeufeComponent
+     ChatverlaeufeComponent,
+     ProfileViewComponent
   ],
   imports: [
     BrowserModule,
