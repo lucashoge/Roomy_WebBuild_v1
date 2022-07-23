@@ -1,4 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
+import { trigger, keyframes, animate, transition } from "@angular/animations";
+import { Subject, Observable } from 'rxjs';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { Router } from "@angular/router";
 
 @Component({
   selector: 'app-profile-view',
@@ -7,9 +11,13 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ProfileViewComponent implements OnInit {
 
-  constructor() { }
-
+  constructor(private http: HttpClient, private router: Router) {}
+  
   ngOnInit(): void {
+  }
+
+  setUserData(userData: any): void {
+
   }
 
 }
