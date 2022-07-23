@@ -1,12 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
-import { Observable } from 'rxjs';
 import { Router } from "@angular/router";
 import { MatSliderChange } from '@angular/material/slider';
 import { MatCheckboxChange } from '@angular/material/checkbox';
-import { NativeDateAdapter } from '@angular/material/core';
 import { DatePipe } from '@angular/common';
-import { resetFakeAsyncZone } from '@angular/core/testing';
+import { HandleTokenErrorService } from '../handle-token-error.service';
 
 @Component({
   selector: 'app-settings-editing',
@@ -17,7 +15,7 @@ export class SettingsEditingComponent implements OnInit {
 
   fileToUpload: File | null = null;
 
-  constructor(private http: HttpClient, private router: Router, public datepipe: DatePipe) { }
+  constructor(private http: HttpClient, private router: Router, public datepipe: DatePipe, private handleToken: HandleTokenErrorService) { }
 
   ngOnInit(): void {
     this.getUser();
@@ -54,12 +52,17 @@ export class SettingsEditingComponent implements OnInit {
       CtrlKochen: any;
       CtrlProfilbild: any;
       CtrlAktuellSuchend: boolean = false;
+      CtrlHund: any;
+      CtrlKatze: any;
+      CtrlVogel: any;
+      CtrlAndereTiere: any;
 
   //Form Variablen
   showForm: any = "account";
   userMessage: any;
   emailMessage: any;
   passwortMessage: any;
+  profileSubmitbtn: boolean = true;
   matchingSubmitbtn: boolean = true;
   disableAccountbtn: boolean = true;
   disableProfilbtn: boolean = false;
@@ -80,7 +83,7 @@ export class SettingsEditingComponent implements OnInit {
   Nachname: any;
   Vorname: any;
   Geschlecht: any;
-  Geburtsdatum: any;//= new Date();
+  Geburtsdatum: any;
   Job: any;
   Hobby: any;
   SuchePostleitzahl: any;
@@ -101,6 +104,10 @@ export class SettingsEditingComponent implements OnInit {
   Kochen: any;
   Profilbild: any;
   AktuellSuchend: boolean = false;
+  Hund: any;
+  Katze: any;
+  Vogel: any;
+  AndereTiere: any;
 
   kindOfUser: any;
 
@@ -123,9 +130,9 @@ export class SettingsEditingComponent implements OnInit {
     },
       err => {
         if (err instanceof HttpErrorResponse) {
-          if (err.status === 401) {
-            this.router.navigate(['/login']);
-          }
+          if(err.status==500){
+            this.handleToken.handleTokenError();
+          } 
         }
       });
   }
@@ -162,11 +169,14 @@ export class SettingsEditingComponent implements OnInit {
       this.Kochen = this.CtrlKochen = userData.cook;
       this.AktuellSuchend = this.CtrlAktuellSuchend = userData.searching;
       this.Profilbild = this.CtrlProfilbild = userData.profilepic;
+      this.Hund = this.CtrlHund = userData.dog;
+      this.Katze = this.CtrlKatze = userData.cat;
+      this.Vogel = this.CtrlVogel = userData.bird;
+      this.AndereTiere = this.CtrlAndereTiere = userData.others;
 
-      console.log("this.kindOfUser: "+this.kindOfUser);
-      console.log("search city: "+userData.searchcity);
-      console.log("search land: "+userData.searchcountry);
-      console.log("search plz: "+userData.searchpostcode);
+      console.log("Hund: "+userData.dog);
+      console.log("Katze: "+userData.cat);
+      console.log("Anderes: "+userData.others);
 
       if(this.kindOfUser=="person"){
         //Daten von Person in passendes Format umwandeln und in Variablen speichern
@@ -204,9 +214,10 @@ export class SettingsEditingComponent implements OnInit {
       err => {
         console.log("Error");
         if (err instanceof HttpErrorResponse) {
-          if (err.status === 401) {
-            this.router.navigate(['/login']);
-          }
+          
+          if(err.status==500){
+            this.handleToken.handleTokenError();
+          } 
         }
       });
   }
@@ -282,6 +293,14 @@ export class SettingsEditingComponent implements OnInit {
           console.log("Email Vergeben");
         }
         return;
+      },
+      err => {
+        if (err instanceof HttpErrorResponse) {
+          
+          if(err.status==500){
+            this.handleToken.handleTokenError();
+          } 
+        }
       });
     }
 
@@ -320,6 +339,14 @@ export class SettingsEditingComponent implements OnInit {
           console.log("Username Vergeben");
         }
         return;
+      },
+      err => {
+        if (err instanceof HttpErrorResponse) {
+          
+          if(err.status==500){
+            this.handleToken.handleTokenError();
+          } 
+        }
       });
     }
 
@@ -376,6 +403,14 @@ export class SettingsEditingComponent implements OnInit {
         console.log("Passwort falsch");
       }
       return;
+    },
+    err => {
+      if (err instanceof HttpErrorResponse) {
+        
+          if(err.status==500){
+            this.handleToken.handleTokenError();
+          } 
+      }
     });
   }
 
@@ -428,6 +463,18 @@ export class SettingsEditingComponent implements OnInit {
     if(this.Preis!=this.CtrlPreis){
       sendData = Object.assign(sendData, {Preis: this.Preis});
     }
+    if(this.Hund!=this.CtrlHund){
+      sendData = Object.assign(sendData, {Hund: this.Hund});
+    }
+    if(this.Katze!=this.CtrlKatze){
+      sendData = Object.assign(sendData, {Katze: this.Katze});
+    }
+    if(this.Vogel!=this.CtrlVogel){
+      sendData = Object.assign(sendData, {Vogel: this.Vogel});
+    }
+    if(this.AndereTiere!=this.CtrlAndereTiere){
+      sendData = Object.assign(sendData, {AndereTiere: this.AndereTiere});
+    }
     config = {
       params: sendData
     };
@@ -435,10 +482,35 @@ export class SettingsEditingComponent implements OnInit {
     console.log(sendData);
     this.http.get("settings", config).subscribe(result => {
       console.log("Ergebnis: "+result);
+      },
+      err => {
+        if (err instanceof HttpErrorResponse) {
+                    if(err.status==500){
+            this.handleToken.handleTokenError();
+          } 
+        }
       });
       this.getUser();
       this.changeDoneMessage = "Änderungen gespeichert"
   } 
+
+  //Haustiere
+  changehundCheck(value: boolean){
+    this.profileSubmitbtn = false;
+  }
+  changekatzeCheck(value: boolean){
+    this.profileSubmitbtn = false;
+  }
+  changevogelCheck(value: boolean){
+    this.profileSubmitbtn = false;
+  }
+  changeAndereTiereCheck(value: boolean){
+    this.profileSubmitbtn = false;
+  }
+  
+  activateProfileSubmitButtonCheckbox(event: MatCheckboxChange){
+    this.profileSubmitbtn = false;
+  }
 
 
   //_____________________________________________Formular Matchingdaten__________________________________________________________________________________________
@@ -450,11 +522,9 @@ export class SettingsEditingComponent implements OnInit {
   }
   activateSubmitButton(event: MatSliderChange){
     this.matchingSubmitbtn = false;
-    console.log("change");
   }
   activateSubmitButtonCheckbox(event: MatCheckboxChange){
     this.matchingSubmitbtn = false;
-    console.log("changeee");
   }
   sendMatching(data: any){}
 
@@ -497,6 +567,13 @@ export class SettingsEditingComponent implements OnInit {
     console.log(sendData);
     this.http.get("settings", config).subscribe(result => {
       console.log("Ergebnis: "+result);
+      },
+      err => {
+        if (err instanceof HttpErrorResponse) {
+                    if(err.status==500){
+            this.handleToken.handleTokenError();
+          } 
+        }
       });
       this.getUser();
       this.changeDoneMessage = "Änderungen gespeichert"
@@ -507,8 +584,17 @@ export class SettingsEditingComponent implements OnInit {
 
     this.http.post<any>("uploadPhoto", { body: this.fileToUpload }).subscribe((result) => {
       console.log(result);
+    },
+    err => {
+      if (err instanceof HttpErrorResponse) {
+                  if(err.status==500){
+            this.handleToken.handleTokenError();
+          } 
+      }
     });
   }
+
+  
   
 }
 

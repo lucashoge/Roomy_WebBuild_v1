@@ -89,41 +89,41 @@ app.get('/api/login', function (req, res) {
     userData = [req.query.Username, req.query.password];
   }
 
-
-  con.connect(function (error) {
-    if (error) throw error;
-    console.log("connected");
-    con.query("SELECT username, userid FROM users WHERE username = ? AND password = ?;", userData, function (error, results, fields) {
+  try{
+    con.connect(function (error) {
       if (error) throw error;
-      if (results != "") {
-        console.log(results[0].userid);
-
-        payload = { subject: stringify(results[0].userid) };
-
-        const jwtBearerToken = jwt.sign({}, privateKey, {
-          algorithm: 'RS256',
-          expiresIn: '24h',
-          subject: stringify(results[0].userid)
-        });
-
-
-        res.status(200).json({
-          idToken: jwtBearerToken,
-          expiresIn: '24h'
-        });
-      }
-      else {
-        res.send(stringify("err"));
-      }
-
-
-
-      con.end(function (error) {
+      console.log("connected");
+      con.query("SELECT username, userid FROM users WHERE username = ? AND password = ?;", userData, function (error, results, fields) {
         if (error) throw error;
-        console.log("connection End");
+        if (results != "") {
+          console.log(results[0].userid);
+
+          payload = { subject: stringify(results[0].userid) };
+
+          const jwtBearerToken = jwt.sign({}, privateKey, {
+            algorithm: 'RS256',
+            expiresIn: '24h',
+            subject: stringify(results[0].userid)
+          });
+
+
+          res.status(200).json({
+            idToken: jwtBearerToken,
+            expiresIn: '24h'
+          });
+        }
+        else {
+          res.send(stringify("err"));
+        }
+        con.end(function (error) {
+          if (error) throw error;
+          console.log("connection End");
+        });
       });
     });
-  });
+  }catch (err) {
+    throw new Error(err)
+  }
 
 });
 
@@ -134,59 +134,63 @@ app.get('/register', function (req, res) {
   var con = mysql.createConnection(conConfig);
   var username;
   console.log("Got it");
-  con.connect(function (error) {
-    if (error) throw error;
-    console.log("connected");
-    //Abfragen ob Username / Email existieren
-    if (!req.query.Username) {
-      username = "";
-    }
-    else {
-      username = req.query.Username;
-    }
-    if (!req.query.Email) {
-      var email = "";
-    }
-    else {
-      email = req.query.Email;
-    }
-
-    con.query("SELECT COUNT(*) AS 'countUsernames' FROM users WHERE username = ?;", username, function (error, results, fields) {
+  try{
+    con.connect(function (error) {
       if (error) throw error;
-      console.log("Counted Users: " + results[0].countUsernames);
-      if (results[0].countUsernames == 0) {
-        //Username frei
-        console.log("Username frei");
-        con.query("SELECT COUNT(*) AS 'countEmails' FROM users WHERE email = ?;", email, function (error, results, fields) {
-          if (error) throw error;
-          console.log("Counted Emails: " + results[0].countEmails);
-
-          if (results[0].countEmails == 0) {
-            //Username und Email frei
-            console.log("Username und Email frei");
-            res.send(stringify("registerAllowed"));
-          }
-          else {
-            //Email nicht frei
-            console.log("Email nicht frei");
-            res.send(stringify("emailUsed"));
-          }
-        });
+      console.log("connected");
+      //Abfragen ob Username / Email existieren
+      if (!req.query.Username) {
+        username = "";
       }
       else {
-        //Username nicht frei
-        console.log("Username nicht frei");
-        res.send(stringify("usernameUsed"));
+        username = req.query.Username;
       }
-      //res.send(stringify(results[0].count));
-      //res.send(stringify("Halloloo"));
-      con.end(function (error) {
+      if (!req.query.Email) {
+        var email = "";
+      }
+      else {
+        email = req.query.Email;
+      }
+
+      con.query("SELECT COUNT(*) AS 'countUsernames' FROM users WHERE username = ?;", username, function (error, results, fields) {
         if (error) throw error;
+        console.log("Counted Users: " + results[0].countUsernames);
+        if (results[0].countUsernames == 0) {
+          //Username frei
+          console.log("Username frei");
+          con.query("SELECT COUNT(*) AS 'countEmails' FROM users WHERE email = ?;", email, function (error, results, fields) {
+            if (error) throw error;
+            console.log("Counted Emails: " + results[0].countEmails);
+
+            if (results[0].countEmails == 0) {
+              //Username und Email frei
+              console.log("Username und Email frei");
+              res.send(stringify("registerAllowed"));
+            }
+            else {
+              //Email nicht frei
+              console.log("Email nicht frei");
+              res.send(stringify("emailUsed"));
+            }
+          });
+        }
+        else {
+          //Username nicht frei
+          console.log("Username nicht frei");
+          res.send(stringify("usernameUsed"));
+        }
+        //res.send(stringify(results[0].count));
+        //res.send(stringify("Halloloo"));
+        con.end(function (error) {
+          if (error) throw error;
+        });
       });
     });
-  });
-  
+  }catch (err) {
+  throw new Error(err)
+  }
 });
+
 
 
 
@@ -198,6 +202,7 @@ app.post('/register', function (req, res) {
     console.log("Person");
     //Person
     var con = mysql.createConnection(conConfig);    
+    try{
       con.connect(function (error) {
         if (error) throw error;
         console.log("connected");
@@ -213,11 +218,15 @@ app.post('/register', function (req, res) {
             });
           });
       });
+    }catch (err) {
+      throw new Error(err)
+    }
   }
   else if(req.body.body.kindOfUser=='wg'){
     console.log("WG");
     //WG
-    var con = mysql.createConnection(conConfig);    
+    var con = mysql.createConnection(conConfig);   
+      try{ 
         con.connect(function (error) {
           if (error) throw error;
           console.log("connected");
@@ -233,6 +242,9 @@ app.post('/register', function (req, res) {
               });
             });
         });
+      }catch (err) {
+        throw new Error(err)
+      }
   }
       
     });
@@ -248,21 +260,25 @@ app.get('/settings', verifyToken, function (req, res) {
 //___________________________________________________________________________Usertyp abfragen
   if (req.query.flag == "getKindOfUser") {
     var con = mysql.createConnection(conConfig);
-    con.connect(function (error) {
-      if (error) throw error;
-      console.log("connected");
-      con.query("SELECT usertype  FROM users WHERE userid = ?;", userid,
-        function (error, results, fields) {
-          if (error) throw error;
-          console.log("sending back");
-          console.log(results);
-          res.send(stringify(results));
-          con.end(function (error) {
+    try{
+      con.connect(function (error) {
+        if (error) throw error;
+        console.log("connected");
+        con.query("SELECT usertype  FROM users WHERE userid = ?;", userid,
+          function (error, results, fields) {
             if (error) throw error;
-            console.log("connection End");
+            console.log("sending back");
+            console.log(results);
+            res.send(stringify(results));
+            con.end(function (error) {
+              if (error) throw error;
+              console.log("connection End");
+            });
           });
-        });
-    });
+      });
+    }catch (err) {
+      throw new Error(err)
+    }
   }
 
 //___________________________________________________________________________Userdaten abfragen
@@ -273,28 +289,33 @@ app.get('/settings', verifyToken, function (req, res) {
     //Wenn User eine Person ist
     if(req.query.kindOfUser == "person"){
       console.log("inside Person");
-      con.connect(function (error) {
+      try{
+        con.connect(function (error) {
+          if (error) throw error;
+          console.log("connected");
+
+          var sqlQuery = 'SELECT username, email, profilepic, smoker, volume, tidiness, cook, searching, usertype, firstname, surname, gender, birthdate, job, hobby, searchpostcode, searchcity, searchcountry, dog, cat, bird, others'
+              + ' FROM 22_DB_Gruppe3.users'
+              + ' LEFT JOIN 22_DB_Gruppe3.person AS personTable ON userid=personTable.personid'
+              + ' LEFT JOIN 22_DB_Gruppe3.pet AS petTable ON userid=petTable.petid'
+              + ' WHERE 22_DB_Gruppe3.users.userid=' + userid;
+
+
+          con.query(sqlQuery,
+            function (error, results, fields) {
+              if (error) throw error;
+              console.log(results);
+              res.send(stringify(results));
+              con.end(function (error) {
                 if (error) throw error;
-                console.log("connected");
-
-                var sqlQuery = 'SELECT username, email, profilepic, smoker, volume, tidiness, cook, searching, usertype, firstname, surname, gender, birthdate, job, hobby, searchpostcode, searchcity, searchcountry'
-                    + ' FROM 22_DB_Gruppe3.users'
-                    + ' LEFT JOIN 22_DB_Gruppe3.person AS personTable ON userid=personTable.personid'
-                    + ' WHERE 22_DB_Gruppe3.users.userid=' + userid;
-
-
-                con.query(sqlQuery,
-                  function (error, results, fields) {
-                    if (error) throw error;
-                    console.log(results);
-                    res.send(stringify(results));
-                    con.end(function (error) {
-                      if (error) throw error;
-                      console.log("connection End");
-                    });
-                  });
+                console.log("connection End");
               });
-            }
+            });
+        });
+      }catch (err) {
+        throw new Error(err)
+      }
+    }
     
 
       //Wenn user eine WG ist
@@ -302,25 +323,30 @@ app.get('/settings', verifyToken, function (req, res) {
         
       console.log("inside WG");
         console.log("get wg data");
-        con.connect(function (error) {
+        try{
+          con.connect(function (error) {
+            if (error) throw error;
+            console.log("connected");
+
+            var sqlQuery = 'SELECT username, email, profilepic, smoker, volume, tidiness, cook, searching, usertype, wgname, postcode, city, country, spotfree, spotstotal, price, dog, cat, bird, others'
+                + ' FROM 22_DB_Gruppe3.users'
+                + ' LEFT JOIN 22_DB_Gruppe3.wg AS wgTable ON userid=wgTable.wgid'
+              + ' LEFT JOIN 22_DB_Gruppe3.pet AS petTable ON userid=petTable.petid'
+                + ' WHERE 22_DB_Gruppe3.users.userid=' + userid;
+
+            con.query(sqlQuery,
+              function (error, results, fields) {
+                if (error) throw error;
+                res.send(stringify(results));
+                con.end(function (error) {
                   if (error) throw error;
-                  console.log("connected");
-
-                  var sqlQuery = 'SELECT username, email, profilepic, smoker, volume, tidiness, cook, searching, usertype, wgname, postcode, city, country, spotfree, spotstotal, price'
-                      + ' FROM 22_DB_Gruppe3.users'
-                      + ' LEFT JOIN 22_DB_Gruppe3.wg AS wgTable ON userid=wgTable.wgid'
-                      + ' WHERE 22_DB_Gruppe3.users.userid=' + userid;
-
-                  con.query(sqlQuery,
-                    function (error, results, fields) {
-                      if (error) throw error;
-                      res.send(stringify(results));
-                      con.end(function (error) {
-                        if (error) throw error;
-                        console.log("connection End");
-                      });
-                    });
+                  console.log("connection End");
                 });
+              });
+          });
+        }catch (err) {
+          throw new Error(err)
+        }
       }
       else{console.log("No Person No WG");}
     }
@@ -329,105 +355,117 @@ app.get('/settings', verifyToken, function (req, res) {
     //___________________________________________________________________________Prüfen ob neue Email schon existiert
     else if(req.query.flag == "checkMail"){
       var con = mysql.createConnection(conConfig);
-      con.connect(function (error) {
-        if (error) throw error;
-        console.log("connected");
-        //Abfragen Email existiert
-        if (!req.query.Email) {
-          var email = "";
-        }
-        else {
-          email = req.query.Email;
-        }
-        con.query("SELECT COUNT(*) AS 'countEmails' FROM users WHERE email = ?;", email, function (error, results, fields) {
+      try{
+        con.connect(function (error) {
           if (error) throw error;
-          console.log("Counted: " + results.countEmails);
-          console.log("Counted Emails: " + results[0].countEmails);
-          if (results[0].countEmails == 0) {
-            //Email frei
-            console.log("Email frei");
-            res.send(stringify("emailAllowed"));
+          console.log("connected");
+          //Abfragen Email existiert
+          if (!req.query.Email) {
+            var email = "";
           }
           else {
-            //Email nicht frei
-            console.log("Email nicht frei");
-            res.send(stringify("emailUsed"));
+            email = req.query.Email;
           }
+          con.query("SELECT COUNT(*) AS 'countEmails' FROM users WHERE email = ?;", email, function (error, results, fields) {
+            if (error) throw error;
+            console.log("Counted: " + results.countEmails);
+            console.log("Counted Emails: " + results[0].countEmails);
+            if (results[0].countEmails == 0) {
+              //Email frei
+              console.log("Email frei");
+              res.send(stringify("emailAllowed"));
+            }
+            else {
+              //Email nicht frei
+              console.log("Email nicht frei");
+              res.send(stringify("emailUsed"));
+            }
+          });
+          con.end(function (error) {
+            if (error) throw error;
+          });
         });
-        con.end(function (error) {
-          if (error) throw error;
-        });
-      });
+      }catch (err) {
+        throw new Error(err)
+      }
     }
     
     //___________________________________________________________________________Prüfen ob neuer Username schon existiert
     else if(req.query.flag == "checkUsername"){
       var con = mysql.createConnection(conConfig);
-      con.connect(function (error) {
-        if (error) throw error;
-        console.log("connected");
-        //Abfragen Email existiert
-        if (!req.query.Username) {
-          var username = "";
-        }
-        else {
-          username = req.query.Username;
-        }
-        console.log(username);
-        con.query("SELECT COUNT(*) AS 'countUsernames' FROM users WHERE username = ?;", username, function (error, results, fields) {
+      try{
+        con.connect(function (error) {
           if (error) throw error;
-          console.log("Counted: " + results.countUsernames);
-          console.log("Counted Users: " + results[0].countUsernames);
-          if (results[0].countUsernames == 0) {
-            //Usernamefrei
-            console.log("Username frei");
-            res.send(stringify("usernameAllowed"));
+          console.log("connected");
+          //Abfragen Email existiert
+          if (!req.query.Username) {
+            var username = "";
           }
           else {
-            //Username nicht frei
-            console.log("Username nicht frei");
-            res.send(stringify("usernameUsed"));
+            username = req.query.Username;
           }
+          console.log(username);
+          con.query("SELECT COUNT(*) AS 'countUsernames' FROM users WHERE username = ?;", username, function (error, results, fields) {
+            if (error) throw error;
+            console.log("Counted: " + results.countUsernames);
+            console.log("Counted Users: " + results[0].countUsernames);
+            if (results[0].countUsernames == 0) {
+              //Usernamefrei
+              console.log("Username frei");
+              res.send(stringify("usernameAllowed"));
+            }
+            else {
+              //Username nicht frei
+              console.log("Username nicht frei");
+              res.send(stringify("usernameUsed"));
+            }
+          });
+          con.end(function (error) {
+            if (error) throw error;
+          });
         });
-        con.end(function (error) {
-          if (error) throw error;
-        });
-      });
+      }catch (err) {
+        throw new Error(err)
+      }
     }
 
     //___________________________________________________________________________Prüfen ob Passwort übereinstimmt
     else if(req.query.flag == "checkPassword"){
       var con = mysql.createConnection(conConfig);
-      con.connect(function (error) {
-        if (error) throw error;
-        console.log("connected");
-        console.log(req.query.passwort);
-        //Abfragen ob Passwort existiert
-        if (!req.query.passwort) {
-          var passwort = "";
-        }
-        else {
-          passwort = req.query.passwort;
-        }
-        console.log(passwort);
-        con.query("SELECT COUNT(*) AS 'countPasswords' FROM users WHERE userid = ? AND password = ?;", [userid, passwort], function (error, results, fields) {
+      try{
+        con.connect(function (error) {
           if (error) throw error;
-          console.log("Counted passwords: " + results[0].countPasswords);
-          if (results[0].countPasswords == 0) {
-            //Passwort falsch
-            console.log("Passwort falsch");
-            res.send(stringify("passwordWrong"));
+          console.log("connected");
+          console.log(req.query.passwort);
+          //Abfragen ob Passwort existiert
+          if (!req.query.passwort) {
+            var passwort = "";
           }
           else {
-            //Passwort richtig
-            console.log("Passwort richtig");
-            res.send(stringify("passwordCorrect"));
+            passwort = req.query.passwort;
           }
+          console.log(passwort);
+          con.query("SELECT COUNT(*) AS 'countPasswords' FROM users WHERE userid = ? AND password = ?;", [userid, passwort], function (error, results, fields) {
+            if (error) throw error;
+            console.log("Counted passwords: " + results[0].countPasswords);
+            if (results[0].countPasswords == 0) {
+              //Passwort falsch
+              console.log("Passwort falsch");
+              res.send(stringify("passwordWrong"));
+            }
+            else {
+              //Passwort richtig
+              console.log("Passwort richtig");
+              res.send(stringify("passwordCorrect"));
+            }
+          });
+          con.end(function (error) {
+            if (error) throw error;
+          });
         });
-        con.end(function (error) {
-          if (error) throw error;
-        });
-      });
+      }catch (err) {
+        throw new Error(err)
+      }
     }
     //______________________________________________________Änderungen derr Settings in die Datenbank eintragen_______________________________________________________
 
@@ -435,58 +473,70 @@ app.get('/settings', verifyToken, function (req, res) {
     else if(req.query.flag =="changeMail"){
       console.log("Email");
       //email
-      var con = mysql.createConnection(conConfig);    
-        con.connect(function (error) {
-          if (error) throw error;
-          console.log("connected");
-          con.query('UPDATE users SET ? WHERE userid = ?;', [{ email: req.query.Email},userid],
-            function (error, results, fields) {
-              if (error) throw error;
-              console.log("Update Done");
-              con.end(function (error) {
+      var con = mysql.createConnection(conConfig);
+        try{
+          con.connect(function (error) {
+            if (error) throw error;
+            console.log("connected");
+            con.query('UPDATE users SET ? WHERE userid = ?;', [{ email: req.query.Email},userid],
+              function (error, results, fields) {
                 if (error) throw error;
-                console.log("connection End");
+                console.log("Update Done");
+                con.end(function (error) {
+                  if (error) throw error;
+                  console.log("connection End");
+                });
               });
-            });
-        });
+          });
+        }catch (err) {
+          throw new Error(err)
+        }
     }
     //___________________________________________________________________________Usernamen ändern
     else if(req.query.flag=="changeUsername"){
       console.log("Change Username");
       //Username
-      var con = mysql.createConnection(conConfig);    
-        con.connect(function (error) {
-          if (error) throw error;
-          console.log("connected");
-          con.query('UPDATE users SET ? where userid = ?;', [{ username: req.query.Username},userid],
-            function (error, results, fields) {
-              if (error) throw error;
-              console.log("Update Done");
-              con.end(function (error) {
+      var con = mysql.createConnection(conConfig);   
+      try{ 
+          con.connect(function (error) {
+            if (error) throw error;
+            console.log("connected");
+            con.query('UPDATE users SET ? where userid = ?;', [{ username: req.query.Username},userid],
+              function (error, results, fields) {
                 if (error) throw error;
-                console.log("connection End");
+                console.log("Update Done");
+                con.end(function (error) {
+                  if (error) throw error;
+                  console.log("connection End");
+                });
               });
-            });
-        });
+          });
+        }catch (err) {
+          throw new Error(err)
+        }
     }
     //___________________________________________________________________________Passwort ändern
     else if(req.query.flag=="changePasswort"){
       console.log("Change Password");
       //Username
-      var con = mysql.createConnection(conConfig);    
-        con.connect(function (error) {
-          if (error) throw error;
-          console.log("connected");
-          con.query('UPDATE users SET ? where userid = ?;', [{ password: req.query.Passwort},userid],
-            function (error, results, fields) {
-              if (error) throw error;
-              console.log("Update Done");
-              con.end(function (error) {
+      var con = mysql.createConnection(conConfig); 
+        try{   
+          con.connect(function (error) {
+            if (error) throw error;
+            console.log("connected");
+            con.query('UPDATE users SET ? where userid = ?;', [{ password: req.query.Passwort},userid],
+              function (error, results, fields) {
                 if (error) throw error;
-                console.log("connection End");
+                console.log("Update Done");
+                con.end(function (error) {
+                  if (error) throw error;
+                  console.log("connection End");
+                });
               });
-            });
-        });
+          });
+        }catch (err) {
+          throw new Error(err)
+        }
     }
     //___________________________________________________________________________Profil ändern 
     else if(req.query.flag=="changeProfile"){
@@ -535,37 +585,103 @@ app.get('/settings', verifyToken, function (req, res) {
       //Person
       if(req.query.kindOfUser=="person"){
         var con = mysql.createConnection(conConfig);    
-        con.connect(function (error) {
-          if (error) throw error;
-          console.log("connected");
-          con.query('UPDATE person SET ? where personid = ?;', [valueList,userid],
-            function (error, results, fields) {
-              if (error) throw error;
-              console.log("Update Done");
-              con.end(function (error) {
+        try{
+          if(Object.keys(valueList).length >0){
+            con.connect(function (error) {
+            if (error) throw error;
+            console.log("connected");
+            con.query('UPDATE person SET ? where personid = ?;', [valueList,userid],
+              function (error, results, fields) {
                 if (error) throw error;
-                console.log("connection End");
+                console.log("Update Done");
+                con.end(function (error) {
+                  if (error) throw error;
+                  console.log("connection End");
+                });
               });
-            });
-        });
+          });
+          }
+          
+        }catch (err) {
+          throw new Error(err)
+        }
       }
       //WG
       if(req.query.kindOfUser=="wg"){
-        var con = mysql.createConnection(conConfig);    
-        con.connect(function (error) {
-          if (error) throw error;
-          console.log("connected");
-          con.query('UPDATE wg SET ? where wgid = ?;', [valueList,userid],
-            function (error, results, fields) {
+        var con = mysql.createConnection(conConfig);  
+        try{  
+          if(Object.keys(valueList).length >0){
+            con.connect(function (error) {
               if (error) throw error;
-              console.log("Update Done");
-              con.end(function (error) {
-                if (error) throw error;
-                console.log("connection End");
-              });
+              console.log("connected");
+              con.query('UPDATE wg SET ? where wgid = ?;', [valueList,userid],
+                function (error, results, fields) {
+                  if (error) throw error;
+                  console.log("Update Done");
+                  con.end(function (error) {
+                    if (error) throw error;
+                    console.log("connection End");
+                  });
+                });
             });
-        });
+          }
+        }catch (err) {
+          throw new Error(err)
+        }
       }
+
+      //Haustiere
+      var valueListPet={};
+      if(req.query.Hund=="true"){
+        valueListPet = Object.assign(valueListPet, {dog: true});
+      }
+      else if(req.query.Hund=="false"){
+        valueListPet = Object.assign(valueListPet, {dog: false});
+      }
+      if(req.query.Katze=="true"){
+        valueListPet = Object.assign(valueListPet, {cat: true});
+      }
+      else if(req.query.Katze=="false"){
+        valueListPet = Object.assign(valueListPet, {cat: false});
+      }
+      if(req.query.Vogel=="true"){
+        valueListPet = Object.assign(valueListPet, {bird: true});
+      }
+      else if(req.query.Vogel=="false"){
+        valueListPet = Object.assign(valueListPet, {bird: false});
+      }
+      if(req.query.AndereTiere=="true"){
+        valueListPet = Object.assign(valueListPet, {others: true});
+      }
+      else if(req.query.AndereTiere=="false"){
+        valueListPet = Object.assign(valueListPet, {others: false});
+      }
+
+      if(Object.keys(valueListPet).length >0){
+
+        console.log("Change Pets_________________");
+        var con = mysql.createConnection(conConfig);  
+        try{  
+          con.connect(function (error) {
+            if (error) throw error;
+            console.log("connected");
+            con.query('UPDATE pet SET ? where petid = ?;', [valueListPet,userid],
+              function (error, results, fields) {
+                if (error) throw error;
+                console.log("Update Done");
+                con.end(function (error) {
+                  if (error) throw error;
+                  console.log("connection End");
+                });
+            });
+          });
+        }catch (err) {
+          throw new Error(err)
+        }
+      }
+
+
+
     }
 
     //___________________________________________________________________________Matching ändern 
@@ -618,7 +734,74 @@ app.get('/settings', verifyToken, function (req, res) {
         }
         else if(!req.query.SuchePostleitzahl && !req.query.SucheStadt && !req.query.SucheLand){
           console.log("SuchePlz,SucheStadt und SucheLand leer");
-          var con = mysql.createConnection(conConfig);    
+          var con = mysql.createConnection(conConfig);
+          try{    
+            con.connect(function (error) {
+              if (error) throw error;
+              console.log("connected");
+              con.query('UPDATE users SET ? where userid = ?;', [valueListUser,userid],
+                function (error, results, fields) {
+                  if (error) throw error;
+                  console.log("Update Done");
+                  con.end(function (error) {
+                    if (error) throw error;
+                    console.log("connection End");
+                  });
+                });
+            }); 
+          }catch (err) {
+            throw new Error(err)
+          }
+        }
+        else if(!req.query.Raucher && !req.query.Lautstaerke && !req.query.Kochen && !req.query.AktuellSuchend){
+          
+          console.log("Raucher, Lautstaerke,Kochen, Suchend leer");
+          var con = mysql.createConnection(conConfig); 
+          try{   
+            con.connect(function (error) {
+              if (error) throw error;
+              console.log("connected");
+              con.query('UPDATE person SET ? where personid = ?;', [valueListPerson,userid],
+                function (error, results, fields) {
+                  if (error) throw error;
+                  console.log("Update Done");
+                  con.end(function (error) {
+                    if (error) throw error;
+                    console.log("connection End");
+                  });
+                });
+            }); 
+          }catch (err) {
+            throw new Error(err)
+          }
+        }
+        else{
+          console.log("Nichts leer");
+          var con = mysql.createConnection(conConfig); 
+          try{   
+            con.connect(function (error) {
+              if (error) throw error;
+              console.log("connected");
+              con.query('UPDATE users SET ? where userid = ?; UPDATE person SET ? where personid = ?;', [valueListUser,userid,valueListPerson, userid],
+                function (error, results, fields) {
+                  if (error) throw error;
+                  console.log("Update Done");
+                  con.end(function (error) {
+                    if (error) throw error;
+                    console.log("connection End");
+                  });
+                });
+            });
+          }catch (err) {
+            throw new Error(err)
+          }
+        }
+        
+      }
+      //WG
+      if(req.query.kindOfUser=="wg"){
+        var con = mysql.createConnection(conConfig); 
+        try{   
           con.connect(function (error) {
             if (error) throw error;
             console.log("connected");
@@ -631,61 +814,10 @@ app.get('/settings', verifyToken, function (req, res) {
                   console.log("connection End");
                 });
               });
-           }); 
-        }
-        else if(!req.query.Raucher && !req.query.Lautstaerke && !req.query.Kochen && !req.query.AktuellSuchend){
-          
-          console.log("Raucher, Lautstaerke,Kochen, Suchend leer");
-          var con = mysql.createConnection(conConfig);    
-          con.connect(function (error) {
-            if (error) throw error;
-            console.log("connected");
-            con.query('UPDATE person SET ? where personid = ?;', [valueListPerson,userid],
-              function (error, results, fields) {
-                if (error) throw error;
-                console.log("Update Done");
-                con.end(function (error) {
-                  if (error) throw error;
-                  console.log("connection End");
-                });
-              });
-           }); 
-        }
-        else{
-          console.log("Nichts leer");
-          var con = mysql.createConnection(conConfig);    
-          con.connect(function (error) {
-            if (error) throw error;
-            console.log("connected");
-            con.query('UPDATE users SET ? where userid = ?; UPDATE person SET ? where personid = ?;', [valueListUser,userid,valueListPerson, userid],
-              function (error, results, fields) {
-                if (error) throw error;
-                console.log("Update Done");
-                con.end(function (error) {
-                  if (error) throw error;
-                  console.log("connection End");
-                });
-              });
           });
+        }catch (err) {
+          throw new Error(err)
         }
-        
-      }
-      //WG
-      if(req.query.kindOfUser=="wg"){
-        var con = mysql.createConnection(conConfig);    
-        con.connect(function (error) {
-          if (error) throw error;
-          console.log("connected");
-          con.query('UPDATE users SET ? where userid = ?;', [valueListUser,userid],
-            function (error, results, fields) {
-              if (error) throw error;
-              console.log("Update Done");
-              con.end(function (error) {
-                if (error) throw error;
-                console.log("connection End");
-              });
-            });
-        });
       }
       
     }
