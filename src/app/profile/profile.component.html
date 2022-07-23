@@ -4,7 +4,7 @@
       (swipeleft)='startAnimation("swipeleft")' 
       (swiperight)='startAnimation("swiperight")'
 >
-    <td><img src="assets/testimg/IMG_7121.JPG" title="tphoto" alt="Tinder Photo" /></td>
+    <td><img src={{currentUser.profilepic}} title="tphoto" alt="Tinder Photo" /></td>
     <div class="tname">
         {{currentUser.username}}, <span class="age">{{currentUser.city}}</span>
     </div>

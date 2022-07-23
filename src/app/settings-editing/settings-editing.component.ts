@@ -15,7 +15,26 @@ import { resetFakeAsyncZone } from '@angular/core/testing';
 })
 export class SettingsEditingComponent implements OnInit {
 
-  fileToUpload: File | null = null;
+  loading: boolean = false; // Flag variable
+  file: File = {
+    lastModified: 0,
+    name: '',
+    webkitRelativePath: '',
+    size: 0,
+    type: '',
+    arrayBuffer: function (): Promise<ArrayBuffer> {
+      throw new Error('Function not implemented.');
+    },
+    slice: function (start?: number | undefined, end?: number | undefined, contentType?: string | undefined): Blob {
+      throw new Error('Function not implemented.');
+    },
+    stream: function (): ReadableStream<Uint8Array> {
+      throw new Error('Function not implemented.');
+    },
+    text: function (): Promise<string> {
+      throw new Error('Function not implemented.');
+    }
+  }; // Variable to store file
 
   constructor(private http: HttpClient, private router: Router, public datepipe: DatePipe) { }
 
@@ -162,6 +181,16 @@ export class SettingsEditingComponent implements OnInit {
       this.Kochen = this.CtrlKochen = userData.cook;
       this.AktuellSuchend = this.CtrlAktuellSuchend = userData.searching;
       this.Profilbild = this.CtrlProfilbild = userData.profilepic;
+
+      if(this.Profilbild == null){
+        
+        this.Profilbild = this.CtrlProfilbild = userData.profilepic = 'assets/Profilbild_default.jpg';
+      }else{
+        this.Profilbild = 'assets/Profilbild_default.jpg';
+        console.log("profilepic default")
+        this.Profilbild = this.CtrlProfilbild = userData.profilepic
+        console.log("profilepic " + userData.profilepic)
+      }
 
       console.log("this.kindOfUser: "+this.kindOfUser);
       console.log("search city: "+userData.searchcity);
@@ -502,14 +531,45 @@ export class SettingsEditingComponent implements OnInit {
       this.changeDoneMessage = "Änderungen gespeichert"
   }
 
-  handleFileInput(files: any) {
+  /*handleFileInput(files: FileList) {
+    console.log(files);
     this.fileToUpload = files.item(0);
 
     this.http.post<any>("uploadPhoto", { body: this.fileToUpload }).subscribe((result) => {
       console.log(result);
     });
+  }*/
+
+  // On file Select
+  onChange(event: any) {
+    this.file = event.target.files[0];
   }
-  
+
+  // OnClick of button Upload
+  onUpload() {
+      
+    if(this.file.name != ''){
+      // Create form data
+      const formData = new FormData(); 
+              
+      // Store form name as "file" with file data
+      formData.append("file", this.file, this.file.name);
+
+      console.log(formData);
+      this.http.post<any>("uploadProfilePic", formData).subscribe((result) => {
+        console.log("result from uploadProfilePic");
+        console.log(result);
+        this.getUser();
+        setTimeout(()=>{ window.location.reload(); }, 2000)
+      },
+      err => {
+        console.log("err from uploadProfilePic");
+        console.log(err);
+        this.getUser();
+        setTimeout(()=>{ window.location.reload(); }, 2000)
+      });
+    }
+  } 
 }
 
 

@@ -10,9 +10,17 @@
 <!--______________________________________________Formular Accountdaten__________________________________________________________________________________________-->
 <div class="login-page">
 
-  <input type="file" class="file-upload" onchange="handleFileInput(event.target.files)">
-
   <div class="form">
+    <td><img src={{Profilbild}} title="tphoto" alt="Profilphoto" /></td>
+    <div class="text-center">
+      <input class="form-control" type="file" 
+              (change)="onChange($event)">
+  
+      <button (click)="onUpload()" 
+          class="btn btn-success">
+          Profilbild Hochladen
+      </button>
+    </div>
 
     <div *ngIf="showForm=='account'">
 
