@@ -1,12 +1,21 @@
 
+.chats{
+    display: flex;
+    flex-direction: column;
+    height: 844px;
+    width: 390px;
+}
 
+.chat-nav{
+    margin: 20px;
+}
 .profile{
     display: flex;
     flex-direction: row;
     /* justify-content: space-between; */
     
     width: 350px;
-    height: 75px;
+    height: 90px;
 
     margin-left: 20px;
     margin-right: 20px;
@@ -23,8 +32,8 @@
 }
 
 .profile img{
-    width: 55px;
-    height: 55px;
+    width: 70px;
+    height: 70px;
     border-radius: 50%;
     margin: 10px;
     margin-left: 0px;

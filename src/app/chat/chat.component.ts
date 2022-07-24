@@ -24,6 +24,8 @@ export class ChatComponent implements OnInit {
     this.loggedInUser = JSON.parse(this.loggedInUser);
 
     this.getChats(this.loggedInUser);
+
+    
   }
 
   getChats(data: any) {
@@ -52,6 +54,10 @@ export class ChatComponent implements OnInit {
     console.log(data);
     localStorage.setItem("currentChat", data.chatid);
     this.router.navigate(['/chatverlaeufe']);
+  }
+
+  openMain(){
+    this.router.navigate(['/mainUI'])
   }
   
 
