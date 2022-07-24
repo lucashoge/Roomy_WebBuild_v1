@@ -48,14 +48,7 @@ wss.on("connection", ws => {
       //log the received message and send it back to the client
       console.log('received: %s', message);
       //send back the message to the other clients
-      wss.clients
-          .forEach(client => {
-              if (client != ws) {
-                console.log("Client obj:")
-                console.log(client)
-                client.send("updateChat()");
-              }    
-          });
+      
   });
   // handling what to do when clients disconnects from server
   ws.on("close", () => {
