@@ -53,7 +53,7 @@ export class ChatComponent implements OnInit {
           }else{
             this.chatResult[index].lastText = "";
           }
-          this.chatResult[index].lastMessage = this.datepipe.transform(this.chatResult[index].lastMessage, 'yyyy-MM-dd');        
+          this.chatResult[index].lastMessage = this.datepipe.transform(this.chatResult[index].lastMessage, 'dd.MM');        
         },
         err => {
           console.log("Error");
