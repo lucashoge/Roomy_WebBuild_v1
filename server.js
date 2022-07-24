@@ -1067,10 +1067,11 @@ app.get('/settings', verifyToken, function (req, res) {
       var limit = req.body.body.limit;
       var minUserID = req.body.body.minUserId;
       var userid = [req.userId];
+      var sendingUser = req.body.body.sendingUser;
 
       var sqlQuery = "";
 
-      if(req.body.body.usertype == "wg"){
+      if(req.body.body.sendingUser.usertype == "wg"){
         userType = "person";
 
         sqlQuery = 'SELECT * FROM 22_DB_Gruppe3.users'
@@ -1078,17 +1079,41 @@ app.get('/settings', verifyToken, function (req, res) {
         + ' LEFT JOIN 22_DB_Gruppe3.match AS matchTable ON userid=matchTable.fk_personid'
         + ' WHERE usertype="' + userType + '" AND userid>' + minUserID +''
         + ' AND (matchTable.wgseen=0 OR matchTable.wgseen IS NULL) AND (matchTable.fk_wgid="'+userid+'" OR matchTable.fk_wgid IS NULL)'
-        + ' limit ' + limit + ';';
+        + ' AND (users.searching=1 OR users.searching IS NULL) '
+
+        if(sendingUser.smoker)
+          sqlQuery = sqlQuery + 'AND (users.smoker='+sendingUser.smoker+' OR users.smoker IS NULL) ';
+        if(sendingUser.volume)
+          sqlQuery = sqlQuery + 'AND ((users.volume<'+sendingUser.volume+'+4 AND users.volume >'+sendingUser.volume+'-4) OR users.volume IS NULL) '
+        if(sendingUser.tidiness)
+          sqlQuery = sqlQuery + 'AND ((users.tidiness<'+sendingUser.tidiness+'+4 AND users.tidiness >'+sendingUser.tidiness+'-4) OR users.tidiness IS NULL) '
+        if(sendingUser.cook)
+          sqlQuery = sqlQuery  + 'AND ((users.cook<'+sendingUser.cook+'+4 AND users.cook >'+sendingUser.cook+'-4) OR users.cook IS NULL) '
+        
+        sqlQuery = sqlQuery + 'limit ' + limit + ';';
+
+        
 
       }else{
         userType = "wg";
 
-        sqlQuery = 'SELECT * FROM 22_DB_Gruppe3.users'
-        + ' LEFT JOIN 22_DB_Gruppe3.wg AS wgTable ON userid=wgTable.wgid'
-        + ' LEFT JOIN 22_DB_Gruppe3.match AS matchTable ON userid=matchTable.fk_wgid'
-        + ' WHERE usertype="' + userType + '" AND userid>' + minUserID +''
-        + ' AND (matchTable.personseen=0 OR matchTable.personseen IS NULL) AND (matchTable.fk_personid="'+userid+'" OR matchTable.fk_personid IS NULL)'
-        + ' limit ' + limit + ';';
+        sqlQuery = 'SELECT * FROM 22_DB_Gruppe3.users '
+        + 'LEFT JOIN 22_DB_Gruppe3.wg AS wgTable ON userid=wgTable.wgid '
+        + 'LEFT JOIN 22_DB_Gruppe3.match AS matchTable ON userid=matchTable.fk_wgid '
+        + 'WHERE usertype="'+userType+'" AND userid>' + minUserID +' '
+        + 'AND (matchTable.personseen=0 OR matchTable.personseen IS NULL) '
+        + 'AND (matchTable.fk_personid="'+userid+'" OR matchTable.fk_personid IS NULL) '
+        + 'AND (users.searching=1 OR users.searching IS NULL) '
+        if(sendingUser.smoker)
+          sqlQuery = sqlQuery + 'AND (users.smoker='+sendingUser.smoker+' OR users.smoker IS NULL) ';
+        if(sendingUser.volume)
+          sqlQuery = sqlQuery + 'AND ((users.volume<'+sendingUser.volume+'+4 AND users.volume >'+sendingUser.volume+'-4) OR users.volume IS NULL) '
+        if(sendingUser.tidiness)
+          sqlQuery = sqlQuery + 'AND ((users.tidiness<'+sendingUser.tidiness+'+4 AND users.tidiness >'+sendingUser.tidiness+'-4) OR users.tidiness IS NULL) '
+        if(sendingUser.cook)
+          sqlQuery = sqlQuery  + 'AND ((users.cook<'+sendingUser.cook+'+4 AND users.cook >'+sendingUser.cook+'-4) OR users.cook IS NULL) '
+        
+        sqlQuery = sqlQuery + 'limit ' + limit + ';';
       }
 
       console.log(sqlQuery);

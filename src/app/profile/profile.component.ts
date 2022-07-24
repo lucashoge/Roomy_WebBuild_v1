@@ -102,7 +102,7 @@ export class ProfileComponent {
   }
 
   async getNewUsersForMatching() {
-    var httpPostData = {minUserId: this.userID, usertype: this.loggedInUser.usertype, limit: "3"};
+    var httpPostData = {minUserId: this.userID, sendingUser: this.loggedInUser, limit: "3"};
     this.http.post<any>("getUsersFromIdUpwards", { body: httpPostData}).subscribe((result) => {
       
       this.users = result;
