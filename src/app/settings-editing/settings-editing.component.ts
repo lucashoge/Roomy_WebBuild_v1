@@ -7,6 +7,8 @@ import { MatCheckboxChange } from '@angular/material/checkbox';
 import { NativeDateAdapter } from '@angular/material/core';
 import { DatePipe } from '@angular/common';
 import { resetFakeAsyncZone } from '@angular/core/testing';
+import { AuthService } from '../auth.service';
+
 
 @Component({
   selector: 'app-settings-editing',
@@ -36,7 +38,11 @@ export class SettingsEditingComponent implements OnInit {
     }
   }; // Variable to store file
 
-  constructor(private http: HttpClient, private router: Router, public datepipe: DatePipe) { }
+  constructor(private http: HttpClient, private router: Router, public datepipe: DatePipe, public auth: AuthService) { }
+
+  openMain(){
+    this.router.navigate(['/mainUI'])
+  }
 
   ngOnInit(): void {
     this.getUser();
@@ -570,6 +576,7 @@ export class SettingsEditingComponent implements OnInit {
       });
     }
   } 
+
 }
 
 

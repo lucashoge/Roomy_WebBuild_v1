@@ -34,6 +34,16 @@ export class MainUiComponent {
       this.parentSubject.next(value);
   }
 
+  openSettings(){
+    this.router.navigate(['/settings'])
+
+  }
+
+  openChat(){
+    this.router.navigate(['/chat'])
+
+  }
+
 
   
 
