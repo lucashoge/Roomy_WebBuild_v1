@@ -13,7 +13,7 @@ export class ChatComponent implements OnInit {
 
   constructor(private http: HttpClient, private router: Router, private handleToken: HandleTokenErrorService) { }
 
-  chatResult: any;
+  chatResult: any[] = [];
   fetchError: any;
   currentChatView = "";
   loggedInUser: any;
@@ -35,7 +35,32 @@ export class ChatComponent implements OnInit {
     this.http.post<any>("allChatsFromPerson", { body: null }).subscribe((result) => {
       
       this.chatResult = result;
+      console.log("this.chatResult");
       console.log(this.chatResult);
+
+      this.chatResult.forEach((element, index, arr) => {
+        console.log("element")
+        console.log(element)
+        this.http.post<any>("chatEntriesFromID", { body: {chatid: element.chatid} }).subscribe((result) => {
+          console.log("result")
+          console.log(result)
+          if(result.length > 0){
+            this.chatResult[index].lastText = result[result.length-1].msgText;
+          }else{
+            this.chatResult[index].lastText = "";
+          }
+          
+          
+        },
+        err => {
+          console.log("Error");
+          if (err instanceof HttpErrorResponse) {
+            /*           if(err.status==401){
+                this.handleToken.handleTokenError();
+              }  */
+          }
+        });
+      });
     },
     err => {
       if (err instanceof HttpErrorResponse) {

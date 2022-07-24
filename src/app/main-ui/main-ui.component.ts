@@ -19,6 +19,7 @@ import { AuthService } from '../auth.service';
 export class MainUiComponent {
 
   loggedInUser: any;
+  toggleMatchAnimation: boolean = false;
 
   parentSubject:Subject<string> = new Subject();
 
@@ -42,6 +43,11 @@ export class MainUiComponent {
   openChat(){
     this.router.navigate(['/chat'])
 
+  }
+
+  matchFoundEvent(event: any){
+    console.log("matchFoundEvent toggled!")
+    this.toggleMatchAnimation = true;
   }
 
 
