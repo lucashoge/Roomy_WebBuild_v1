@@ -1,5 +1,23 @@
 <H2>Chat</H2>
 
 <div *ngFor="let resultObj of chatResult">
-    <li (click)="onChatClick(resultObj)"> {{ resultObj.username }} </li>
+    <div class="profile" (click)="onChatClick(resultObj)" style="cursor: pointer;">
+        <div class="profile-pic">
+            <img src={{resultObj.profilepic}} alt="">
+        </div>
+        <!-- <div class="name">
+            <h2>
+                {{ resultObj.username }}
+            </h2>
+        </div> -->
+
+        <h2>
+            {{ resultObj.username }}
+        </h2>
+        <!-- <a class="chatbutton" (click)="onChatClick(resultObj)"></a> -->
+    </div>
+    <!-- <li class="profile-pic" (click)="onChatClick(resultObj)"> 
+        {{ resultObj.username }} 
+    </li> -->
+    
 </div>

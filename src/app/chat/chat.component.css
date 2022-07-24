@@ -1,0 +1,38 @@
+
+
+.profile{
+    display: flex;
+    flex-direction: row;
+    /* justify-content: space-between; */
+    
+    width: 350px;
+    height: 75px;
+
+    margin-left: 20px;
+    margin-right: 20px;
+
+    border-bottom: 3px solid #f8f8f8;
+}
+
+.profile a{
+    position: absolute;
+    display: block;
+    width: 100%;
+    height: 100%;
+    text-decoration: none;
+}
+
+.profile img{
+    width: 55px;
+    height: 55px;
+    border-radius: 50%;
+    margin: 10px;
+    margin-left: 0px;
+    float: left;
+}
+
+.profile H2{
+    font-size: 20px;
+    margin-top: 10px;
+    margin-bottom: 0px;
+}
