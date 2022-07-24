@@ -246,6 +246,7 @@ app.post('/register', function (req, res) {
         con.query('INSERT INTO users SET ?;INSERT INTO person(personid)  select MAX(userid) as newid FROM users; UPDATE person SET ? where personid = (SELECT MAX(userid) FROM users); ', [{ username: req.body.body.Username, email: req.body.body.Email, password: hashedPassword, usertype: req.body.body.kindOfUser },{ firstname: req.body.body.Vorname, surname: req.body.body.Nachname, gender: req.body.body.Geschlecht, birthdate: req.body.body.Geburtsdatum }],
           function (error, results, fields) {
             if (error) throw error;
+            res.sendStatus(200);
             console.log(results[0]);
             console.log(results[1]);
             console.log(results[2]);
@@ -270,6 +271,7 @@ app.post('/register', function (req, res) {
           con.query('INSERT INTO users SET ?;INSERT INTO wg(wgid)  select MAX(userid) as newid FROM users; UPDATE wg SET ? where wgid = (SELECT MAX(userid) FROM users); ', [{ username: req.body.body.Username, email: req.body.body.Email, password: hashedPassword, usertype: req.body.body.kindOfUser },{ wgname: req.body.body.WGName, postcode: req.body.body.Postleitzahl, city: req.body.body.Stadt, country: req.body.body.Land }],
             function (error, results, fields) {
               if (error) throw error;
+              res.sendStatus(200);
               console.log(results[0]);
               console.log(results[1]);
               console.log(results[2]);
@@ -517,6 +519,7 @@ app.get('/settings', verifyToken, function (req, res) {
             con.query('UPDATE users SET ? WHERE userid = ?;', [{ email: req.query.Email},userid],
               function (error, results, fields) {
                 if (error) throw error;
+                res.sendStatus(200);
                 console.log("Update Done");
                 con.end(function (error) {
                   if (error) throw error;
@@ -540,6 +543,7 @@ app.get('/settings', verifyToken, function (req, res) {
             con.query('UPDATE users SET ? where userid = ?;', [{ username: req.query.Username},userid],
               function (error, results, fields) {
                 if (error) throw error;
+                res.sendStatus(200);
                 console.log("Update Done");
                 con.end(function (error) {
                   if (error) throw error;
@@ -565,6 +569,7 @@ app.get('/settings', verifyToken, function (req, res) {
             con.query('UPDATE users SET ? where userid = ?;', [{ password: hashedPassword},userid],
               function (error, results, fields) {
                 if (error) throw error;
+                res.sendStatus(200);
                 console.log("Update Done");
                 con.end(function (error) {
                   if (error) throw error;
@@ -672,6 +677,7 @@ app.get('/settings', verifyToken, function (req, res) {
               con.query(sqlQuery, value,
                 function (error, results, fields) {
                   if (error) throw error;
+                  res.sendStatus(200);
                   console.log("Update Done");
                   con.end(function (error) {
                     if (error) throw error;
@@ -707,6 +713,7 @@ app.get('/settings', verifyToken, function (req, res) {
               con.query(sqlQuery, value,
                 function (error, results, fields) {
                   if (error) throw error;
+                  res.sendStatus(200);
                   console.log("Update Done");
                   con.end(function (error) {
                     if (error) throw error;
@@ -782,6 +789,7 @@ app.get('/settings', verifyToken, function (req, res) {
               con.query('UPDATE users SET ? where userid = ?;', [valueListUser,userid],
                 function (error, results, fields) {
                   if (error) throw error;
+                  res.sendStatus(200);
                   console.log("Update Done");
                   con.end(function (error) {
                     if (error) throw error;
@@ -804,6 +812,7 @@ app.get('/settings', verifyToken, function (req, res) {
               con.query('UPDATE person SET ? where personid = ?;', [valueListPerson,userid],
                 function (error, results, fields) {
                   if (error) throw error;
+                  res.sendStatus(200);
                   console.log("Update Done");
                   con.end(function (error) {
                     if (error) throw error;
@@ -825,6 +834,7 @@ app.get('/settings', verifyToken, function (req, res) {
               con.query('UPDATE users SET ? where userid = ?; UPDATE person SET ? where personid = ?;', [valueListUser,userid,valueListPerson, userid],
                 function (error, results, fields) {
                   if (error) throw error;
+                  res.sendStatus(200);
                   console.log("Update Done");
                   con.end(function (error) {
                     if (error) throw error;
@@ -848,6 +858,7 @@ app.get('/settings', verifyToken, function (req, res) {
             con.query('UPDATE users SET ? where userid = ?;', [valueListUser,userid],
               function (error, results, fields) {
                 if (error) throw error;
+                res.sendStatus(200);
                 console.log("Update Done");
                 con.end(function (error) {
                   if (error) throw error;
@@ -865,7 +876,10 @@ app.get('/settings', verifyToken, function (req, res) {
 
 
 
-    else{console.log("nothing done");}
+    else{
+      console.log("nothing done");
+      res.sendStatus(200);
+    }
 
 });
 
@@ -1176,6 +1190,7 @@ app.get('/settings', verifyToken, function (req, res) {
               res.send(stringify(results));
               con.end(function (error) {
                 if (error) throw error;
+                res.sendStatus(200);
                 console.log("connection End");
               });
             });

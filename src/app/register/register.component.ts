@@ -60,6 +60,7 @@ export class RegisterComponent implements OnInit {
   
   
   sendRegister(data: any) {
+    console.log("_______________________________________________________Sending Register");
     var userFlag = {
       "kindOfUser":this.kindOfUser
     };
