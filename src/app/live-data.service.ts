@@ -1,4 +1,4 @@
-import { Injectable } from "@angular/core";
+import { Component, Injectable } from "@angular/core";
 import { Observable, Observer } from 'rxjs';
 import { AnonymousSubject } from 'rxjs/internal/Subject';
 import { Subject } from 'rxjs';
@@ -12,6 +12,11 @@ export interface Message {
 }
 
 @Injectable()
+@Component({
+  providers: [LiveDataService],
+})
+
+
 export class LiveDataService {
   private subject!: AnonymousSubject<MessageEvent>;
   public messages: Subject<Message>;

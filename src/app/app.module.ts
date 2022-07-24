@@ -20,6 +20,7 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ChatverlaeufeComponent } from './chatverlaeufe/chatverlaeufe.component';
 import { AuthInterceptor } from './auth-interceptor.interceptor';
 import { AuthGuard } from './auth.guard.guard';
+
 import { DatePipe } from '@angular/common';
 import {MatSliderModule,} from '@angular/material/slider'; 
 import {MatCheckboxModule} from '@angular/material/checkbox';
@@ -71,7 +72,8 @@ import { ProfileViewComponent } from './profile-view/profile-view.component';
       },
       {
         path: 'chatverlaeufe',
-        component: ChatverlaeufeComponent
+        component: ChatverlaeufeComponent,
+        canActivate: [AuthGuard]
       },
       {
         path: 'match',
