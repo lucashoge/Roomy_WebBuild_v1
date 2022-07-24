@@ -13,6 +13,7 @@ var jwt = require('jsonwebtoken');
 var fs = require("fs");
 var formidable = require('formidable');
 var glob = require("glob")
+var passwordHash = require('password-hash');
 
 // configuration =================
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -91,20 +92,22 @@ app.get('/api/login', function (req, res) {
 
   var con = mysql.createConnection(conConfig);
   var userData = ["", ""];
-
+  var hashedPassword = passwordHash.generate(req.query.password);
   if (req.query.Username && req.query.password) {
-    userData = [req.query.Username, req.query.password];
+    userData = [req.query.Username, hashedPassword];
   }
 
   try{
     con.connect(function (error) {
       if (error) throw error;
       console.log("connected");
-      con.query("SELECT username, userid FROM users WHERE username = ? AND password = ?;", userData, function (error, results, fields) {
+      con.query("SELECT username, userid, password FROM users WHERE username = ?;", userData, function (error, results, fields) {
         if (error) throw error;
-        if (results != "") {
+        if (results != "" && passwordHash.verify(req.query.password, results[0].password)) {
           console.log(results[0].userid);
-
+          console.log("______________________");
+          console.log(results[0].password)
+          console.log(passwordHash.verify(req.query.password, results[0].password));
           payload = { subject: stringify(results[0].userid) };
 
           const jwtBearerToken = jwt.sign({}, privateKey, {
@@ -205,6 +208,8 @@ app.get('/register', function (req, res) {
 app.post('/register', function (req, res) {
   console.log("Start");
   console.log(req.body);
+  //Hash Password
+  var hashedPassword = passwordHash.generate(req.body.body.Passwort);
   if(req.body.body.kindOfUser=='person'){
     console.log("Person");
     //Person
@@ -213,7 +218,7 @@ app.post('/register', function (req, res) {
       con.connect(function (error) {
         if (error) throw error;
         console.log("connected");
-        con.query('INSERT INTO users SET ?;INSERT INTO person(personid)  select MAX(userid) as newid FROM users; UPDATE person SET ? where personid = (SELECT MAX(userid) FROM users); ', [{ username: req.body.body.Username, email: req.body.body.Email, password: req.body.body.Passwort, usertype: req.body.body.kindOfUser },{ firstname: req.body.body.Vorname, surname: req.body.body.Nachname, gender: req.body.body.Geschlecht, birthdate: req.body.body.Geburtsdatum }],
+        con.query('INSERT INTO users SET ?;INSERT INTO person(personid)  select MAX(userid) as newid FROM users; UPDATE person SET ? where personid = (SELECT MAX(userid) FROM users); ', [{ username: req.body.body.Username, email: req.body.body.Email, password: hashedPassword, usertype: req.body.body.kindOfUser },{ firstname: req.body.body.Vorname, surname: req.body.body.Nachname, gender: req.body.body.Geschlecht, birthdate: req.body.body.Geburtsdatum }],
           function (error, results, fields) {
             if (error) throw error;
             console.log(results[0]);
@@ -237,7 +242,7 @@ app.post('/register', function (req, res) {
         con.connect(function (error) {
           if (error) throw error;
           console.log("connected");
-          con.query('INSERT INTO users SET ?;INSERT INTO wg(wgid)  select MAX(userid) as newid FROM users; UPDATE wg SET ? where wgid = (SELECT MAX(userid) FROM users); ', [{ username: req.body.body.Username, email: req.body.body.Email, password: req.body.body.Passwort, usertype: req.body.body.kindOfUser },{ wgname: req.body.body.WGName, postcode: req.body.body.Postleitzahl, city: req.body.body.Stadt, country: req.body.body.Land }],
+          con.query('INSERT INTO users SET ?;INSERT INTO wg(wgid)  select MAX(userid) as newid FROM users; UPDATE wg SET ? where wgid = (SELECT MAX(userid) FROM users); ', [{ username: req.body.body.Username, email: req.body.body.Email, password: hashedPassword, usertype: req.body.body.kindOfUser },{ wgname: req.body.body.WGName, postcode: req.body.body.Postleitzahl, city: req.body.body.Stadt, country: req.body.body.Land }],
             function (error, results, fields) {
               if (error) throw error;
               console.log(results[0]);
@@ -443,8 +448,7 @@ app.get('/settings', verifyToken, function (req, res) {
         con.connect(function (error) {
           if (error) throw error;
           console.log("connected");
-          console.log(req.query.passwort);
-          //Abfragen ob Passwort existiert
+          //Abfragen ob Passwort existiert + Hashen
           if (!req.query.passwort) {
             var passwort = "";
           }
@@ -452,18 +456,18 @@ app.get('/settings', verifyToken, function (req, res) {
             passwort = req.query.passwort;
           }
           console.log(passwort);
-          con.query("SELECT COUNT(*) AS 'countPasswords' FROM users WHERE userid = ? AND password = ?;", [userid, passwort], function (error, results, fields) {
+          con.query("SELECT userid, password FROM users WHERE userid = ?;", userid, function (error, results, fields) {
             if (error) throw error;
             console.log("Counted passwords: " + results[0].countPasswords);
-            if (results[0].countPasswords == 0) {
-              //Passwort falsch
-              console.log("Passwort falsch");
-              res.send(stringify("passwordWrong"));
-            }
-            else {
+            if (results[0]!="" && passwordHash.verify(passwort, results[0].password)) {
               //Passwort richtig
               console.log("Passwort richtig");
               res.send(stringify("passwordCorrect"));
+            }
+            else {
+              //Passwort falsch
+              console.log("Passwort falsch");
+              res.send(stringify("passwordWrong"));
             }
           });
           con.end(function (error) {
@@ -525,13 +529,15 @@ app.get('/settings', verifyToken, function (req, res) {
     //___________________________________________________________________________Passwort ändern
     else if(req.query.flag=="changePasswort"){
       console.log("Change Password");
+      console.log(req.query.Passwort);
+      var hashedPassword = passwordHash.generate(req.query.Passwort);
       //Username
       var con = mysql.createConnection(conConfig); 
         try{   
           con.connect(function (error) {
             if (error) throw error;
             console.log("connected");
-            con.query('UPDATE users SET ? where userid = ?;', [{ password: req.query.Passwort},userid],
+            con.query('UPDATE users SET ? where userid = ?;', [{ password: hashedPassword},userid],
               function (error, results, fields) {
                 if (error) throw error;
                 console.log("Update Done");
