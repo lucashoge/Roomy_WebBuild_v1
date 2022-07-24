@@ -105,7 +105,6 @@ app.get('/api/login', function (req, res) {
         if (error) throw error;
         if (results != "" && passwordHash.verify(req.query.password, results[0].password)) {
           console.log(results[0].userid);
-          console.log("______________________");
           console.log(results[0].password)
           console.log(passwordHash.verify(req.query.password, results[0].password));
           payload = { subject: stringify(results[0].userid) };

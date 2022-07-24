@@ -78,7 +78,8 @@ import { ProfileViewComponent } from './profile-view/profile-view.component';
       },
       {
         path: 'chatverlaeufe',
-        component: ChatverlaeufeComponent
+        component: ChatverlaeufeComponent,
+        canActivate: [AuthGuard]
       },
       {
         path: 'match',
