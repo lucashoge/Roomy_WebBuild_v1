@@ -31,6 +31,8 @@ export class ProfileComponent {
   @Input()
   parentSubject!: Subject<any>;
 
+  noMoreProfilesToBrowse: boolean = false;
+
   
   animationState!: string;
 
@@ -58,7 +60,11 @@ export class ProfileComponent {
     
     if(state=="swiperight"){
 
-      this.http.post<any>("submitMatch", { body: {idToMatch: this.currentUser.userid, usertype: this.loggedInUser.usertype} }).subscribe((result) => {
+      this.http.post<any>("submitMatch", { body: {idToMatch: this.currentUser.userid, usertype: this.loggedInUser.usertype, matchValue: 1} }).subscribe((result) => {
+        console.log(result);
+      });
+    }else{
+      this.http.post<any>("submitMatch", { body: {idToMatch: this.currentUser.userid, usertype: this.loggedInUser.usertype, matchValue: 0} }).subscribe((result) => {
         console.log(result);
       });
     }  
@@ -87,7 +93,7 @@ export class ProfileComponent {
   }
 
   async getNewUsersForMatching() {
-    var httpPostData = {userId: this.userID, usertype: this.loggedInUser.usertype, limit: "3"};
+    var httpPostData = {minUserId: this.userID, usertype: this.loggedInUser.usertype, limit: "3"};
     this.http.post<any>("getUsersFromIdUpwards", { body: httpPostData}).subscribe((result) => {
       
       this.users = result;
@@ -102,6 +108,9 @@ export class ProfileComponent {
           this.currentUser.profilepic = 'assets/Profilbild_default.jpg'
         }
         console.log("profilePicture: " + this.currentUser.profilepic)
+      }else{
+        this.noMoreProfilesToBrowse = true;
+        this.currentUser = null;
       }
       
     }); 

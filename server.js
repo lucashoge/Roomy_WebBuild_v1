@@ -730,7 +730,7 @@ app.get('/settings', verifyToken, function (req, res) {
       con.connect(function (error) {
         if (error) throw error;
         console.log("connected");
-        con.query('SELECT 22_DB_Gruppe3.chat.chatid,22_DB_Gruppe3.chat.lastMessage, 22_DB_Gruppe3.chat.fk_personid,22_DB_Gruppe3.chat.fk_wgid, userTable.email AS userMail, wgTable.email AS wgMail FROM 22_DB_Gruppe3.chat LEFT JOIN 22_DB_Gruppe3.users AS userTable ON fk_personid=userTable.userid LEFT JOIN 22_DB_Gruppe3.users AS wgTable ON fk_wgid=wgTable.userid WHERE userTable.userid="' + userid +'" OR wgTable.userid="' + userid +'"',
+        con.query('SELECT *, userTable.email AS userMail, wgTable.email AS wgMail FROM 22_DB_Gruppe3.chat LEFT JOIN 22_DB_Gruppe3.users AS userTable ON fk_personid=userTable.userid LEFT JOIN 22_DB_Gruppe3.users AS wgTable ON fk_wgid=wgTable.userid WHERE userTable.userid="' + userid +'" OR wgTable.userid="' + userid +'"',
           function (error, results, fields) {
             if (error) throw error;
             console.log(results);
@@ -863,7 +863,7 @@ app.get('/settings', verifyToken, function (req, res) {
           var sqlQuery = 'SELECT *'
             + ' FROM 22_DB_Gruppe3.match'
             + ' LEFT JOIN 22_DB_Gruppe3.users AS userTable ON fk_wgid=userTable.userid'
-            + ' WHERE 22_DB_Gruppe3.match.fk_personid="' + userid + '" AND (22_DB_Gruppe3.match.wgmatch=1 AND 22_DB_Gruppe3.match.personmatch=0)';
+            + ' WHERE 22_DB_Gruppe3.match.fk_personid="' + userid + '" AND (22_DB_Gruppe3.match.personmatch=0 AND 22_DB_Gruppe3.match.wgmatch=1)';
 
           con.query(sqlQuery,
             function (error, results, fields) {
@@ -923,11 +923,12 @@ app.get('/settings', verifyToken, function (req, res) {
     WHERE userTable.email="hansi@hallo.de" AND (22_DB_Gruppe3.match.wgmatch=0 AND 22_DB_Gruppe3.match.personmatch=1)
     */
 
-    app.post('/getUsersFromIdUpwards', function (req, res) {
+    app.post('/getUsersFromIdUpwards', verifyToken,function (req, res) {
 
       var userType = "";
       var limit = req.body.body.limit;
-      var minUserID = req.body.body.userId;
+      var minUserID = req.body.body.minUserId;
+      var userid = [req.userId];
 
       var sqlQuery = "";
 
@@ -936,7 +937,9 @@ app.get('/settings', verifyToken, function (req, res) {
 
         sqlQuery = 'SELECT * FROM 22_DB_Gruppe3.users'
         + ' LEFT JOIN 22_DB_Gruppe3.person AS personTable ON userid=personTable.personid'
-        + ' WHERE usertype="' + userType + '" AND userid>' + minUserID
+        + ' LEFT JOIN 22_DB_Gruppe3.match AS matchTable ON userid=matchTable.fk_personid'
+        + ' WHERE usertype="' + userType + '" AND userid>' + minUserID +''
+        + ' AND (matchTable.wgseen=0 OR matchTable.wgseen IS NULL) AND (matchTable.fk_wgid="'+userid+'" OR matchTable.fk_wgid IS NULL)'
         + ' limit ' + limit + ';';
 
       }else{
@@ -944,9 +947,13 @@ app.get('/settings', verifyToken, function (req, res) {
 
         sqlQuery = 'SELECT * FROM 22_DB_Gruppe3.users'
         + ' LEFT JOIN 22_DB_Gruppe3.wg AS wgTable ON userid=wgTable.wgid'
-        + ' WHERE usertype="' + userType + '" AND userid>' + minUserID
+        + ' LEFT JOIN 22_DB_Gruppe3.match AS matchTable ON userid=matchTable.fk_wgid'
+        + ' WHERE usertype="' + userType + '" AND userid>' + minUserID +''
+        + ' AND (matchTable.personseen=0 OR matchTable.personseen IS NULL) AND (matchTable.fk_personid="'+userid+'" OR matchTable.fk_personid IS NULL)'
         + ' limit ' + limit + ';';
       }
+
+      console.log(sqlQuery);
 
       var con = mysql.createConnection(conConfig);
     
@@ -980,11 +987,16 @@ app.get('/settings', verifyToken, function (req, res) {
       var userid = [req.userId];
 
       var queryParams = [{}];
+      var sqlQuery0 = '';
       var sqlQuery1 = '';
       var sqlQuery2 = '';
       var sqlQuery3 = '';
 
+      var matchValue = req.body.body.matchValue;
+
       console.log(req.body.body.usertype)
+
+      
 
       if(req.body.body.usertype == "wg"){
         queryParams = [{
@@ -993,9 +1005,10 @@ app.get('/settings', verifyToken, function (req, res) {
           wgmatch: 1,
           personmatch: 0
         }];
+        sqlQuery0 = "SELECT COUNT(*) AS 'countMatches' FROM 22_DB_Gruppe3.match WHERE fk_wgid = " + userid + " AND fk_personid = " + req.body.body.idToMatch;
         sqlQuery1 = "SELECT COUNT(*) AS 'countMatches' FROM 22_DB_Gruppe3.match WHERE fk_wgid = " + userid + " AND fk_personid = " + req.body.body.idToMatch + " AND personmatch=1";
-        sqlQuery2 = 'INSERT INTO 22_DB_Gruppe3.match SET fk_wgid='+userid+', fk_personid='+req.body.body.idToMatch+', personmatch=0, wgmatch=1';
-        sqlQuery3 = 'UPDATE 22_DB_Gruppe3.match SET wgmatch=1 WHERE fk_personid='+req.body.body.idToMatch+' AND fk_wgId='+userid+';'
+        sqlQuery2 = 'INSERT INTO 22_DB_Gruppe3.match SET fk_wgid='+userid+', fk_personid='+req.body.body.idToMatch+', personmatch=0, wgmatch='+matchValue+', wgseen=1';
+        sqlQuery3 = 'UPDATE 22_DB_Gruppe3.match SET wgmatch='+matchValue+', wgseen=1 WHERE fk_personid='+req.body.body.idToMatch+' AND fk_wgId='+userid+';'
       }else{
         queryParams = [{
           fk_personid: userid,
@@ -1003,9 +1016,10 @@ app.get('/settings', verifyToken, function (req, res) {
           personmatch: 1,
           wgmatch: 0
         }];
+        sqlQuery0 = "SELECT COUNT(*) AS 'countMatches' FROM 22_DB_Gruppe3.match WHERE fk_personid = " + userid + " AND fk_wgid = " + req.body.body.idToMatch;
         sqlQuery1 = "SELECT COUNT(*) AS 'countMatches' FROM 22_DB_Gruppe3.match WHERE fk_personid = " + userid + " AND fk_wgid = " + req.body.body.idToMatch + " AND wgmatch=1";
-        sqlQuery2 = 'INSERT INTO 22_DB_Gruppe3.match SET fk_personid='+userid+', fk_wgid='+req.body.body.idToMatch+', personmatch=1, wgmatch=0';
-        sqlQuery3 = 'UPDATE 22_DB_Gruppe3.match SET personmatch=1 WHERE fk_wgid='+req.body.body.idToMatch+' AND fk_personId='+userid+';'
+        sqlQuery2 = 'INSERT INTO 22_DB_Gruppe3.match SET fk_personid='+userid+', fk_wgid='+req.body.body.idToMatch+', personmatch='+matchValue+', personseen=1, wgmatch=0';
+        sqlQuery3 = 'UPDATE 22_DB_Gruppe3.match SET personmatch='+matchValue+', personseen=1 WHERE fk_wgid='+req.body.body.idToMatch+' AND fk_personId='+userid+';'
       }
       var con = mysql.createConnection(conConfig);
     
@@ -1013,60 +1027,118 @@ app.get('/settings', verifyToken, function (req, res) {
           if (error) throw error;
           console.log("connected");
 
-          //check if match from other person/wg is available
+          
+          //Match already in DB
+          //con.query(sqlQuery0, function (error, results, fields) {
 
-          con.query(sqlQuery1, function (error, results, fields) {
+            if (matchValue == 1) {
+
+              //check if match from other person/wg is available
+              con.query(sqlQuery1, function (error, results, fields) {
             
-            console.log("Counted Matches: " + results[0].countMatches);
-            //Wenn keine matches gefunden wurden
-            if (results[0].countMatches == 0) {
-              console.log("kein match gefunden! insert: " + sqlQuery2);
-              console.log(sqlQuery2)
-              con.query(sqlQuery2, function (error, results, fields) {
-                  console.log(results);
-                  res.send(stringify(results));
-
-                  con.end(function (error) {
-                    if (error) throw error;
-                    console.log("connection End");
-                  });
-
-              });
-
-            //Wenn ein match gefunden wurde
-            }else{
-              console.log("match gefunden! update: " + sqlQuery3);
-              con.query(sqlQuery3, function (error, results, fields) {
-                if (error) throw error;
-
-                //Add Chat
-                var sqlQueryChat = "";
-                if(req.body.body.usertype == "wg"){
-                  sqlQueryChat='INSERT INTO 22_DB_Gruppe3.chat SET fk_wgid='+userid+', fk_personid='+req.body.body.idToMatch;
-                }else{
-                  sqlQueryChat='INSERT INTO 22_DB_Gruppe3.chat SET fk_personid='+userid+', fk_wgid='+req.body.body.idToMatch;
-                }
-
-                console.log("Add Chat!!: " + sqlQueryChat);
-                con.query(sqlQueryChat, function (error1, results, fields) {
-                  if (error1) 
-                    console.log(error1)
-                  console.log("chat added?");
-                  console.log(results);
-
-                  con.end(function (error) {
-                    if (error) throw error;
-                    console.log("connection End");
-                  });
-                });
                 
-                console.log(results);
-                res.send(stringify(results));
+                //Wenn keine matches gefunden wurden
+                if (results[0].countMatches == 0) {
+                  console.log("kein match gefunden!");
+
+                  //gibt es schon einen Eintrag in der DB
+                  con.query(sqlQuery0, function (error, results, fields) {
+                    if (results[0].countMatches == 0) {
+
+                      console.log(sqlQuery2)
+                      con.query(sqlQuery2, function (error, results, fields) {
+                        console.log(results);
+                        res.send(stringify(results));
+
+                        con.end(function (error) {
+                          if (error) throw error;
+                          console.log("connection End");
+                        });
+                      });
+                    }else{
+                      con.query(sqlQuery3, function (error, results, fields) {
+                        console.log(results);
+                        con.end(function (error) {
+                          if (error) throw error;
+                          console.log("connection End");
+                        });
+                      });
+                    }
+                  });
+
+                  
+    
+                //Wenn ein match gefunden wurde
+                }else{
+                  console.log("match gefunden! update: " + sqlQuery3);
+                  con.query(sqlQuery3, function (error, results, fields) {
+                    if (error) throw error;
+    
+                    //Add Chat
+                    var sqlQueryChat = "";
+                    if(req.body.body.usertype == "wg"){
+                      sqlQueryChat='INSERT INTO 22_DB_Gruppe3.chat SET fk_wgid='+userid+', fk_personid='+req.body.body.idToMatch;
+                    }else{
+                      sqlQueryChat='INSERT INTO 22_DB_Gruppe3.chat SET fk_personid='+userid+', fk_wgid='+req.body.body.idToMatch;
+                    }
+    
+                    console.log("Add Chat!!: " + sqlQueryChat);
+                    con.query(sqlQueryChat, function (error1, results, fields) {
+                      if (error1) 
+                        console.log(error1)
+                      console.log("chat added?");
+                      console.log(results);
+    
+                      
+                    });
+                    
+                    console.log(results);
+                    res.send(stringify(results));
+                    
+                    con.end(function (error) {
+                      if (error) throw error;
+                      console.log("connection End");
+                    });
+                    
+                  });
+    
+                }  
+              });           
+
+            }else{
+
+              //gibt es schon einen Eintrag in der DB
+              con.query(sqlQuery0, function (error, results, fields) {
+                if (results[0].countMatches == 0) {
+
+                  console.log(sqlQuery2)
+                  con.query(sqlQuery2, function (error, results, fields) {
+                    console.log(results);
+                    res.send(stringify(results));
+
+                    con.end(function (error) {
+                      if (error) throw error;
+                      console.log("connection End");
+                    });
+                  });
+                }else{
+                  con.query(sqlQuery3, function (error, results, fields) {
+                    console.log(results);
+                    con.end(function (error) {
+                      if (error) throw error;
+                      console.log("connection End");
+                    });
+                  });
+                }
               });
 
-            }  
-          });
+            }
 
+            //con.end(function (error) {
+            //  if (error) throw error;
+            //  console.log("connection End");
+            //});
+          //});
         });
     });
 

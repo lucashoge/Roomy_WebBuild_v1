@@ -11,13 +11,18 @@ import { Router } from "@angular/router";
 })
 export class ProfileViewComponent implements OnInit {
 
+  //loggedInUser: any;
+
+  @Input() currentUser!: any;
+  @Input()
+  parentSubject!: Subject<any>;
+
   constructor(private http: HttpClient, private router: Router) {}
   
   ngOnInit(): void {
-  }
 
-  setUserData(userData: any): void {
-
+    //this.loggedInUser = localStorage.getItem('loggedInUser');
+    //this.loggedInUser = JSON.parse(this.loggedInUser);
   }
 
 }
