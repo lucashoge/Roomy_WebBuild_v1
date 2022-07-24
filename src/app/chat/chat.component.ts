@@ -19,7 +19,9 @@ export class ChatComponent implements OnInit {
   currentChatView = "";
   loggedInUser: any;
 
+
   ngOnInit(): void {
+
     console.log("ngOnInit chat component");
     this.loggedInUser = localStorage.getItem('loggedInUser');
     this.loggedInUser = JSON.parse(this.loggedInUser);
@@ -55,7 +57,7 @@ export class ChatComponent implements OnInit {
           }else{
             this.chatResult[index].lastText = "";
           }
-          this.chatResult[index].lastMessage = this.datepipe.transform(this.chatResult[index].lastMessage, 'yyyy-MM-dd');        
+          this.chatResult[index].lastMessage = this.datepipe.transform(this.chatResult[index].lastMessage, 'dd.MM');        
         },
         err => {
           console.log("Error");

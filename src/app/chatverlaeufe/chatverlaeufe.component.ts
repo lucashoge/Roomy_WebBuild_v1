@@ -5,6 +5,7 @@ import { Router } from "@angular/router";
 import { now } from 'moment';
 import { DatePipe } from '@angular/common';
 import { HandleTokenErrorService } from '../handle-token-error.service';
+import { LiveDataService } from '../live-data.service';
 
 @Component({
   selector: 'app-chatverlaeufe',
@@ -14,12 +15,23 @@ import { HandleTokenErrorService } from '../handle-token-error.service';
 export class ChatverlaeufeComponent implements OnInit {
   
   chatid: String|null = "";// = "";
-  chatMessages: any;
+  chatMessages: any[] = [];
   loggedInUser: any;
 
-  constructor(private http: HttpClient, private router: Router, public datepipe: DatePipe, private handleToken: HandleTokenErrorService) { }
+  constructor(
+    private LiveDataService: LiveDataService, 
+    private http: HttpClient, private router: Router, public datepipe: DatePipe, 
+    private handleToken: HandleTokenErrorService) { 
 
+      LiveDataService.messages.subscribe(msg => {
+        this.chatMessages.push(msg);
+        console.log("Response from websocket: " + msg);
+      });
+    }
+
+  
   ngOnInit(): void {
+
     this.loggedInUser = localStorage.getItem('loggedInUser');
     this.loggedInUser = JSON.parse(this.loggedInUser);
 
@@ -40,6 +52,22 @@ export class ChatverlaeufeComponent implements OnInit {
       }
     });
   }
+
+  /*openWebsocket(){
+    var socket = new WebSocket('ws://localhost:9200/connection');
+    socket.onopen = function () {
+      socket.send("Connection opened")
+    };
+    socket.onmessage = function (event) {
+      console.log(event.data);
+      const msg = JSON.parse(event.data);
+      addChatTextsToMessageArray(msg);
+    } 
+  }
+
+  addChatTextsToMessageArray(chatEntry: any){
+    this.chatMessages.push(chatEntry)
+  }*/
 
   submitMessage(event: any) {
     event.preventDefault();
