@@ -595,26 +595,67 @@ app.get('/settings', verifyToken, function (req, res) {
       if(req.query.Preis){
         valueList = Object.assign(valueList, {price: parseFloat(req.query.Preis)});
       }
+      //Haustiere
+      var valueListPet={};
+      if(req.query.Hund=="true"){
+        valueListPet = Object.assign(valueListPet, {dog: true});
+      }
+      else if(req.query.Hund=="false"){
+        valueListPet = Object.assign(valueListPet, {dog: false});
+      }
+      if(req.query.Katze=="true"){
+        valueListPet = Object.assign(valueListPet, {cat: true});
+      }
+      else if(req.query.Katze=="false"){
+        valueListPet = Object.assign(valueListPet, {cat: false});
+      }
+      if(req.query.Vogel=="true"){
+        valueListPet = Object.assign(valueListPet, {bird: true});
+      }
+      else if(req.query.Vogel=="false"){
+        valueListPet = Object.assign(valueListPet, {bird: false});
+      }
+      if(req.query.AndereTiere=="true"){
+        valueListPet = Object.assign(valueListPet, {others: true});
+      }
+      else if(req.query.AndereTiere=="false"){
+        valueListPet = Object.assign(valueListPet, {others: false});
+      }
+
+
       //Person
       if(req.query.kindOfUser=="person"){
-        var con = mysql.createConnection(conConfig);    
+        console.log("Ändere Pweson Profil Settings");
+        var con = mysql.createConnection(conConfig);  
+        var sqlQuery="";  
+        var value=[];
         try{
-          if(Object.keys(valueList).length >0){
-            con.connect(function (error) {
-            if (error) throw error;
-            console.log("connected");
-            con.query('UPDATE person SET ? where personid = ?;', [valueList,userid],
-              function (error, results, fields) {
-                if (error) throw error;
-                console.log("Update Done");
-                con.end(function (error) {
-                  if (error) throw error;
-                  console.log("connection End");
-                });
-              });
-          });
-          }
+          if(Object.keys(valueList).length >0 || Object.keys(valueListPet).length >0){
+            if(Object.keys(valueList).length >0){
+              sqlQuery = sqlQuery+'UPDATE person SET ? where personid = ?;'
+              value.push(valueList);
+              value.push(userid);
+            }
+            if(Object.keys(valueListPet).length >0){
+              sqlQuery = sqlQuery + 'UPDATE pet SET ? where petid = ?;'
+              value.push(valueListPet);
+              value.push(userid);
+            }
           
+            con.connect(function (error) {
+              if (error) throw error;
+              console.log("connected");
+              con.query(sqlQuery, value,
+                function (error, results, fields) {
+                  if (error) throw error;
+                  console.log("Update Done");
+                  con.end(function (error) {
+                    if (error) throw error;
+                    console.log("connection End");
+                  });
+                });
+            });
+          }
         }catch (err) {
           throw new Error(err)
         }
@@ -643,57 +684,7 @@ app.get('/settings', verifyToken, function (req, res) {
         }
       }
 
-      //Haustiere
-      var valueListPet={};
-      if(req.query.Hund=="true"){
-        valueListPet = Object.assign(valueListPet, {dog: true});
-      }
-      else if(req.query.Hund=="false"){
-        valueListPet = Object.assign(valueListPet, {dog: false});
-      }
-      if(req.query.Katze=="true"){
-        valueListPet = Object.assign(valueListPet, {cat: true});
-      }
-      else if(req.query.Katze=="false"){
-        valueListPet = Object.assign(valueListPet, {cat: false});
-      }
-      if(req.query.Vogel=="true"){
-        valueListPet = Object.assign(valueListPet, {bird: true});
-      }
-      else if(req.query.Vogel=="false"){
-        valueListPet = Object.assign(valueListPet, {bird: false});
-      }
-      if(req.query.AndereTiere=="true"){
-        valueListPet = Object.assign(valueListPet, {others: true});
-      }
-      else if(req.query.AndereTiere=="false"){
-        valueListPet = Object.assign(valueListPet, {others: false});
-      }
-
-      if(Object.keys(valueListPet).length >0){
-
-        console.log("Change Pets_________________");
-        var con = mysql.createConnection(conConfig);  
-        try{  
-          con.connect(function (error) {
-            if (error) throw error;
-            console.log("connected");
-            con.query('UPDATE pet SET ? where petid = ?;', [valueListPet,userid],
-              function (error, results, fields) {
-                if (error) throw error;
-                console.log("Update Done");
-                con.end(function (error) {
-                  if (error) throw error;
-                  console.log("connection End");
-                });
-            });
-          });
-        }catch (err) {
-          throw new Error(err)
-        }
-      }
-
-
+      
 
     }
 
