@@ -1,8 +1,5 @@
-<br>
-<br>
-<br>
-<ul>
-    <li *ngFor="let resultObj of chatResult">
-        <button (click)="onChatClick(resultObj)"> {{ resultObj.userMail }} </button>
-    </li>
-</ul>
+<H2>Chat</H2>
+
+<div *ngFor="let resultObj of chatResult">
+    <li (click)="onChatClick(resultObj)"> {{ resultObj.username }} </li>
+</div>

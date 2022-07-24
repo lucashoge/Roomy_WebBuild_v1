@@ -37,7 +37,7 @@ export class SettingsEditingComponent implements OnInit {
     }
   }; // Variable to store file
 
-  constructor(private http: HttpClient, private router: Router, public datepipe: DatePipe, private handleToken: HandleTokenErrorService){ }
+  constructor(public auth :AuthService, private http: HttpClient, private router: Router, public datepipe: DatePipe, private handleToken: HandleTokenErrorService){ }
 
   openMain(){
     this.router.navigate(['/mainUI'])
