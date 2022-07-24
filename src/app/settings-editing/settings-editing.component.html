@@ -301,6 +301,7 @@
           <button [disabled]="profilWGForm.invalid || profilWGForm.pristine || profileSubmitbtn"> Änderungen speichern</button>
 
           {{changeDoneMessage}}
+          <div>
             <p class="error-message">
               Fehlerhafte Eingabe.
             </p>
@@ -360,6 +361,7 @@
       Kochen: 0<mat-slider min="0" max="10" step="1" [(ngModel)]="Kochen" thumbLabel (input)="activateSubmitButton($event)"></mat-slider>10
 
       Raucher: <mat-checkbox  name ="raucherCheck" [(ngModel)]="Raucher" (click)="changeRaucherCheck(Raucher)" (change)="activateSubmitButtonCheckbox($event)"></mat-checkbox>
+
       Suchend: <mat-checkbox name="suchendCheck" [(ngModel)]="AktuellSuchend" (click)="changeSuchendCheck(AktuellSuchend)" (change)="activateSubmitButtonCheckbox($event)"></mat-checkbox>{{AktuellSuchend}}
       
       <button (click)="submitMatchingbtn();matchingForm.form.markAsPristine()" [disabled]="matchingSubmitbtn"[disabled]="matchingForm.invalid || matchingForm.pristine"  >Änderungen Speichern</button>
