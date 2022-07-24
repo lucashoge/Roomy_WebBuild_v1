@@ -962,6 +962,13 @@ app.get('/settings', verifyToken, function (req, res) {
               function (error, results, fields) {
                 if (error) throw error;
 
+                wss.clients.forEach(client => {
+                  console.log("for each client")
+                  if (client != ws) {
+                    client.send([{ msgDate: req.body.body.msgDate, msgText: req.body.body.msgText, from_id: userid, chatid: req.body.body.chatid,}]);
+                  }    
+                });
+
               });
               res.send(stringify(results));
               con.end(function (error) {
