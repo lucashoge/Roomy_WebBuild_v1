@@ -145,7 +145,7 @@
             Andere Tiere: <mat-checkbox  name ="andereTiereCheck" [(ngModel)]="AndereTiere" (click)="changeAndereTiereCheck(AndereTiere)" (change)="activateProfileSubmitButtonCheckbox($event)"></mat-checkbox>
             <br>
             <br> <br>
-            <button  [disabled]="profilPersonForm.invalid || profilPersonForm.pristine || profileSubmitbtn" > Änderungen speichern</button>
+            <button  [disabled]="(profilPersonForm.invalid || profilPersonForm.pristine) && profileSubmitbtn" > Änderungen speichern</button>
             <br>
             {{changeDoneMessage}}
         
@@ -207,7 +207,7 @@
           Andere Tiere: <mat-checkbox  name ="andereTiereCheck" [(ngModel)]="AndereTiere" (click)="changeAndereTiereCheck(AndereTiere)" (change)="activateProfileSubmitButtonCheckbox($event)"></mat-checkbox>
           <br>
           <br> <br>
-          <button [disabled]="profilWGForm.invalid || profilWGForm.pristine || profileSubmitbtn"> Änderungen speichern</button>
+          <button [disabled]="(profilWGForm.invalid || profilWGForm.pristine) && profileSubmitbtn"> Änderungen speichern</button>
           <br>
           {{changeDoneMessage}}
         

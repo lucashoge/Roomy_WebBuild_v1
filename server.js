@@ -622,7 +622,6 @@ app.get('/settings', verifyToken, function (req, res) {
         valueListPet = Object.assign(valueListPet, {others: false});
       }
 
-
       //Person
       if(req.query.kindOfUser=="person"){
         console.log("Ändere Pweson Profil Settings");
@@ -662,13 +661,25 @@ app.get('/settings', verifyToken, function (req, res) {
       }
       //WG
       if(req.query.kindOfUser=="wg"){
-        var con = mysql.createConnection(conConfig);  
+        var con = mysql.createConnection(conConfig); 
+        var sqlQuery="";  
+        var value=[]; 
         try{  
-          if(Object.keys(valueList).length >0){
+          if(Object.keys(valueList).length >0 || Object.keys(valueListPet).length >0){
+            if(Object.keys(valueList).length >0){
+              sqlQuery = sqlQuery+'UPDATE wg SET ? where wgid = ?;'
+              value.push(valueList);
+              value.push(userid);
+            }
+            if(Object.keys(valueListPet).length >0){
+              sqlQuery = sqlQuery + 'UPDATE pet SET ? where petid = ?;'
+              value.push(valueListPet);
+              value.push(userid);
+            }
             con.connect(function (error) {
               if (error) throw error;
               console.log("connected");
-              con.query('UPDATE wg SET ? where wgid = ?;', [valueList,userid],
+              con.query(sqlQuery, value,
                 function (error, results, fields) {
                   if (error) throw error;
                   console.log("Update Done");
