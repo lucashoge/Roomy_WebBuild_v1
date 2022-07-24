@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 import { trigger, keyframes, animate, transition } from "@angular/animations";
 import * as kf from './keyframes';
 import {User} from './user';
@@ -32,6 +32,9 @@ export class ProfileComponent {
   @Input()
   parentSubject!: Subject<any>;
 
+  @Output() 
+  matchFound = new EventEmitter<{ match: boolean }>();
+
   noMoreProfilesToBrowse: boolean = false;
 
   
@@ -63,10 +66,12 @@ export class ProfileComponent {
 
       this.http.post<any>("submitMatch", { body: {idToMatch: this.currentUser.userid, usertype: this.loggedInUser.usertype, matchValue: 1} }).subscribe((result) => {
         console.log(result);
+        this.matchFound.emit({ match: result.match });
       });
     }else{
       this.http.post<any>("submitMatch", { body: {idToMatch: this.currentUser.userid, usertype: this.loggedInUser.usertype, matchValue: 0} }).subscribe((result) => {
         console.log(result);
+        this.matchFound.emit({ match: result.match });
       },
       err => {
         console.log("Error");
