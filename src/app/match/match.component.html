@@ -4,7 +4,7 @@
 
         <!-- [ngStyle]="{'display':'none'}" -->
         <li *ngIf="possibleMatchesFound" style="height: 100%; width: 100%;">
-            <app-profile-view *ngFor="let match of matchResult" [currentUser]="match"></app-profile-view>
+            <app-profile-view *ngFor="let match of matchResult" ></app-profile-view>
         </li>
     </div>
 
