@@ -19,7 +19,17 @@ export class ChatComponent implements OnInit {
   currentChatView = "";
   loggedInUser: any;
 
+
   ngOnInit(): void {
+
+    var socket = new WebSocket('ws://localhost:9200/message');
+    socket.onopen = function () {
+      setInterval(function() {
+        socket.send("getUpdateData()")
+      }, 50);
+    };
+
+
     console.log("ngOnInit chat component");
     this.loggedInUser = localStorage.getItem('loggedInUser');
     this.loggedInUser = JSON.parse(this.loggedInUser);

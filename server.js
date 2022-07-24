@@ -4,6 +4,9 @@
  var path     = require('path'); 
  var mysql    = require('mysql'); 
  var stringify = require('json-stringify-safe');
+
+ // Importing the required modules
+const WebSocketServer = require('ws');
   
  bodyParser = require('body-parser');
  const { ArgumentOutOfRangeError } = require('rxjs');
@@ -34,7 +37,36 @@ const publicKey = fs.readFileSync('./public.key', 'utf8');
   // configuration =================
  app.use(express.static(path.join(__dirname, '/dist/my-new-angular-app')));  //TODO rename to your app-name
 
+//Websocket
+const wss = new WebSocketServer.Server({ port: 9200 })
 
+// Creating connection using websocket
+wss.on("connection", ws => {
+  console.log("new client connected");
+  // sending message
+  ws.on("message", message => {
+      //log the received message and send it back to the client
+      console.log('received: %s', message);
+      //send back the message to the other clients
+      wss.clients
+          .forEach(client => {
+              if (client != ws) {
+                console.log("Client obj:")
+                console.log(client)
+                client.send("updateChat()");
+              }    
+          });
+  });
+  // handling what to do when clients disconnects from server
+  ws.on("close", () => {
+      console.log("the client has disconnected");
+  });
+  // handling client connection error
+  ws.onerror = function () {
+      console.log("Some Error occurred")
+  }
+});
+console.log("The WebSocket server is running on port 9200");
 
 // MySQL connection =============
 
