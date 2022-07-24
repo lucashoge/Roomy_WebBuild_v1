@@ -1,15 +1,49 @@
-<br>
-<br>
-<br>
 
 
-<div class="imessage" *ngFor="let message of chatMessages">
-    <p class="from-me" *ngIf="message.userMail == loggedInUser.email">{{message.msgText}}</p>
-    <p class="from-them" *ngIf="message.userMail != loggedInUser.email">{{message.msgText}}</p>
+
+<div class="chats">
+    <a  (click)="openChat()" class="chat-nav">
+        <svg xmlns="http://www.w3.org/2000/svg" width="19.742" height="34" viewBox="0 0 19.742 34">
+            <path id="Vereinigungsmenge_2" data-name="Vereinigungsmenge 2" d="M15.061,1203.2.8,1188.939a2.741,2.741,0,0,1,0-3.878L15.061,1170.8a2.742,2.742,0,1,1,3.877,3.878L6.62,1187l12.319,12.319a2.742,2.742,0,0,1-3.877,3.878Z" transform="translate(0 -1170)" fill="red"/>
+        
+        </svg>
+    </a>
+
+
+    <!-- <div style="height: 100%;"></div> -->
+    
+    <div #scrollMe [scrollTop]="scrollMe.scrollHeight" style="overflow: auto;">
+        <div class="imessage" *ngFor="let message of chatMessages">
+            <p class="from-me" *ngIf="message.userMail == loggedInUser.email">{{message.msgText}}</p>
+            <p class="from-them" *ngIf="message.userMail != loggedInUser.email">{{message.msgText}}</p>
+        </div>
+    </div>
+    <!-- <div class="imessage" *ngFor="let message of chatMessages">
+        <p class="from-me" *ngIf="message.userMail == loggedInUser.email">{{message.msgText}}</p>
+        <p class="from-them" *ngIf="message.userMail != loggedInUser.email">{{message.msgText}}</p>
+    </div> -->
+       
+    <form class="msginput" (submit)="submitMessage($event)">
+        <input class="input" type="text" id="msgText">
+        <!-- <input class="message-submit" type="Submit" value="Senden"> -->
+        <button class="message-submit" type="Submit">
+            <!-- <p>Senden</p> -->
+            <svg xmlns="http://www.w3.org/2000/svg" width="41.631" height="41.631" viewBox="0 0 41.631 41.631">
+                <g id="Gruppe_3" data-name="Gruppe 3" transform="translate(-1208.561 -458.159)">
+                  <g id="Pfad_10" data-name="Pfad 10" transform="translate(1230.982 458.159) rotate(45)" fill="none">
+                    <path d="M13.584,0,27.168,31.707,13.584,22.079,0,31.707Z" stroke="none"/>
+                    <path d="M 13.58413696289062 7.618051528930664 L 6.949405670166016 23.10454750061035 L 13.58413600921631 18.40181922912598 L 20.21887397766113 23.10455131530762 L 13.58413696289062 7.618051528930664 M 13.58413600921631 0 L 27.16828536987305 31.70749855041504 L 13.58413600921631 22.07899856567383 L -3.814697265625e-06 31.70749855041504 L 13.58413600921631 0 Z" stroke="none" fill="#fff"/>
+                  </g>
+                  <line id="Linie_12" data-name="Linie 12" y2="13.711" transform="translate(1236.043 472.309) rotate(45)" fill="none" stroke="#fff" stroke-linecap="round" stroke-width="3"/>
+                </g>
+              </svg>
+              
+        </button>
+    </form>
+
 </div>
 
 
-<form (submit)="submitMessage($event)">
-    <input type="text" id="msgText">
-    <input type="Submit" value="Senden">
-</form>
+
+
+

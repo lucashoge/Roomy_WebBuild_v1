@@ -29,6 +29,10 @@ export class ChatverlaeufeComponent implements OnInit {
       });*/
     }
 
+  openChat(){
+    this.router.navigate(['/chat'])
+  }
+
   
   ngOnInit(): void {
 
@@ -61,6 +65,8 @@ export class ChatverlaeufeComponent implements OnInit {
     const date = new Date();
     const formatDate = this.datepipe.transform(date, 'yyyy-MM-dd hh:mm:ss');
     console.log(formatDate);
+
+  
 
     var messageForDB = {
       chateintragid: 0,
