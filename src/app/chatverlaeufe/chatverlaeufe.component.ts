@@ -54,6 +54,10 @@ export class ChatverlaeufeComponent implements OnInit {
     this.WebsocketService.messages.next(message);
   }*/
 
+  openChat(){
+    this.router.navigate(['/chat'])
+  }
+
   
   ngOnInit(): void {
 

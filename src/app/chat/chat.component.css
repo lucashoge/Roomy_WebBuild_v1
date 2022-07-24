@@ -1,4 +1,15 @@
 
+.chats{
+    display: flex;
+    flex-direction: column;
+    height: 844px;
+    width: 390px;
+}
+
+.chat-nav{
+    margin: 20px;
+}
+
 
 .profile{
     display: flex;
@@ -6,7 +17,7 @@
     /* justify-content: space-between; */
     
     width: 350px;
-    height: 75px;
+    height: 90px;
 
     margin-left: 20px;
     margin-right: 20px;
@@ -22,9 +33,30 @@
     text-decoration: none;
 }
 
+.preview {
+    display: flex;
+    flex-direction: column;
+}
+
+
+.info {
+    margin-bottom: 10px;
+    margin-top: 0px;
+    display: flex;
+    flex-direction: row;
+}
+
+.profile p{
+    font-family: "Roboto", sans-serif;
+    font-size: 20px;
+    margin: 0;
+    
+
+}
+
 .profile img{
-    width: 55px;
-    height: 55px;
+    width: 70px;
+    height: 70px;
     border-radius: 50%;
     margin: 10px;
     margin-left: 0px;
@@ -32,7 +64,17 @@
 }
 
 .profile H2{
-    font-size: 20px;
+    font-size: 30px;
     margin-top: 10px;
     margin-bottom: 0px;
+}
+
+.lastmsg{
+    font-weight: bold;
+
+    padding-right: 5px;
+    padding-left: 0px;
+}
+.date {
+    color: #c1c1c1f8;
 }
