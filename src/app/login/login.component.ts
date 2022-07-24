@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { AuthService } from '../auth.service';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Router } from "@angular/router";
+
 
 @Component({
   selector: 'app-login',
@@ -46,7 +47,8 @@ export class LoginComponent implements OnInit {
         //Login erfolgreich
         this.auth.setSession(result);
         this.getUser();
-        this.router.navigate(['/mainUI']);
+        setTimeout(()=>{ this.router.navigate(['/mainUI']); }, 1000)
+        
       }
     });
   }
@@ -100,6 +102,14 @@ export class LoginComponent implements OnInit {
   openReg() {
     this.router.navigate(['/register']);
 
+  }
+  openMain(){
+    this.router.navigate(['/mainUI'])
+  }
+
+  @HostListener('unloaded')
+  ngOnDestroy() {
+    console.log('Items destroyed');
   }
 
   /* clearSessionStorage(){

@@ -7,8 +7,11 @@
   <div class="form">
     <div class="login-form">
 
-      <button (click)="pushPerson()">Person</button>    
-      <button (click)="pushWG()">WG</button>
+      <div class="p-button">
+        <button  (click)="pushPerson()">Person</button>    
+        <button  (click)="pushWG()">WG</button>
+      </div>
+      
 
 
       <div *ngIf="showPerson">
@@ -19,12 +22,12 @@
                             [(ngModel)]="Username" #username="ngModel">
           <div *ngIf="username.invalid && (username.dirty||  username.touched)">
             <div *ngIf="username.errors?.['required']">
-              <p class="message" style="color: red;">
+              <p class="error-message">
                 Es wurde kein Username angegeben.
               </p>
             </div>
             <div *ngIf="username.errors?.['minlength']">
-              <p class="message" style="color: red;">
+              <p class="error-message">
                 Ihr Username muss mindestens 4 Zeichen enthalten.
               </p>
             </div>
@@ -34,7 +37,7 @@
           <input type="email" name="Email" placeholder="Email" required
                         [(ngModel)]="Email" #email="ngModel"> 
           <div *ngIf="email.invalid && (email.dirty||  email.touched)">
-            <p class="message" style="color: red;">
+            <p class="error-message">
               Es wurde keine Email Adresse angegeben.
             </p>
           </div> 
@@ -44,7 +47,7 @@
                           [(ngModel)]="Nachname" #nachname="ngModel"> 
           <div *ngIf="nachname.invalid && (nachname.dirty||  nachname.touched)">
             
-            <p class="message" style="color: red;">
+            <p class="error-message">
               Es wurde kein Nachname angegeben.
             </p>
           </div> 
@@ -54,7 +57,7 @@
                       [(ngModel)]="Vorname" #vorname="ngModel"> 
           <div *ngIf="vorname.invalid && (vorname.dirty||  vorname.touched)">
             
-            <p class="message" style="color: red;">
+            <p class="error-message">
               Es wurde kein Vorname angegeben.
             </p>
           </div> 
@@ -62,7 +65,7 @@
           <input type="text" name="Geschlecht" placeholder="Geschlecht" required
                       [(ngModel)]="Geschlecht" #geschlecht="ngModel"> 
           <div *ngIf="geschlecht.invalid && (geschlecht.dirty||  geschlecht.touched)">
-            <p class="message" style="color: red;">
+            <p class="error-message">
               Es wurde kein Geschlecht angegeben.
             </p>
           </div> 
@@ -70,7 +73,7 @@
           <input type="date" name="Geburtsdatum" placeholder="Geburtsdatum" required
                       [(ngModel)]="Geburtsdatum" #geburtsdatum="ngModel"> 
           <div *ngIf="geburtsdatum.invalid && (geburtsdatum.dirty||  geburtsdatum.touched)">
-            <p class="message" style="color: red;">
+            <p class="error-message">
               Es wurde kein Geburtsdatum angegeben.
             </p>
           </div> 
@@ -80,13 +83,13 @@
           <div *ngIf="passwort.invalid && (passwort.dirty||  passwort.touched)">
             <div *ngIf="passwort.errors?.['required']">
               
-              <p class="message" style="color: red;">
+              <p class="error-message">
                 Es wurde kein Passwort angegeben.
               </p>
             </div>
             <div *ngIf="passwort.errors?.['minlength']">
               
-              <p class="message" style="color: red;">
+              <p class="error-message">
                 Ihr Passwort muss mindestens 8 Zeichen enthalten.
               </p>
             </div>
@@ -96,7 +99,7 @@
           <input type="password" name="PasswortBest" placeholder="Passwort bestätigen" required
                                       [(ngModel)]="PasswortBest" #passwortBest="ngModel"> 
           <div *ngIf="passwortBest.invalid && (passwortBest.dirty||  passwortBest.touched)">
-            <p class="message" style="color: red;">
+            <p class="error-message">
               Es wurde keine Passwortbestätigung angegeben.
             </p>
           </div>
@@ -122,13 +125,13 @@
           <div *ngIf="username.invalid && (username.dirty||  username.touched)">
             <div *ngIf="username.errors?.['required']">
               
-              <p class="message" style="color: red;">
+              <p class="error-message">
                 Es wurde kein Username angegeben.
               </p>
             </div>
             <div *ngIf="username.errors?.['minlength']">
               
-              <p class="message" style="color: red;">
+              <p class="error-message">
                 Ihr Username muss mindestens 4 Zeichen enthalten.
               </p>
             </div>
@@ -139,7 +142,7 @@
                         [(ngModel)]="Email" #email="ngModel"> 
           <div *ngIf="email.invalid && (email.dirty||  email.touched)">
             
-            <p class="message" style="color: red;">
+            <p class="error-message">
               Es wurde keine Email Adresse angegeben.
             </p>
           </div> 
@@ -149,7 +152,7 @@
                       [(ngModel)]="WGName" #wgname="ngModel"> 
           <div *ngIf="wgname.invalid && (wgname.dirty||  wgname.touched)">
             
-            <p class="message" style="color: red;">
+            <p class="">
               Es wurde kein WG Namen angegeben.
             </p>
           </div> 
@@ -159,7 +162,7 @@
                           [(ngModel)]="Postleitzahl" #postleitzahl="ngModel"> 
           <div *ngIf="postleitzahl.invalid && (postleitzahl.dirty||  postleitzahl.touched)">
             
-            <p class="message" style="color: red;">
+            <p class="error-message">
               Es wurde keine Postleitzahl angegeben.
             </p>
           </div> 
@@ -168,7 +171,7 @@
                           [(ngModel)]="Stadt" #stadt="ngModel"> 
           <div *ngIf="stadt.invalid && (stadt.dirty||  stadt.touched)">
             
-            <p class="message" style="color: red;">
+            <p class="error-message">
               Es wurde keine Stadt angegeben.
             </p>
           </div> 
@@ -177,7 +180,7 @@
                           [(ngModel)]="Land" #land="ngModel"> 
           <div *ngIf="land.invalid && (land.dirty||  land.touched)">
             
-            <p class="message" style="color: red;">
+            <p class="error-message">
               Es wurde kein Land angegeben.
             </p>
           </div> 
@@ -189,13 +192,13 @@
           <div *ngIf="passwort.invalid && (passwort.dirty||  passwort.touched)">
             <div *ngIf="passwort.errors?.['required']">
               
-              <p class="message" style="color: red;">
+              <p class="error-message">
                 Es wurde kein Passwort angegeben.
               </p>
             </div>
             <div *ngIf="passwort.errors?.['minlength']">
               
-              <p class="message" style="color: red;">
+              <p class="error-message">
                 Ihr Passwort muss mindestens 8 Zeichen enthalten.
               </p>
             </div>
@@ -206,16 +209,19 @@
                                       [(ngModel)]="PasswortBest" #passwortBest="ngModel"> 
           <div *ngIf="passwortBest.invalid && (passwortBest.dirty||  passwortBest.touched)">
             
-            <p class="message" style="color: red;">
+            <p class="error-message">
               Es wurde keine Passwortbestätigung angegeben.
             </p>
           </div> 
       
-      
-           
-          <button [disabled]="registerForm.invalid"> Registrieren</button>
+
+          <div class="reg-button">
+            <button [disabled]="registerForm.invalid"> Registrieren</button>
+          </div>
+
       
         </form>
+
       
         
         
@@ -223,6 +229,13 @@
         
         {{registerDenied}}
       </div>
+      <p class="message" style="cursor: pointer;" style="margin-top: 0px;">
+        Zurück zur 
+        <a (click)="openLog()">
+          Anmeldung!
+        </a>
+      </p>
+
 
     </div>
   </div>

@@ -4,6 +4,9 @@
  var path     = require('path'); 
  var mysql    = require('mysql'); 
  var stringify = require('json-stringify-safe');
+
+ // Importing the required modules
+const WebSocketServer = require('ws');
   
  bodyParser = require('body-parser');
  const { ArgumentOutOfRangeError } = require('rxjs');
@@ -14,6 +17,7 @@ var fs = require("fs");
 var formidable = require('formidable');
 var glob = require("glob")
 var passwordHash = require('password-hash');
+const { now } = require('moment');
 
 // configuration =================
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -34,7 +38,29 @@ const publicKey = fs.readFileSync('./public.key', 'utf8');
   // configuration =================
  app.use(express.static(path.join(__dirname, '/dist/my-new-angular-app')));  //TODO rename to your app-name
 
+//Websocket
+const wss = new WebSocketServer.Server({ port: 9200 })
 
+// Creating connection using websocket
+wss.on("connection", ws => {
+  console.log("new client connected");
+  // sending message
+  ws.on("message", message => {
+      //log the received message and send it back to the client
+      console.log('received: %s', message);
+      //send back the message to the other clients
+      
+  });
+  // handling what to do when clients disconnects from server
+  ws.on("close", () => {
+      console.log("the client has disconnected");
+  });
+  // handling client connection error
+  ws.onerror = function () {
+      console.log("Some Error occurred")
+  }
+});
+console.log("The WebSocket server is running on port 9200");
 
 // MySQL connection =============
 
@@ -931,15 +957,26 @@ app.get('/settings', verifyToken, function (req, res) {
       var userid = [req.userId];
 
       var con = mysql.createConnection(conConfig);
-    
+      var date = new Date().toISOString().slice(0, 19).replace('T', ' ');
         con.connect(function (error) {
           if (error) throw error;
           console.log("connected");
           con.query('INSERT INTO 22_DB_Gruppe3.chateintrag SET ?', [{ msgDate: req.body.body.msgDate, msgText: req.body.body.msgText, from_id: userid, chatid: req.body.body.chatid,}],
             function (error, results, fields) {
               if (error) throw error;
-              console.log(req.body.body.msgText);
-              console.log(results);
+
+              con.query('UPDATE 22_DB_Gruppe3.chat SET lastMessage="'+req.body.body.msgDate+'" WHERE chatid='+req.body.body.chatid,
+              function (error, results, fields) {
+                if (error) throw error;
+
+                wss.clients.forEach(client => {
+                  console.log("for each client")
+                  if (client != ws) {
+                    client.send([{ msgDate: req.body.body.msgDate, msgText: req.body.body.msgText, from_id: userid, chatid: req.body.body.chatid,}]);
+                  }    
+                });
+
+              });
               res.send(stringify(results));
               con.end(function (error) {
                 if (error) throw error;
@@ -1074,10 +1111,11 @@ app.get('/settings', verifyToken, function (req, res) {
       var limit = req.body.body.limit;
       var minUserID = req.body.body.minUserId;
       var userid = [req.userId];
+      var sendingUser = req.body.body.sendingUser;
 
       var sqlQuery = "";
 
-      if(req.body.body.usertype == "wg"){
+      if(req.body.body.sendingUser.usertype == "wg"){
         userType = "person";
 
         sqlQuery = 'SELECT * FROM 22_DB_Gruppe3.users'
@@ -1085,17 +1123,41 @@ app.get('/settings', verifyToken, function (req, res) {
         + ' LEFT JOIN 22_DB_Gruppe3.match AS matchTable ON userid=matchTable.fk_personid'
         + ' WHERE usertype="' + userType + '" AND userid>' + minUserID +''
         + ' AND (matchTable.wgseen=0 OR matchTable.wgseen IS NULL) AND (matchTable.fk_wgid="'+userid+'" OR matchTable.fk_wgid IS NULL)'
-        + ' limit ' + limit + ';';
+        + ' AND (users.searching=1 OR users.searching IS NULL) '
+
+        if(sendingUser.smoker)
+          sqlQuery = sqlQuery + 'AND (users.smoker='+sendingUser.smoker+' OR users.smoker IS NULL) ';
+        if(sendingUser.volume)
+          sqlQuery = sqlQuery + 'AND ((users.volume<'+sendingUser.volume+'+4 AND users.volume >'+sendingUser.volume+'-4) OR users.volume IS NULL) '
+        if(sendingUser.tidiness)
+          sqlQuery = sqlQuery + 'AND ((users.tidiness<'+sendingUser.tidiness+'+4 AND users.tidiness >'+sendingUser.tidiness+'-4) OR users.tidiness IS NULL) '
+        if(sendingUser.cook)
+          sqlQuery = sqlQuery  + 'AND ((users.cook<'+sendingUser.cook+'+4 AND users.cook >'+sendingUser.cook+'-4) OR users.cook IS NULL) '
+        
+        sqlQuery = sqlQuery + 'limit ' + limit + ';';
+
+        
 
       }else{
         userType = "wg";
 
-        sqlQuery = 'SELECT * FROM 22_DB_Gruppe3.users'
-        + ' LEFT JOIN 22_DB_Gruppe3.wg AS wgTable ON userid=wgTable.wgid'
-        + ' LEFT JOIN 22_DB_Gruppe3.match AS matchTable ON userid=matchTable.fk_wgid'
-        + ' WHERE usertype="' + userType + '" AND userid>' + minUserID +''
-        + ' AND (matchTable.personseen=0 OR matchTable.personseen IS NULL) AND (matchTable.fk_personid="'+userid+'" OR matchTable.fk_personid IS NULL)'
-        + ' limit ' + limit + ';';
+        sqlQuery = 'SELECT * FROM 22_DB_Gruppe3.users '
+        + 'LEFT JOIN 22_DB_Gruppe3.wg AS wgTable ON userid=wgTable.wgid '
+        + 'LEFT JOIN 22_DB_Gruppe3.match AS matchTable ON userid=matchTable.fk_wgid '
+        + 'WHERE usertype="'+userType+'" AND userid>' + minUserID +' '
+        + 'AND (matchTable.personseen=0 OR matchTable.personseen IS NULL) '
+        + 'AND (matchTable.fk_personid="'+userid+'" OR matchTable.fk_personid IS NULL) '
+        + 'AND (users.searching=1 OR users.searching IS NULL) '
+        if(sendingUser.smoker)
+          sqlQuery = sqlQuery + 'AND (users.smoker='+sendingUser.smoker+' OR users.smoker IS NULL) ';
+        if(sendingUser.volume)
+          sqlQuery = sqlQuery + 'AND ((users.volume<'+sendingUser.volume+'+4 AND users.volume >'+sendingUser.volume+'-4) OR users.volume IS NULL) '
+        if(sendingUser.tidiness)
+          sqlQuery = sqlQuery + 'AND ((users.tidiness<'+sendingUser.tidiness+'+4 AND users.tidiness >'+sendingUser.tidiness+'-4) OR users.tidiness IS NULL) '
+        if(sendingUser.cook)
+          sqlQuery = sqlQuery  + 'AND ((users.cook<'+sendingUser.cook+'+4 AND users.cook >'+sendingUser.cook+'-4) OR users.cook IS NULL) '
+        
+        sqlQuery = sqlQuery + 'limit ' + limit + ';';
       }
 
       console.log(sqlQuery);
@@ -1193,7 +1255,7 @@ app.get('/settings', verifyToken, function (req, res) {
                       console.log(sqlQuery2)
                       con.query(sqlQuery2, function (error, results, fields) {
                         console.log(results);
-                        res.send(stringify(results));
+                        res.send({match: false});
 
                         con.end(function (error) {
                           if (error) throw error;
@@ -1203,6 +1265,7 @@ app.get('/settings', verifyToken, function (req, res) {
                     }else{
                       con.query(sqlQuery3, function (error, results, fields) {
                         console.log(results);
+                        res.send({match: false});
                         con.end(function (error) {
                           if (error) throw error;
                           console.log("connection End");
@@ -1221,10 +1284,11 @@ app.get('/settings', verifyToken, function (req, res) {
     
                     //Add Chat
                     var sqlQueryChat = "";
+                    var date = new Date().toISOString().slice(0, 19).replace('T', ' ');
                     if(req.body.body.usertype == "wg"){
-                      sqlQueryChat='INSERT INTO 22_DB_Gruppe3.chat SET fk_wgid='+userid+', fk_personid='+req.body.body.idToMatch;
+                      sqlQueryChat='INSERT INTO 22_DB_Gruppe3.chat SET fk_wgid='+userid+', fk_personid='+req.body.body.idToMatch+', lastMessage='+date;
                     }else{
-                      sqlQueryChat='INSERT INTO 22_DB_Gruppe3.chat SET fk_personid='+userid+', fk_wgid='+req.body.body.idToMatch;
+                      sqlQueryChat='INSERT INTO 22_DB_Gruppe3.chat SET fk_personid='+userid+', fk_wgid='+req.body.body.idToMatch+', lastMessage='+date;
                     }
     
                     console.log("Add Chat!!: " + sqlQueryChat);
@@ -1238,7 +1302,7 @@ app.get('/settings', verifyToken, function (req, res) {
                     });
                     
                     console.log(results);
-                    res.send(stringify(results));
+                    res.send({match: true});
                     
                     con.end(function (error) {
                       if (error) throw error;

@@ -5,6 +5,9 @@ import { MatSliderChange } from '@angular/material/slider';
 import { MatCheckboxChange } from '@angular/material/checkbox';
 import { DatePipe } from '@angular/common';
 import { HandleTokenErrorService } from '../handle-token-error.service';
+import { resetFakeAsyncZone } from '@angular/core/testing';
+import { AuthService } from '../auth.service';
+
 
 @Component({
   selector: 'app-settings-editing',
@@ -34,7 +37,11 @@ export class SettingsEditingComponent implements OnInit {
     }
   }; // Variable to store file
 
-  constructor(private http: HttpClient, private router: Router, public datepipe: DatePipe, private handleToken: HandleTokenErrorService) { }
+  constructor(public auth :AuthService, private http: HttpClient, private router: Router, public datepipe: DatePipe, private handleToken: HandleTokenErrorService){ }
+
+  openMain(){
+    this.router.navigate(['/mainUI'])
+  }
 
   ngOnInit(): void {
     this.getUser();
@@ -659,6 +666,7 @@ export class SettingsEditingComponent implements OnInit {
       });
     }
   } 
+
 }
 
 

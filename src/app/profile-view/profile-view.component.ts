@@ -13,6 +13,14 @@ export class ProfileViewComponent implements OnInit {
 
   //loggedInUser: any;
 
+  loggedInUser: any;
+
+
+  public index = -1;
+  switch = false;
+  noMoreProfilesToBrowse: boolean = false;
+  animationState!: string;
+
   @Input() currentUser!: any;
   @Input()
   parentSubject!: Subject<any>;
@@ -24,5 +32,15 @@ export class ProfileViewComponent implements OnInit {
     //this.loggedInUser = localStorage.getItem('loggedInUser');
     //this.loggedInUser = JSON.parse(this.loggedInUser);
   }
+
+  startAnimation(state: any) {
+    console.log(state)
+    if (!this.animationState) {
+      this.animationState = state;
+    }
+  }
+
+  resetAnimationState(state: any) {}
+
 
 }
