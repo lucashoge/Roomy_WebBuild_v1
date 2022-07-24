@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Router } from "@angular/router";
+import { DatePipe } from '@angular/common';
 import { HandleTokenErrorService } from '../handle-token-error.service';
 
 @Component({
@@ -11,7 +12,7 @@ import { HandleTokenErrorService } from '../handle-token-error.service';
 })
 export class ChatComponent implements OnInit {
 
-  constructor(private http: HttpClient, private router: Router, private handleToken: HandleTokenErrorService) { }
+  constructor(private http: HttpClient, private router: Router, public datepipe: DatePipe, private handleToken: HandleTokenErrorService) { }
 
   chatResult: any[] = [];
   fetchError: any;
@@ -46,11 +47,15 @@ export class ChatComponent implements OnInit {
           console.log(result)
           if(result.length > 0){
             this.chatResult[index].lastText = result[result.length-1].msgText;
+            this.chatResult[index].lastText = this.chatResult[index].lastText.substring(0,17);
+            if(this.chatResult[index].lastText.length > 17){
+              this.chatResult[index].lastText = this.chatResult[index].lastText + "...";
+            }
+            
           }else{
             this.chatResult[index].lastText = "";
           }
-          
-          
+          this.chatResult[index].lastMessage = this.datepipe.transform(this.chatResult[index].lastMessage, 'yyyy-MM-dd');        
         },
         err => {
           console.log("Error");

@@ -18,6 +18,8 @@ export class MatchComponent implements OnInit {
 
   parentSubject:Subject<string> = new Subject();
 
+  possibleMatchesFound: boolean = false;
+
   constructor(private http: HttpClient, private router: Router, private handleToken: HandleTokenErrorService) { }
 
   matchResult: any;
@@ -25,6 +27,7 @@ export class MatchComponent implements OnInit {
 
   ngOnInit(): void {
 
+    this.possibleMatchesFound = false;
     //get current user
     this.loggedInUser = localStorage.getItem('loggedInUser');
     this.loggedInUser = JSON.parse(this.loggedInUser);
@@ -43,8 +46,12 @@ export class MatchComponent implements OnInit {
 
       this.http.post<any>("getPossibleWgMatchesByMail", { body: null }).subscribe((result) => {
       
+        console.log("matchResult");
         this.matchResult = result;
         console.log(this.matchResult);
+        if(result.length > 0){
+          this.possibleMatchesFound = true;
+        }
       },
       err => {
         console.log("Error");
@@ -59,7 +66,11 @@ export class MatchComponent implements OnInit {
       this.http.post<any>("getPossiblePersonMatchesByMail", { body: null }).subscribe((result) => {
       
         this.matchResult = result;
+        console.log("matchResult");
         console.log(this.matchResult);
+        if(result.length > 0){
+          this.possibleMatchesFound = true;
+        }
       },
       err => {
         console.log("Error");
