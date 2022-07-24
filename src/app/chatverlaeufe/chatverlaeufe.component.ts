@@ -34,7 +34,7 @@ export class ChatverlaeufeComponent implements OnInit {
     err => {
       console.log("Error");
       if (err instanceof HttpErrorResponse) {
-        /*           if(err.status==500){
+        /*           if(err.status==401){
             this.handleToken.handleTokenError();
           }  */
       }
@@ -66,7 +66,7 @@ export class ChatverlaeufeComponent implements OnInit {
     err => {
       console.log("Error");
       if (err instanceof HttpErrorResponse) {
-                  if(err.status==500){
+                  if(err.status==401){
             this.handleToken.handleTokenError();
           } 
       }
@@ -82,7 +82,7 @@ export class ChatverlaeufeComponent implements OnInit {
     err => {
       console.log("Error");
       if (err instanceof HttpErrorResponse) {
-                  if(err.status==500){
+                  if(err.status==401){
             this.handleToken.handleTokenError();
           } 
       }

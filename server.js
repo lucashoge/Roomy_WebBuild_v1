@@ -67,6 +67,8 @@ function verifyToken(req, res, next) {
     req.userId = payload.sub;
     next();
   }catch (err) {
+    console.log(err);
+    return res.status(401).send("Unauthorized request");
     throw new Error(err)
   }
   
