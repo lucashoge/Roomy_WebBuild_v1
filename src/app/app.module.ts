@@ -10,7 +10,6 @@ import { FormsModule } from "@angular/forms";
 import { RegisterComponent } from './register/register.component';
 
 import { MainUiComponent } from './main-ui/main-ui.component';
-import { ProfileBoxComponent } from './profile-box/profile-box.component';
 import { ChatComponent } from './chat/chat.component';
 import { MatchComponent } from './match/match.component';
 import { SettingsEditingComponent } from './settings-editing/settings-editing.component';
@@ -31,7 +30,6 @@ import { ProfileViewComponent } from './profile-view/profile-view.component';
     AppComponent,
     RegisterComponent,
      MainUiComponent,
-     ProfileBoxComponent,
      ChatComponent,
      MatchComponent,
      SettingsEditingComponent,
@@ -59,11 +57,6 @@ import { ProfileViewComponent } from './profile-view/profile-view.component';
       },{
         path: 'mainUI',
         component: MainUiComponent,
-        canActivate: [AuthGuard]
-      },
-      {
-        path: 'profileBox',
-        component: ProfileBoxComponent,
         canActivate: [AuthGuard]
       },
       {

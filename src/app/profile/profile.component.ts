@@ -136,6 +136,7 @@ export class ProfileComponent {
 
 
   ngOnDestroy() {
+    console.log('profile destroy');
     this.parentSubject.unsubscribe();
   }
 
