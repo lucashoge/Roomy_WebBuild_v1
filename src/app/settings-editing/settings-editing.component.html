@@ -135,9 +135,17 @@
             Hobbys: <input type="text" name="Hobby"
                         [(ngModel)]="Hobby" #hobby="ngModel"> <br>
             <br>
-        
+            <h3>Haustiere</h3>
+            Hund: <mat-checkbox  name ="hundCheck" [(ngModel)]="Hund" (click)="changehundCheck(Hund)" (change)="activateProfileSubmitButtonCheckbox($event)"></mat-checkbox>
+            <br>
+            Katze: <mat-checkbox  name ="katzeCheck" [(ngModel)]="Katze" (click)="changekatzeCheck(Katze)" (change)="activateProfileSubmitButtonCheckbox($event)"></mat-checkbox>
+            <br>
+            Vogel: <mat-checkbox  name ="vogelCheck" [(ngModel)]="Vogel" (click)="changevogelCheck(Vogel)" (change)="activateProfileSubmitButtonCheckbox($event)"></mat-checkbox>
+            <br>
+            Andere Tiere: <mat-checkbox  name ="andereTiereCheck" [(ngModel)]="AndereTiere" (click)="changeAndereTiereCheck(AndereTiere)" (change)="activateProfileSubmitButtonCheckbox($event)"></mat-checkbox>
+            <br>
             <br> <br>
-            <button  [disabled]="profilPersonForm.invalid || profilPersonForm.pristine" > Änderungen speichern</button>
+            <button  [disabled]="profilPersonForm.invalid || profilPersonForm.pristine || profileSubmitbtn" > Änderungen speichern</button>
             <br>
             {{changeDoneMessage}}
         
@@ -188,11 +196,20 @@
           <div *ngIf="preis.invalid && (preis.dirty||  preis.touched)">
             Fehlerhafte Eingabe.
           </div> <br>
-        
-            <br> <br>
-            <button [disabled]="profilWGForm.invalid || profilWGForm.pristine"> Änderungen speichern</button>
-            <br>
-            {{changeDoneMessage}}
+
+          <h3>Haustiere</h3>
+          Hund: <mat-checkbox  name ="hundCheck" [(ngModel)]="Hund" (click)="changehundCheck(Hund)" (change)="activateProfileSubmitButtonCheckbox($event)"></mat-checkbox>
+          <br>
+          Katze: <mat-checkbox  name ="katzeCheck" [(ngModel)]="Katze" (click)="changekatzeCheck(Katze)" (change)="activateProfileSubmitButtonCheckbox($event)"></mat-checkbox>
+          <br>
+          Vogel: <mat-checkbox  name ="vogelCheck" [(ngModel)]="Vogel" (click)="changevogelCheck(Vogel)" (change)="activateProfileSubmitButtonCheckbox($event)"></mat-checkbox>
+          <br>
+          Andere Tiere: <mat-checkbox  name ="andereTiereCheck" [(ngModel)]="AndereTiere" (click)="changeAndereTiereCheck(AndereTiere)" (change)="activateProfileSubmitButtonCheckbox($event)"></mat-checkbox>
+          <br>
+          <br> <br>
+          <button [disabled]="profilWGForm.invalid || profilWGForm.pristine || profileSubmitbtn"> Änderungen speichern</button>
+          <br>
+          {{changeDoneMessage}}
         
           </form>
         </div>
@@ -230,8 +247,8 @@
       <br>
       Kochen: 0<mat-slider min="0" max="10" step="1" [(ngModel)]="Kochen" thumbLabel (input)="activateSubmitButton($event)"></mat-slider>10
       <br>
-      <!--Checkboxen funktionieren noch nicht richtig-->
-      Raucher: <mat-checkbox  name ="raucherCheck" [(ngModel)]="Raucher" (click)="changeRaucherCheck(Raucher)" (change)="activateSubmitButtonCheckbox($event)"></mat-checkbox> {{Raucher}}
+
+      Raucher: <mat-checkbox  name ="raucherCheck" [(ngModel)]="Raucher" (click)="changeRaucherCheck(Raucher)" (change)="activateSubmitButtonCheckbox($event)"></mat-checkbox>
       <br>
       Suchend: <mat-checkbox name="suchendCheck" [(ngModel)]="AktuellSuchend" (click)="changeSuchendCheck(AktuellSuchend)" (change)="activateSubmitButtonCheckbox($event)"></mat-checkbox>{{AktuellSuchend}}
       <br>

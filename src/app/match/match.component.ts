@@ -1,11 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Router } from "@angular/router";
 import { now } from 'moment';
 import { DatePipe } from '@angular/common';
 import { trigger, keyframes, animate, transition } from "@angular/animations";
 import { Subject } from 'rxjs';
+import { HandleTokenErrorService } from '../handle-token-error.service';
 
 @Component({
   selector: 'app-match',
@@ -17,7 +18,7 @@ export class MatchComponent implements OnInit {
 
   parentSubject:Subject<string> = new Subject();
 
-  constructor(private http: HttpClient, private router: Router) { }
+  constructor(private http: HttpClient, private router: Router, private handleToken: HandleTokenErrorService) { }
 
   matchResult: any;
   loggedInUser: any;
@@ -44,6 +45,14 @@ export class MatchComponent implements OnInit {
       
         this.matchResult = result;
         console.log(this.matchResult);
+      },
+      err => {
+        console.log("Error");
+        if (err instanceof HttpErrorResponse) {
+                    if(err.status==401){
+            this.handleToken.handleTokenError();
+          } 
+        }
       });
 
     }else{
@@ -51,6 +60,14 @@ export class MatchComponent implements OnInit {
       
         this.matchResult = result;
         console.log(this.matchResult);
+      },
+      err => {
+        console.log("Error");
+        if (err instanceof HttpErrorResponse) {
+                    if(err.status==401){
+            this.handleToken.handleTokenError();
+          } 
+        }
       });
     }
     

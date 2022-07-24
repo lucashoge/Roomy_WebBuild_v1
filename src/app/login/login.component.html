@@ -8,10 +8,11 @@
       <!-- <input type="Submit" value="Anmelden"> -->
       <button>Anmelden</button>
       <p class="message">
-        {{loginMessage}}
+        {{loginMessage}}<br>
+        {{tokenErrorMessage}}
       </p>
       <p class="message">Noch nicht registriert? <a (click)="openReg()" style="cursor: pointer;">Account erstellen!</a></p>
-
+      <!-- <div (window:beforeunload)="clearSessionStorage()"></div> -->
       
     </form>
     

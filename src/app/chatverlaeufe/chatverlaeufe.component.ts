@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Router } from "@angular/router";
 import { now } from 'moment';
 import { DatePipe } from '@angular/common';
+import { HandleTokenErrorService } from '../handle-token-error.service';
 
 @Component({
   selector: 'app-chatverlaeufe',
@@ -16,7 +17,7 @@ export class ChatverlaeufeComponent implements OnInit {
   chatMessages: any;
   loggedInUser: any;
 
-  constructor(private http: HttpClient, private router: Router, public datepipe: DatePipe) { }
+  constructor(private http: HttpClient, private router: Router, public datepipe: DatePipe, private handleToken: HandleTokenErrorService) { }
 
   ngOnInit(): void {
     this.loggedInUser = localStorage.getItem('loggedInUser');
@@ -29,6 +30,14 @@ export class ChatverlaeufeComponent implements OnInit {
       
       this.chatMessages = result;
       console.log(this.chatMessages);
+    },
+    err => {
+      console.log("Error");
+      if (err instanceof HttpErrorResponse) {
+        /*           if(err.status==401){
+            this.handleToken.handleTokenError();
+          }  */
+      }
     });
   }
 
@@ -53,6 +62,14 @@ export class ChatverlaeufeComponent implements OnInit {
     this.http.post<any>("submitChatMessage", { body: messageForDB }).subscribe((result) => {
       console.log(result);
       this.getChatEntries();
+    },
+    err => {
+      console.log("Error");
+      if (err instanceof HttpErrorResponse) {
+                  if(err.status==401){
+            this.handleToken.handleTokenError();
+          } 
+      }
     });
   }
 
@@ -61,6 +78,14 @@ export class ChatverlaeufeComponent implements OnInit {
     this.http.post<any>("chatEntriesFromID", { body: {chatid: this.chatid} }).subscribe((result) => {
       this.chatMessages = result;
       console.log(this.chatMessages);
+    },
+    err => {
+      console.log("Error");
+      if (err instanceof HttpErrorResponse) {
+                  if(err.status==401){
+            this.handleToken.handleTokenError();
+          } 
+      }
     });
   };
 }

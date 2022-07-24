@@ -4,8 +4,9 @@ import * as kf from './keyframes';
 import {User} from './user';
 import data from './users.json';
 import { Subject, Observable } from 'rxjs';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Router } from "@angular/router";
+import { HandleTokenErrorService } from '../handle-token-error.service';
 
 @Component({
   selector: 'app-profile',
@@ -36,7 +37,7 @@ export class ProfileComponent {
   
   animationState!: string;
 
-  constructor(private http: HttpClient, private router: Router) {
+  constructor(private http: HttpClient, private router: Router, private handleToken: HandleTokenErrorService) {
    }
 
   ngOnInit() {
@@ -66,6 +67,14 @@ export class ProfileComponent {
     }else{
       this.http.post<any>("submitMatch", { body: {idToMatch: this.currentUser.userid, usertype: this.loggedInUser.usertype, matchValue: 0} }).subscribe((result) => {
         console.log(result);
+      },
+      err => {
+        console.log("Error");
+        if (err instanceof HttpErrorResponse) {
+                    if(err.status==401){
+            this.handleToken.handleTokenError();
+          } 
+        }
       });
     }  
   }
@@ -113,6 +122,14 @@ export class ProfileComponent {
         this.currentUser = null;
       }
       
+    },
+    err => {
+      console.log("Error");
+      if (err instanceof HttpErrorResponse) {
+                  if(err.status==401){
+            this.handleToken.handleTokenError();
+          } 
+      }
     }); 
     
   }

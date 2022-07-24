@@ -1,7 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Router } from "@angular/router";
+import { HandleTokenErrorService } from '../handle-token-error.service';
 
 @Component({
   selector: 'app-chat',
@@ -10,7 +11,7 @@ import { Router } from "@angular/router";
 })
 export class ChatComponent implements OnInit {
 
-  constructor(private http: HttpClient, private router: Router) { }
+  constructor(private http: HttpClient, private router: Router, private handleToken: HandleTokenErrorService) { }
 
   chatResult: any;
   fetchError: any;
@@ -33,6 +34,13 @@ export class ChatComponent implements OnInit {
       
       this.chatResult = result;
       console.log(this.chatResult);
+    },
+    err => {
+      if (err instanceof HttpErrorResponse) {
+                  if(err.status==401){
+            this.handleToken.handleTokenError();
+          } 
+      }
     });
     //this.router.navigate(['/login']);
     
@@ -47,10 +55,6 @@ export class ChatComponent implements OnInit {
   }
   
 
-    //Dann Nachricht, dass Registrierung erfolgreich
-    //und Weiterleitung zum Login
-
-    //Wenn nicht frei -> Nachricht(?) dass Name/Email bereits vergeben sind
 
 
 }
