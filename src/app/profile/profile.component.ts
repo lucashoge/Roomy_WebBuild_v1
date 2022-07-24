@@ -129,7 +129,8 @@ export class ProfileComponent {
       
     },
     err => {
-      console.log("Error");
+      console.log("Error:");
+      console.log(err);
       if (err instanceof HttpErrorResponse) {
                   if(err.status==401){
             this.handleToken.handleTokenError();

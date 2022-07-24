@@ -47,7 +47,8 @@ export class LoginComponent implements OnInit {
         //Login erfolgreich
         this.auth.setSession(result);
         this.getUser();
-        this.router.navigate(['/mainUI']);
+        setTimeout(()=>{ this.router.navigate(['/mainUI']); }, 1000)
+        
       }
     });
   }
