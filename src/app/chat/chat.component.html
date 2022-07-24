@@ -14,22 +14,22 @@
             <div class="profile-pic">
                 <img src={{resultObj.profilepic}} alt="">
             </div>
-            <!-- <div class="name">
+            
+            <div class="preview">
                 <h2>
                     {{ resultObj.username }}
                 </h2>
-            </div> -->
     
-            <h2>
-                {{ resultObj.username }}
-            </h2>
-        </div> -->
+                <div class="info">
+                    <p class="lastmsg">{{resultObj.lastText}}</p>
+                    <p class="date">{{resultObj.lastMessage}}</p>
+                </div>
+            </div>
+            
+            
 
-        <h2>
-            {{ resultObj.username }}
-        </h2>
-        <p>{{resultObj.lastText}}</p>
-        <p>{{resultObj.lastMessage}}</p>
+        </div>
+
         <!-- <a class="chatbutton" (click)="onChatClick(resultObj)"></a> -->
     </div>
     
