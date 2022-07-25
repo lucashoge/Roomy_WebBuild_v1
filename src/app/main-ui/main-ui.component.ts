@@ -76,10 +76,4 @@ export class MainUiComponent {
     
   }
 
-
-  
-
-
- 
-
 }

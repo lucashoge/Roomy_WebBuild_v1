@@ -14,7 +14,7 @@ import { HandleTokenErrorService } from '../handle-token-error.service';
   styleUrls: ['./profile.component.css'],
   animations: [
     trigger('cardAnimator', [
-      transition('* => ', animate('1000ms ease-in-out', keyframes(kf.swiperight))),
+      transition('* => swiperight', animate('1000ms ease-in-out', keyframes(kf.swiperight))),
       transition('* => swipeleft', animate('1000ms ease-in-out', keyframes(kf.swipeleft)))
     ])
   ]
