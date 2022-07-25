@@ -86,6 +86,11 @@ import { ProfileViewComponent } from './profile-view/profile-view.component';
         canActivate: [AuthGuard]
       },
       {
+        path: 'profileView',
+        component: ProfileViewComponent,
+        canActivate: [AuthGuard]
+      },
+      {
         path: '', //Hauptseite
         component: MainUiComponent
       }

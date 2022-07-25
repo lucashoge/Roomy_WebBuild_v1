@@ -8,6 +8,7 @@ import { MatchComponent } from './match/match.component';
 import { ProfileComponent } from './profile/profile.component';
 import { RegisterComponent } from './register/register.component';
 import { SettingsEditingComponent } from './settings-editing/settings-editing.component';
+import { ProfileViewComponent } from './profile-view/profile-view.component';
 const routes: Routes = [
   {path: 'chat-component', component: ChatComponent},
   {path: 'chatverlaeufe-component', component: ChatverlaeufeComponent},
@@ -16,7 +17,8 @@ const routes: Routes = [
   {path: 'match-component', component: MatchComponent},
   {path: 'profile-component', component: ProfileComponent},
   {path: 'register-component', component: RegisterComponent},
-  {path: 'settings-edit-component', component: SettingsEditingComponent}
+  {path: 'settings-edit-component', component: SettingsEditingComponent},
+  {path: 'profile-view-component', component: ProfileViewComponent}
 ];
 
 @NgModule({

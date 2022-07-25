@@ -141,6 +141,10 @@ export class ProfileComponent {
     
   }
 
+  changeToProfileView(){
+    this.router.navigate(['/profileView']);
+  }
+
 
   ngOnDestroy() {
     console.log('profile destroy');
