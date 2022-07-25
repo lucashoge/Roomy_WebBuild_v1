@@ -1,12 +1,5 @@
 
 
-
-<!-- <button (click)="accountbtn()" [disabled]="disableAccountbtn">Account</button>   
-<span></span>   
-<button (click)="profilbtn()"[disabled]="disableProfilbtn">Profil</button>   
-<span></span>   
-<button (click)="matchingbtn()" [disabled]="disableMatchingbtn">Matching</button> -->
-
 <!--______________________________________________Formular Accountdaten__________________________________________________________________________________________-->
 <div class="login-page">
 
@@ -20,9 +13,6 @@
         
         </svg>
       </a>
-      <!-- <a (click)="openMain()" style="color: #FF0000 ;"><H2>Abbrechen</H2></a>
-      <H2>Einstellungen</H2>
-      <a (click)="openMain()" style="color: #5DFF64;"><H2>Fertig</H2></a> -->
     </div>
 
 
@@ -47,8 +37,7 @@
       <input class="form-control" type="file" 
               (change)="onChange($event)">
   
-      <button class="reg-button" (click)="onUpload()" 
-          class="btn btn-success">
+      <button class="reg-button" (click)="onUpload()">
           Profilbild Hochladen
       </button>
     </div>
@@ -217,16 +206,8 @@
 
             Andere Tiere: <mat-checkbox  name ="andereTiereCheck" [(ngModel)]="AndereTiere" (click)="changeAndereTiereCheck(AndereTiere)" (change)="activateProfileSubmitButtonCheckbox($event)"></mat-checkbox>
 
-            <button [disabled]="(profilPersonForm.invalid || profilPersonForm.pristine) && profileSubmitbtn" > Änderungen speichern</button>
- 
-            {{changeDoneMessage}}
-            <input type="text" name="Hobby"
-                        [(ngModel)]="Hobby" #hobby="ngModel"> 
-                        <label for="">Hobbys</label>
-            
-        
-             
-            <button [disabled]="profilPersonForm.invalid || profilPersonForm.pristine || profileSubmitbtn" > Änderungen speichern</button>
+            <button class="reg-button" [disabled]="(profilPersonForm.invalid || profilPersonForm.pristine) && profileSubmitbtn" > Änderungen speichern</button>
+
             <p class="error-message">
               {{changeDoneMessage}}
             </p>
@@ -311,7 +292,7 @@
           Andere Tiere: <mat-checkbox  name ="andereTiereCheck" [(ngModel)]="AndereTiere" (click)="changeAndereTiereCheck(AndereTiere)" (change)="activateProfileSubmitButtonCheckbox($event)"></mat-checkbox>
           <br>
           <br> <br>
-          <button [disabled]="(profilWGForm.invalid || profilWGForm.pristine) && profileSubmitbtn"> Änderungen speichern</button>
+          <button class="reg-button" [disabled]="(profilWGForm.invalid || profilWGForm.pristine) && profileSubmitbtn"> Änderungen speichern</button>
           <br>
           {{changeDoneMessage}}
           <div>
@@ -321,10 +302,7 @@
           </div> 
         
              
-            <button class="reg-button" [disabled]="profilWGForm.invalid || profilWGForm.pristine"> Änderungen speichern</button>
-            <p class="error-message">
-              {{changeDoneMessage}}
-            </p>
+          
             
         
           </form>
@@ -377,7 +355,7 @@
 
       Suchend: <mat-checkbox name="suchendCheck" [(ngModel)]="AktuellSuchend" (click)="changeSuchendCheck(AktuellSuchend)" (change)="activateSubmitButtonCheckbox($event)"></mat-checkbox>
 
-      <button (click)="submitMatchingbtn();matchingForm.form.markAsPristine()" [disabled]="matchingSubmitbtn"[disabled]="matchingForm.invalid || matchingForm.pristine"  >Änderungen Speichern</button>
+      <button class="reg-button" (click)="submitMatchingbtn();matchingForm.form.markAsPristine()" [disabled]="matchingSubmitbtn"[disabled]="matchingForm.invalid || matchingForm.pristine"  >Änderungen Speichern</button>
       <p class="error-message">
         {{changeDoneMessage}}
       </p>

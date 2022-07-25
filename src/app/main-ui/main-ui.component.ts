@@ -7,6 +7,8 @@ import { DatePipe } from '@angular/common';
 import { trigger, keyframes, animate, transition } from "@angular/animations";
 import { Subject } from 'rxjs';
 import { AuthService } from '../auth.service';
+import * as kf from './keyframes';
+
 
 
 
@@ -14,6 +16,11 @@ import { AuthService } from '../auth.service';
   selector: 'app-main-ui',
   templateUrl: './main-ui.component.html',
   styleUrls: ['./main-ui.component.css'],
+  animations: [
+    trigger('cardAnimator', [
+      transition('* => match', animate('1000ms ease-in-out', keyframes(kf.match))),
+    ])
+  ]
   
 })
 export class MainUiComponent {
@@ -22,6 +29,20 @@ export class MainUiComponent {
   toggleMatchAnimation: boolean = false;
 
   parentSubject:Subject<string> = new Subject();
+
+  startAnimation(state: any) {
+    console.log(state)
+    if (!this.animationState) {
+      this.animationState = state;
+    }
+  }
+
+  resetAnimationState(state: any) {
+    this.animationState = '';
+  }
+
+  animationState!: string;
+
 
   constructor(private http: HttpClient, private router: Router, public auth: AuthService) { }
 
@@ -54,11 +75,5 @@ export class MainUiComponent {
     }
     
   }
-
-
-  
-
-
- 
 
 }

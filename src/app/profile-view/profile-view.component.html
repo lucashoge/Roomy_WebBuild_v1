@@ -3,56 +3,90 @@
 
   <div class="form">
     
-    <div class="tphoto">
-      <td><img src={{currentUser.profilepic}} title="tphoto" alt="Tinder Photo" /></td>
-      <div class="tname">
-        {{currentUser.username}}, <span class="age">{{currentUser.city}}</span>
+    <div class="settings-nav">
+      <a  (click)="openMain()" class="chat-nav" style="margin-top: 20px; margin-bottom: 20px;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="19.742" height="34" viewBox="0 0 19.742 34">
+            <path id="Vereinigungsmenge_2" data-name="Vereinigungsmenge 2" d="M15.061,1203.2.8,1188.939a2.741,2.741,0,0,1,0-3.878L15.061,1170.8a2.742,2.742,0,1,1,3.877,3.878L6.62,1187l12.319,12.319a2.742,2.742,0,0,1-3.877,3.878Z" transform="translate(0 -1170)" fill="red"/>
         
-        <!--_______________________Einstellungen Person____________________________________________________________-->
-        <div *ngIf="currentUser.usertype=='person'">
-          <form class="login-form">
-      
-            <input type="text" name="Nachname" disabled="true"
-                        [(ngModel)]="currentUser.surname" #nachname="ngModel"> 
-                        <label for="">Nachname</label>
-      
-      
-            <input type="text" name="Vorname" disabled="true"
-                        [(ngModel)]="currentUser.firstname" #vorname="ngModel"> 
-                        <label for="">Vorname</label>
-      
-      
-            <input type="text" name="Geschlecht" disabled="true"
-                        [(ngModel)]="currentUser.gender" #geschlecht="ngModel"> 
-                        <label for="">Geschlecht</label>
-            
-      
-            <input type="date" name="Geburtsdatum" disabled="true"
-                        [(ngModel)]="currentUser.birthdate" #geburtsdatum="ngModel"> 
-                        <label for="">Geburtsdatum</label>
-      
-      
-            <input type="text" name="Job" disabled="true"
-                        [(ngModel)]="currentUser.job" #job="ngModel"> 
-                        <label for="">Job</label>
-            
-      
-            Hobbys: <input type="text" name="Hobby" disabled="true"
-                        [(ngModel)]="currentUser.hobby" #hobby="ngModel"> <br>
-
-          </form>
-                    
-        </div>
-
-        <div *ngIf="currentUser.usertype=='wg'">
-      
-          <input type="text" name="WG-Name" disabled="true"
-                        [(ngModel)]="currentUser.wgname" #vorname="ngModel"> 
-                        <label for="">WG-Name</label>
-    
-    
-      </div>
+        </svg>
+      </a>
     </div>
+
+    <div class="profile-pic">
+      <td><img src={{currentUser.profilepic}} title="tphoto" alt="Tinder Photo" /></td>
+
+    </div>
+    
+    {{currentUser.username}}
+    <!-- <span class="age">{{currentUser.city}}</span> -->
+      
+    <!--_______________________Einstellungen Person____________________________________________________________-->
+    <div *ngIf="currentUser.usertype=='person'">
+      <form class="login-form">
+  
+        <input type="text" name="Nachname" disabled="true"
+                    [(ngModel)]="currentUser.surname" #nachname="ngModel"> 
+                    <label for="">Nachname</label>
+  
+  
+        <input type="text" name="Vorname" disabled="true"
+                    [(ngModel)]="currentUser.firstname" #vorname="ngModel"> 
+                    <label for="">Vorname</label>
+  
+  
+        <input type="text" name="Geschlecht" disabled="true"
+                    [(ngModel)]="currentUser.gender" #geschlecht="ngModel"> 
+                    <label for="">Geschlecht</label>
+        
+  
+        <input type="date" name="Geburtsdatum" disabled="true"
+                    [(ngModel)]="currentUser.birthdate" #geburtsdatum="ngModel"> 
+                    <label for="">Geburtsdatum</label>
+  
+  
+        <input type="text" name="Job" disabled="true"
+                    [(ngModel)]="currentUser.job" #job="ngModel"> 
+                    <label for="">Job</label>
+        
+  
+        <input type="text" name="Hobby" disabled="true"
+                    [(ngModel)]="currentUser.hobby" #hobby="ngModel"> <br>
+
+      </form>
+                
+    </div>
+
+    <div *ngIf="currentUser.usertype=='wg'">
+  
+      <!-- <input type="text" name="WG-Name" disabled="true"
+                    [(ngModel)]="currentUser.wgname" #vorname="ngModel"> 
+                    <label for="">WG-Name</label> -->
+
+      <input type="text" name="Standort" disabled="true"
+                    [(ngModel)]="currentUser.city" #vorname="ngModel"> 
+                    <label for="">Standort</label>
+
+      <input type="text" name="Verfügbare Plätze" disabled="true"
+                    [(ngModel)]="currentUser.spotfree" #vorname="ngModel"> 
+                    <label for="">Verfügbare Plätze</label>
+
+      <input type="text" name="Bewohner" disabled="true"
+                    [(ngModel)]="currentUser.spotstotal" #vorname="ngModel"> 
+                    <label for="">Bewohner</label>
+
+      <input type="text" name="Preis" disabled="true"
+                    [(ngModel)]="currentUser.price" #vorname="ngModel"> 
+                    <label for="">Preis</label>
+
+      <!-- <input type="text" name="Postleitzahl" disabled="true"
+                    [(ngModel)]="currentUser.postcode" #vorname="ngModel"> 
+                    <label for="">Postleitzahl</label> -->
+
+                    
+  
+    
+     
+   
 </div>
 
 

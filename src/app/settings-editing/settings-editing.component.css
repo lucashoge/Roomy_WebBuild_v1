@@ -56,6 +56,8 @@ body {
   width: 70px;
   height: 70px;
   border-radius: 50%;
+  object-fit: cover;
+
 }
 .form input {
   font-family: "Roboto", sans-serif;
@@ -121,7 +123,7 @@ label{
 }
 
 .reg-button:active{
-  background-color: #E2D0FF;
+  background-color: #E2D0FF!important;
   transform: scale(0.97);
 }
 
