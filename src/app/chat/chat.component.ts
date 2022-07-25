@@ -57,8 +57,8 @@ export class ChatComponent implements OnInit {
           console.log(result)
           if(result.length > 0){
             this.chatResult[index].lastText = result[result.length-1].msgText;
-            this.chatResult[index].lastText = this.chatResult[index].lastText.substring(0,17);
-            if(this.chatResult[index].lastText.length > 17){
+            this.chatResult[index].lastText = this.chatResult[index].lastText.substring(0,14);
+            if(this.chatResult[index].lastText.length >= 14){
               this.chatResult[index].lastText = this.chatResult[index].lastText + "...";
             }
             

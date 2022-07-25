@@ -1264,7 +1264,8 @@ app.get('/settings', verifyToken, function (req, res) {
         + ' LEFT JOIN 22_DB_Gruppe3.person AS personTable ON userid=personTable.personid'
         + ' LEFT JOIN 22_DB_Gruppe3.match AS matchTable ON userid=matchTable.fk_personid'
         + ' WHERE usertype="' + userType + '" AND userid>' + minUserID +''
-        //+ ' AND (matchTable.wgseen=0 OR matchTable.wgseen IS NULL) AND (matchTable.fk_wgid="'+userid+'" OR matchTable.fk_wgid IS NULL)'
+        //+ ' AND (matchTable.wgseen=0 OR matchTable.wgseen IS NULL) 
+        + ' AND (matchTable.fk_wgid="'+userid+'" OR matchTable.fk_wgid IS NULL)'
         + ' AND (users.searching=1 OR users.searching IS NULL) '
 
         if(sendingUser.smoker)
@@ -1288,7 +1289,7 @@ app.get('/settings', verifyToken, function (req, res) {
         + 'LEFT JOIN 22_DB_Gruppe3.match AS matchTable ON userid=matchTable.fk_wgid '
         + 'WHERE usertype="'+userType+'" AND userid>' + minUserID +' '
         //+ 'AND (matchTable.personseen=0 OR matchTable.personseen IS NULL) '
-        //+ 'AND (matchTable.fk_personid="'+userid+'" OR matchTable.fk_personid IS NULL) '
+        + 'AND (matchTable.fk_personid="'+userid+'" OR matchTable.fk_personid IS NULL) '
         + 'AND (users.searching=1 OR users.searching IS NULL) '
         if(sendingUser.smoker)
           sqlQuery = sqlQuery + 'AND (users.smoker='+sendingUser.smoker+' OR users.smoker IS NULL) ';
