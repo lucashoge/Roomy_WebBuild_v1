@@ -25,6 +25,7 @@ import { DatePipe } from '@angular/common';
 import {MatSliderModule,} from '@angular/material/slider'; 
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import { ProfileViewComponent } from './profile-view/profile-view.component';
+import { ErrorComponent } from './error/error.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,8 @@ import { ProfileViewComponent } from './profile-view/profile-view.component';
      LoginComponent,
      ProfileComponent,
      ChatverlaeufeComponent,
-     ProfileViewComponent
+     ProfileViewComponent,
+     ErrorComponent
   ],
   imports: [
     BrowserModule,
@@ -48,6 +50,10 @@ import { ProfileViewComponent } from './profile-view/profile-view.component';
     MatSliderModule,
     MatCheckboxModule,
     RouterModule.forRoot([     //Abkürzungen für die Links zu den Components | Später wichtig für die Login Überwachung
+      {
+      path: 'error',
+      component: ErrorComponent
+      },
       {
         path: 'login',
         component: LoginComponent
