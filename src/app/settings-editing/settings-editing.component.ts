@@ -457,6 +457,7 @@ export class SettingsEditingComponent implements OnInit {
 
   //_____________________________________________Formular Profildaten__________________________________________________________________________________________
   sendProfil(data: any){
+    console.log("Teessstttt_____________");
     //Senden der Profildaten an die Datenbank
     var sendData;
     var config;

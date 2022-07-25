@@ -204,9 +204,10 @@
             Vogel: <mat-checkbox  name ="vogelCheck" [(ngModel)]="Vogel" (click)="changevogelCheck(Vogel)" (change)="activateProfileSubmitButtonCheckbox($event)"></mat-checkbox>
 
             Andere Tiere: <mat-checkbox  name ="andereTiereCheck" [(ngModel)]="AndereTiere" (click)="changeAndereTiereCheck(AndereTiere)" (change)="activateProfileSubmitButtonCheckbox($event)"></mat-checkbox>
-
-            <button  [disabled]="profilPersonForm.invalid || profilPersonForm.pristine || profileSubmitbtn" > Änderungen speichern</button>
-
+            <br>
+            <br> <br>
+            <button  [disabled]="(profilPersonForm.invalid || profilPersonForm.pristine) && profileSubmitbtn" > Änderungen speichern</button>
+            <br>
             {{changeDoneMessage}}
             <input type="text" name="Hobby"
                         [(ngModel)]="Hobby" #hobby="ngModel"> 
@@ -297,9 +298,10 @@
           Vogel: <mat-checkbox  name ="vogelCheck" [(ngModel)]="Vogel" (click)="changevogelCheck(Vogel)" (change)="activateProfileSubmitButtonCheckbox($event)"></mat-checkbox>
 
           Andere Tiere: <mat-checkbox  name ="andereTiereCheck" [(ngModel)]="AndereTiere" (click)="changeAndereTiereCheck(AndereTiere)" (change)="activateProfileSubmitButtonCheckbox($event)"></mat-checkbox>
-
-          <button [disabled]="profilWGForm.invalid || profilWGForm.pristine || profileSubmitbtn"> Änderungen speichern</button>
-
+          <br>
+          <br> <br>
+          <button [disabled]="(profilWGForm.invalid || profilWGForm.pristine) && profileSubmitbtn"> Änderungen speichern</button>
+          <br>
           {{changeDoneMessage}}
           <div>
             <p class="error-message">
@@ -361,9 +363,9 @@
       Kochen: 0<mat-slider min="0" max="10" step="1" [(ngModel)]="Kochen" thumbLabel (input)="activateSubmitButton($event)"></mat-slider>10
 
       Raucher: <mat-checkbox  name ="raucherCheck" [(ngModel)]="Raucher" (click)="changeRaucherCheck(Raucher)" (change)="activateSubmitButtonCheckbox($event)"></mat-checkbox>
-
-      Suchend: <mat-checkbox name="suchendCheck" [(ngModel)]="AktuellSuchend" (click)="changeSuchendCheck(AktuellSuchend)" (change)="activateSubmitButtonCheckbox($event)"></mat-checkbox>{{AktuellSuchend}}
-      
+      <br>
+      Suchend: <mat-checkbox name="suchendCheck" [(ngModel)]="AktuellSuchend" (click)="changeSuchendCheck(AktuellSuchend)" (change)="activateSubmitButtonCheckbox($event)"></mat-checkbox>
+      <br>
       <button (click)="submitMatchingbtn();matchingForm.form.markAsPristine()" [disabled]="matchingSubmitbtn"[disabled]="matchingForm.invalid || matchingForm.pristine"  >Änderungen Speichern</button>
       <p class="error-message">
         {{changeDoneMessage}}
