@@ -14,9 +14,15 @@
   <div class="form">
 
     <div class="settings-nav">
-      <a (click)="openMain()" style="color: #FF0000 ;"><H2>Abbrechen</H2></a>
+      <a  (click)="openMain()" class="chat-nav" style="margin-top: 20px; margin-bottom: 20px;">
+        <svg xmlns="http://www.w3.org/2000/svg" width="19.742" height="34" viewBox="0 0 19.742 34">
+            <path id="Vereinigungsmenge_2" data-name="Vereinigungsmenge 2" d="M15.061,1203.2.8,1188.939a2.741,2.741,0,0,1,0-3.878L15.061,1170.8a2.742,2.742,0,1,1,3.877,3.878L6.62,1187l12.319,12.319a2.742,2.742,0,0,1-3.877,3.878Z" transform="translate(0 -1170)" fill="red"/>
+        
+        </svg>
+      </a>
+      <!-- <a (click)="openMain()" style="color: #FF0000 ;"><H2>Abbrechen</H2></a>
       <H2>Einstellungen</H2>
-      <a (click)="openMain()" style="color: #5DFF64;"><H2>Fertig</H2></a>
+      <a (click)="openMain()" style="color: #5DFF64;"><H2>Fertig</H2></a> -->
     </div>
 
 
@@ -33,17 +39,19 @@
     </div>
     
 
+    <div class="profile-pic">
+      <td><img class="profilepic" src={{Profilbild}} title="tphoto" alt="Profilphoto" /></td>
 
-    <!-- <td><img src={{Profilbild}} title="tphoto" alt="Profilphoto" /></td>
+    </div>
     <div class="text-center">
       <input class="form-control" type="file" 
               (change)="onChange($event)">
   
-      <button (click)="onUpload()" 
+      <button class="reg-button" (click)="onUpload()" 
           class="btn btn-success">
           Profilbild Hochladen
       </button>
-    </div> -->
+    </div>
 
     <div *ngIf="showForm=='account'">
 
@@ -193,8 +201,12 @@
                         <label for="">Job</label>
             
     
-            Hobbys: <input type="text" name="Hobby"
-                        [(ngModel)]="Hobby" #hobby="ngModel"> <br>
+            <!-- Hobbys: <input type="text" name="Hobby"
+                        [(ngModel)]="Hobby" #hobby="ngModel"> <br> -->
+
+            <input type="text" name="Hobby"
+                        [(ngModel)]="Hobby" #hobby="ngModel"> 
+                        <label for="">Hobbys</label>
 
             <h3>Haustiere</h3>
             Hund: <mat-checkbox  name ="hundCheck" [(ngModel)]="Hund" (click)="changehundCheck(Hund)" (change)="activateProfileSubmitButtonCheckbox($event)"></mat-checkbox>
@@ -206,15 +218,6 @@
             Andere Tiere: <mat-checkbox  name ="andereTiereCheck" [(ngModel)]="AndereTiere" (click)="changeAndereTiereCheck(AndereTiere)" (change)="activateProfileSubmitButtonCheckbox($event)"></mat-checkbox>
 
             <button  [disabled]="profilPersonForm.invalid || profilPersonForm.pristine || profileSubmitbtn" > Änderungen speichern</button>
-
-            {{changeDoneMessage}}
-            <input type="text" name="Hobby"
-                        [(ngModel)]="Hobby" #hobby="ngModel"> 
-                        <label for="">Hobbys</label>
-            
-        
-             
-            <button class="reg-button"  [disabled]="profilPersonForm.invalid || profilPersonForm.pristine" > Änderungen speichern</button>
             <p class="error-message">
               {{changeDoneMessage}}
             </p>
@@ -364,7 +367,7 @@
 
       Suchend: <mat-checkbox name="suchendCheck" [(ngModel)]="AktuellSuchend" (click)="changeSuchendCheck(AktuellSuchend)" (change)="activateSubmitButtonCheckbox($event)"></mat-checkbox>{{AktuellSuchend}}
       
-      <button (click)="submitMatchingbtn();matchingForm.form.markAsPristine()" [disabled]="matchingSubmitbtn"[disabled]="matchingForm.invalid || matchingForm.pristine"  >Änderungen Speichern</button>
+      <button class="reg-button" (click)="submitMatchingbtn();matchingForm.form.markAsPristine()" [disabled]="matchingSubmitbtn"[disabled]="matchingForm.invalid || matchingForm.pristine"  >Änderungen Speichern</button>
       <p class="error-message">
         {{changeDoneMessage}}
       </p>
