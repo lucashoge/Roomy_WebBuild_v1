@@ -53,8 +53,8 @@ body {
 }
 
 .form img {
+  height: 300px;
   width: 350px;
-  height: 277,5px;
   /* border-radius: 50%; */
   border-radius: 14px;
 
