@@ -18,7 +18,7 @@ import * as kf from './keyframes';
   styleUrls: ['./main-ui.component.css'],
   animations: [
     trigger('cardAnimator', [
-      transition('* => match', animate('1000ms ease-in-out', keyframes(kf.match))),
+      transition('* => match', animate('2500ms ease-in-out', keyframes(kf.match))),
     ])
   ]
   
@@ -50,8 +50,6 @@ export class MainUiComponent {
   ngOnInit(): void {
     this.loggedInUser = localStorage.getItem('loggedInUser');
     this.loggedInUser = JSON.parse(this.loggedInUser);
-
-    this.startAnimation("match");
   }
 
   cardAnimation(value: any) {

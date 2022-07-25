@@ -38,7 +38,7 @@
   <div class="swipebox" >
 
     <div style="height: 100%; width: 100%;">
-    <div *ngIf="!toggleMatchAnimation">
+
       <div class="match"  [@cardAnimator]="animationState"
       (@cardAnimator.done)="resetAnimationState($event)"
       (match)='startAnimation("match")'>
@@ -56,7 +56,7 @@
       </app-profile>
 
       
-    </div>
+
   </div>
 
   </div>
