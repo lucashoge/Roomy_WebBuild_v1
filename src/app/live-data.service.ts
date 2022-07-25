@@ -11,10 +11,9 @@ export interface Message {
     content: string;
 }
 
-@Injectable()
-@Component({
-  providers: [LiveDataService],
-})
+@Injectable({
+    providedIn: 'root'
+  })
 
 
 export class LiveDataService {
@@ -25,6 +24,7 @@ export class LiveDataService {
       this.messages = <Subject<Message>>this.connect(CHAT_URL).pipe(
           map(
               (response: MessageEvent): Message => {
+                    console.log("response");
                   console.log(response.data);
                   let data = JSON.parse(response.data)
                   return data;

@@ -1,19 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Observable, Observer } from 'rxjs';
 import { Router } from "@angular/router";
 import { now } from 'moment';
 import { DatePipe } from '@angular/common';
 import { HandleTokenErrorService } from '../handle-token-error.service';
-import {webSocket, WebSocketSubject} from 'rxjs/webSocket';
+import {webSocket, WebSocketSubject, WebSocketSubjectConfig} from 'rxjs/webSocket';
 
-//import { LiveDataService } from '../live-data.service';
+import { LiveDataService } from '../live-data.service';
 
 @Component({
   selector: 'app-chatverlaeufe',
   templateUrl: './chatverlaeufe.component.html',
   styleUrls: ['./chatverlaeufe.component.css'],
-  //providers: [LiveDataService],
 })
 export class ChatverlaeufeComponent implements OnInit {
   
@@ -21,38 +20,19 @@ export class ChatverlaeufeComponent implements OnInit {
   chatMessages: any[] = [];
   loggedInUser: any;
 
-  myWebSocket: WebSocketSubject<any> = webSocket({
-    url: 'ws://localhost:9200/',
-    deserializer: () => {}
-  });
 
   constructor(
-    private http: HttpClient, private router: Router, public datepipe: DatePipe, private handleToken: HandleTokenErrorService) 
+    private websocket: LiveDataService, private http: HttpClient, private router: Router, public datepipe: DatePipe, private handleToken: HandleTokenErrorService) 
   { 
-    this.myWebSocket = webSocket({
-      url: 'ws://localhost:9200/',
-      deserializer: () => {}
+    websocket.connect('ws://localhost:9200/');
+
+    websocket.messages.subscribe(msg => {
+      //this.received.push(msg);
+      console.log("Response from websocket: " + msg);
+      this.getChatEntries()
     });
-    this.myWebSocket.subscribe({
-      next: (v) => console.log(v),
-      error: (e) => console.error(e),
-      complete: () => console.info('complete') 
-    });
-    this.myWebSocket.next({message: 'some message'});
     
   }
-
-  /*sendMsg() {
-    let message = {
-      source: '',
-      content: ''
-    };
-    message.source = 'localhost';
-    message.content = this.content;
-
-    this.sent.push(message);
-    this.WebsocketService.messages.next(message);
-  }*/
 
   openChat(){
     this.router.navigate(['/chat'])
@@ -63,6 +43,8 @@ export class ChatverlaeufeComponent implements OnInit {
 
     this.loggedInUser = localStorage.getItem('loggedInUser');
     this.loggedInUser = JSON.parse(this.loggedInUser);
+
+    console.log(this.loggedInUser)
 
     this.chatid = localStorage.getItem('currentChat');
 
@@ -75,27 +57,16 @@ export class ChatverlaeufeComponent implements OnInit {
     err => {
       console.log("Error");
       if (err instanceof HttpErrorResponse) {
-        /*           if(err.status==401){
-            this.handleToken.handleTokenError();
-          }  */
       }
     });
 
-    /*this.myWebSocket.asObservable().subscribe(dataFromServer =>{
-      console.log("new message")
-      console.log(dataFromServer)
-      //this.chatMessages.push(dataFromServer);
-    },
-    err => {
-      console.log("Error");
-      console.log(err);
-    });*/
   }
 
   submitMessage(event: any) {
     event.preventDefault();
     const target = event.target;
     const msgText = target.querySelector('#msgText').value;
+    target.querySelector('#msgText').value = '';
 
     if(msgText != ""){
 
@@ -114,7 +85,8 @@ export class ChatverlaeufeComponent implements OnInit {
   
       this.http.post<any>("submitChatMessage", { body: messageForDB }).subscribe((result) => {
         console.log(result);
-        this.getChatEntries();
+        //this.chatMessages.push(messageForDB);
+        //this.getChatEntries();
       },
       err => {
         console.log("Error");

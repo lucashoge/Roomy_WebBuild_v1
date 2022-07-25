@@ -46,7 +46,7 @@ wss.on("connection", ws => {
   console.log("new client connected");
 
   //ws.next({ message: 'hello' });
-  ws.send(JSON.stringify("HELLOOOOOO"));
+  //ws.send(JSON.stringify("HELLOOOOOO"));
   /*wss.clients.forEach(client => {
     console.log("for each client")
     //if (client != wss) {
@@ -1025,10 +1025,10 @@ app.get('/settings', verifyToken, function (req, res) {
                 
                 wss.clients.forEach(client => {
                   console.log("for each client")
-                  //if (client != wss) {
-                    //client.send([{ msgDate: req.body.body.msgDate, msgText: req.body.body.msgText, from_id: userid, chatid: req.body.body.chatid,}]);
-                    client.send("MESSAGE TEST!");
-                    //}    
+                  if (client != wss) {
+                    client.send(JSON.stringify("Global Chat Update!"));
+                    //client.send("MESSAGE TEST!");
+                    }    
                 });
 
               });
