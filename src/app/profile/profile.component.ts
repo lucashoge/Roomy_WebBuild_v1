@@ -66,12 +66,17 @@ export class ProfileComponent {
 
       this.http.post<any>("submitMatch", { body: {idToMatch: this.currentUser.userid, usertype: this.loggedInUser.usertype, matchValue: 1} }).subscribe((result) => {
         console.log(result);
-        this.matchFound.emit({ match: result.match });
+        if(result.match != null){
+          this.matchFound.emit({ match: result.match });
+        }
       });
     }else{
       this.http.post<any>("submitMatch", { body: {idToMatch: this.currentUser.userid, usertype: this.loggedInUser.usertype, matchValue: 0} }).subscribe((result) => {
         console.log(result);
-        this.matchFound.emit({ match: result.match });
+        if(result.match != null){
+          this.matchFound.emit({ match: result.match });
+        }
+        
       },
       err => {
         console.log("Error");

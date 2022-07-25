@@ -1231,7 +1231,7 @@ app.get('/settings', verifyToken, function (req, res) {
               res.send(stringify(results));
               con.end(function (error) {
                 if (error) throw error;
-                res.sendStatus(200);
+                //res.sendStatus(200);
                 console.log("connection End");
               });
             });
@@ -1311,7 +1311,7 @@ app.get('/settings', verifyToken, function (req, res) {
                       console.log(sqlQuery2)
                       con.query(sqlQuery2, function (error, results, fields) {
                         console.log(results);
-                        res.send({match: false});
+                        res.send(stringify({match: false}));
 
                         con.end(function (error) {
                           if (error) throw error;
@@ -1321,7 +1321,7 @@ app.get('/settings', verifyToken, function (req, res) {
                     }else{
                       con.query(sqlQuery3, function (error, results, fields) {
                         console.log(results);
-                        res.send({match: false});
+                        res.send(stringify({match: false}));
                         con.end(function (error) {
                           if (error) throw error;
                           console.log("connection End");
@@ -1358,7 +1358,7 @@ app.get('/settings', verifyToken, function (req, res) {
                     });
                     
                     console.log(results);
-                    res.send({match: true});
+                    res.send(stringify({match: true}));
                     
                     con.end(function (error) {
                       if (error) throw error;

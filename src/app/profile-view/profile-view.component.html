@@ -10,21 +10,38 @@
 
 <form class="login-form" #userForm="ngForm">
     
-        
-<input class="form-control" type="label" name="Benutzername" required minlength="4"
-                  [(ngModel)]="currentUser.username" #username="ngModel">
-                  <label for="">Username</label>
 
-<div *ngIf="currentUser.username=='wg'">
-  <input type="label" name="WG-Name" required
-      [(ngModel)]="currentUser.wgname" #wgname="ngModel"> 
-      <label for="wgname">WG-Name</label>
-</div> 
+  <!--_______________________Einstellungen Person____________________________________________________________-->
+  <div *ngIf="currentUser.usertype=='person'">
+    <form class="login-form" #profilPersonForm="ngForm">
+      <input type="text" name="Nachname" required
+                      [(ngModel)]="currentUser.surname" #nachname="ngModel"> 
+                      <label for="">Nachname</label>
 
-<div *ngIf="currentUser.username=='person'">
-  <input type="label" name="Vorname" required
-    [(ngModel)]="currentUser.firstname" #firstname="ngModel"> 
-    <label for="firstname">Vorname</label>
-</div>
 
-</form>
+      <input type="text" name="Vorname" required
+                  [(ngModel)]="currentUser.firstname" #vorname="ngModel"> 
+                  <label for="">Vorname</label>
+
+
+      <input type="text" name="Geschlecht"
+                  [(ngModel)]="currentUser.gender" #geschlecht="ngModel"> 
+                  <label for="">Geschlecht</label>
+      
+
+      <input type="date" name="Geburtsdatum" required
+                  [(ngModel)]="currentUser.birthdate" #geburtsdatum="ngModel"> 
+                  <label for="">Geburtsdatum</label>
+
+
+      <input type="text" name="Job"
+                  [(ngModel)]="currentUser.job" #job="ngModel"> 
+                  <label for="">Job</label>
+      
+
+      Hobbys: <input type="text" name="Hobby"
+                  [(ngModel)]="currentUser.hobby" #hobby="ngModel"> <br>
+              
+
+    </form>
+  </div>
