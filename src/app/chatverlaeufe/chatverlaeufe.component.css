@@ -1,15 +1,81 @@
+
+.chats{
+  display: flex;
+  flex-direction: column;
+  height: 844px;
+  width: 390px;
+}
+
+.chat-nav{
+  margin: 20px;
+}
+
+.chats form{
+  margin-top: auto;
+  margin: 21px;
+}
+
+.msginput input{
+  font-family: "Roboto", sans-serif;
+  outline: 0;
+  background: #f2f2f2;
+  width: 100%;
+  border: 0;
+  margin: 0 0 15px;
+  padding: 15px;
+  box-sizing: border-box;
+  font-size: 14px;
+
+  border-radius: 14px;
+  
+}
+
+.message-submit{
+    position: absolute;
+    z-index: 1;
+    /* bottom: 9px; */
+    right: 20px;
+    color: #fff;
+    border: none;
+    background: #8940FF;
+    font-size: 14px;
+    text-transform: uppercase;
+    line-height: 1;
+    /* padding: 6px 10px; */
+    border-radius: 14px;
+}
+
+
+.form input {
+  font-family: "Roboto", sans-serif;
+  outline: 0;
+  background: #f2f2f2;
+  width: 100%;
+  border: 0;
+  
+  box-sizing: border-box;
+  font-size: 14px;
+
+  border-radius: 14px;
+}
+
 .imessage {
+    
     background-color: #fff;
-    border: 1px solid #e5e5ea;
-    border-radius: 0.25rem;
+    /* border: 1px solid #e5e5ea;
+    border-radius: 0.25rem; */
     display: flex;
     flex-direction: column;
     font-family: "SanFrancisco";
     font-size: 1.25rem;
-    margin: 0 auto 1rem;
-    max-width: 600px;
+    /* margin: 0 auto 1rem; */
+    margin: 0;
+    /* max-width: 600px; */
     padding: 0.5rem 1.5rem;
+    
   }
+
+  
   
   .imessage p {
     border-radius: 1.15rem;
@@ -18,6 +84,7 @@
     padding: 0.5rem .875rem;
     position: relative;
     word-wrap: break-word;
+
   }
   
   .imessage p::before,
@@ -147,11 +214,11 @@
     margin: 0;
   }
   
-  .container {
+  /* .container {
     margin: 0 auto;
     max-width: 600px;
     padding: 1rem;
-  }
+  } */
   
   h1 {
     font-weight: normal;
@@ -166,16 +233,16 @@
     padding-bottom: 1.5rem;
   }
   
-  .comment {
+  /* .comment {
     color: #222;
     font-size: 1.25rem;
     line-height: 1.5;
     margin-bottom: 1.25rem;
     max-width: 100%;
     padding: 0;
-  }
+  } */
   
-  @media screen and (max-width: 800px) {
+  /* @media screen and (max-width: 800px) {
     body {
       margin: 0 0.5rem;
     }
@@ -194,4 +261,4 @@
     .imessage p {
       margin: 0.5rem 0;
     }
-  }
+  } */
