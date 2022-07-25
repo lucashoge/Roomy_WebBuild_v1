@@ -104,12 +104,6 @@ export class ProfileComponent {
     }else{
       this.switch = true;
     }
-
-    
-    
-    // this.index++;
-    // console.log(state);
-    // this.currentUser = this.users[this.index];
   }
 
   async getNewUsersForMatching() {
