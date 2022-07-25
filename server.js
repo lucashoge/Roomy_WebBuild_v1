@@ -44,10 +44,22 @@ const wss = new WebSocketServer.Server({ port: 9200 })
 // Creating connection using websocket
 wss.on("connection", ws => {
   console.log("new client connected");
+
+  //ws.next({ message: 'hello' });
+  ws.send(JSON.stringify("HELLOOOOOO"));
+  /*wss.clients.forEach(client => {
+    console.log("for each client")
+    //if (client != wss) {
+      //client.send([{ msgDate: req.body.body.msgDate, msgText: req.body.body.msgText, from_id: userid, chatid: req.body.body.chatid,}]);
+      
+      //}    
+  });*/
+
   // sending message
-  ws.on("message", message => {
+  /*ws.on("message", message => {
       //log the received message and send it back to the client
       console.log('received: %s', message);
+      ws.send(JSON.stringify("HELLOOOOOO"));
       //send back the message to the other clients
       
   });
@@ -58,7 +70,7 @@ wss.on("connection", ws => {
   // handling client connection error
   ws.onerror = function () {
       console.log("Some Error occurred")
-  }
+  }*/
 });
 console.log("The WebSocket server is running on port 9200");
 
@@ -915,7 +927,33 @@ app.get('/settings', verifyToken, function (req, res) {
       con.connect(function (error) {
         if (error) throw error;
         console.log("connected");
-        con.query('SELECT *, userTable.email AS userMail, wgTable.email AS wgMail FROM 22_DB_Gruppe3.chat LEFT JOIN 22_DB_Gruppe3.users AS userTable ON fk_personid=userTable.userid LEFT JOIN 22_DB_Gruppe3.users AS wgTable ON fk_wgid=wgTable.userid WHERE userTable.userid="' + userid +'" OR wgTable.userid="' + userid +'"',
+        con.query('SELECT * FROM 22_DB_Gruppe3.chat'
+          + ' LEFT JOIN 22_DB_Gruppe3.users AS userTable ON fk_wgid=userTable.userid'
+          + ' WHERE userTable.userid!=' + userid,
+          function (error, results, fields) {
+            if (error) throw error;
+            console.log(results);
+            res.send(stringify(results));
+            con.end(function (error) {
+              if (error) throw error;
+              console.log("connection End");
+            });
+          });
+      });
+  });
+
+  app.post('/allChatsFromWg', verifyToken, function (req, res) {
+
+    var userid = [req.userId];
+
+    var con = mysql.createConnection(conConfig);
+  
+      con.connect(function (error) {
+        if (error) throw error;
+        console.log("connected");
+        con.query('SELECT * FROM 22_DB_Gruppe3.chat'
+          + ' LEFT JOIN 22_DB_Gruppe3.users AS userTable ON fk_personid=userTable.userid'
+          + ' WHERE userTable.userid!=' + userid,
           function (error, results, fields) {
             if (error) throw error;
             console.log(results);
@@ -983,11 +1021,14 @@ app.get('/settings', verifyToken, function (req, res) {
               function (error, results, fields) {
                 if (error) throw error;
 
+                console.log("clients")
+                
                 wss.clients.forEach(client => {
                   console.log("for each client")
-                  if (client != ws) {
-                    client.send([{ msgDate: req.body.body.msgDate, msgText: req.body.body.msgText, from_id: userid, chatid: req.body.body.chatid,}]);
-                  }    
+                  //if (client != wss) {
+                    //client.send([{ msgDate: req.body.body.msgDate, msgText: req.body.body.msgText, from_id: userid, chatid: req.body.body.chatid,}]);
+                    client.send("MESSAGE TEST!");
+                    //}    
                 });
 
               });

@@ -21,27 +21,24 @@ export class ChatverlaeufeComponent implements OnInit {
   chatMessages: any[] = [];
   loggedInUser: any;
 
-  myWebSocket: WebSocketSubject<any> = webSocket('ws://localhost:8000');
+  myWebSocket: WebSocketSubject<any> = webSocket({
+    url: 'ws://localhost:9200/',
+    deserializer: () => {}
+  });
 
-  
-
-  /*title = 'socketrv';
-  content = '';
-  received: any[] = [];
-  sent: any[] = [];*/
-
-
-  constructor(//private WebsocketService: LiveDataService, 
+  constructor(
     private http: HttpClient, private router: Router, public datepipe: DatePipe, private handleToken: HandleTokenErrorService) 
   { 
-    /*WebsocketService.messages.subscribe(msg => {
-      this.received.push(msg);
-      console.log("Response from websocket: " + msg);
-    });*/
-    this.myWebSocket.asObservable().subscribe(dataFromServer =>{
-
-      this.chatMessages.push(dataFromServer);
+    this.myWebSocket = webSocket({
+      url: 'ws://localhost:9200/',
+      deserializer: () => {}
     });
+    this.myWebSocket.subscribe({
+      next: (v) => console.log(v),
+      error: (e) => console.error(e),
+      complete: () => console.info('complete') 
+    });
+    this.myWebSocket.next({message: 'some message'});
     
   }
 
@@ -83,6 +80,16 @@ export class ChatverlaeufeComponent implements OnInit {
           }  */
       }
     });
+
+    /*this.myWebSocket.asObservable().subscribe(dataFromServer =>{
+      console.log("new message")
+      console.log(dataFromServer)
+      //this.chatMessages.push(dataFromServer);
+    },
+    err => {
+      console.log("Error");
+      console.log(err);
+    });*/
   }
 
   submitMessage(event: any) {
@@ -90,33 +97,35 @@ export class ChatverlaeufeComponent implements OnInit {
     const target = event.target;
     const msgText = target.querySelector('#msgText').value;
 
-    const date = new Date();
-    const formatDate = this.datepipe.transform(date, 'yyyy-MM-dd hh:mm:ss');
-    console.log(formatDate);
+    if(msgText != ""){
 
+      const date = new Date();
+      const formatDate = this.datepipe.transform(date, 'yyyy-MM-dd hh:mm:ss');
+      console.log(formatDate);
   
+      var messageForDB = {
+        chateintragid: 0,
+        chatid: this.chatid,
+        msgText: msgText,
+        msgDate: formatDate
+      };
+  
+      console.log(messageForDB);
+  
+      this.http.post<any>("submitChatMessage", { body: messageForDB }).subscribe((result) => {
+        console.log(result);
+        this.getChatEntries();
+      },
+      err => {
+        console.log("Error");
+        if (err instanceof HttpErrorResponse) {
+                    if(err.status==401){
+              this.handleToken.handleTokenError();
+            } 
+        }
+      });
+    }
 
-    var messageForDB = {
-      chateintragid: 0,
-      chatid: this.chatid,
-      msgText: msgText,
-      msgDate: formatDate
-    };
-
-    console.log(messageForDB);
-
-    this.http.post<any>("submitChatMessage", { body: messageForDB }).subscribe((result) => {
-      console.log(result);
-      this.getChatEntries();
-    },
-    err => {
-      console.log("Error");
-      if (err instanceof HttpErrorResponse) {
-                  if(err.status==401){
-            this.handleToken.handleTokenError();
-          } 
-      }
-    });
   }
 
   getChatEntries(): void {

@@ -35,7 +35,15 @@ export class ChatComponent implements OnInit {
     var config = { params: data };
 
     console.log("getChats()");
-    this.http.post<any>("allChatsFromPerson", { body: null }).subscribe((result) => {
+
+    var postMethod = "";
+
+    if(this.loggedInUser.usertype == "wg"){
+      postMethod = "allChatsFromWg";
+    }else{
+      postMethod = "allChatsFromPerson";
+    }
+    this.http.post<any>(postMethod, { body: null }).subscribe((result) => {
       
       this.chatResult = result;
       console.log("this.chatResult");

@@ -1,9 +1,4 @@
-<div class="tphoto"
-[@cardAnimator]="animationState"
-(@cardAnimator.done)="resetAnimationState($event)"
-(swipeleft)='startAnimation("swipeleft")' 
-(swiperight)='startAnimation("swiperight")'
->
+<div class="tphoto">
 <td><img src={{currentUser.profilepic}} title="tphoto" alt="Tinder Photo" /></td>
 <div class="tname">
   {{currentUser.username}}, <span class="age">{{currentUser.city}}</span>

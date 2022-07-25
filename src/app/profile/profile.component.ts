@@ -22,7 +22,7 @@ import { HandleTokenErrorService } from '../handle-token-error.service';
 export class ProfileComponent {
 
   public users: any[] = [];// = data;
-  currentUser!: any;
+  currentUser: any = {profilepic: "assets/Profilbild_default.jpg"};
   userID = 0;
   loggedInUser: any;
 
@@ -93,6 +93,7 @@ export class ProfileComponent {
         this.getNewUsersForMatching();
       }else{
         this.currentUser = this.users[this.index]; 
+        localStorage.setItem("currentProfileViewUser", JSON.stringify(this.currentUser));
       }
       this.switch = false
     }else{
