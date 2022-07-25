@@ -50,6 +50,8 @@ export class MainUiComponent {
   ngOnInit(): void {
     this.loggedInUser = localStorage.getItem('loggedInUser');
     this.loggedInUser = JSON.parse(this.loggedInUser);
+
+    this.startAnimation("match");
   }
 
   cardAnimation(value: any) {
