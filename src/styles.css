@@ -1,12 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
-@font-face {
-    font-family: "PanGramCustom";
-    src: url(../assets/fonts/PPPangramSansRounded-Bold.otf) format("opentype");
-    }
 
-:host{
-    font-family: "PanGramCustom";
-}
 
 body, html{
     min-width: 100vw;
