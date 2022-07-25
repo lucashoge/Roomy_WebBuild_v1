@@ -38,6 +38,7 @@ export class MainUiComponent {
   }
 
   resetAnimationState(state: any) {
+    console.log("resetAnimationState")
     this.animationState = '';
   }
 
@@ -70,6 +71,7 @@ export class MainUiComponent {
     console.log("matchFoundEvent toggled!")
     if(event.match == true){
       this.toggleMatchAnimation = true;
+      this.startAnimation("match");
     }else{
       this.toggleMatchAnimation = false;
     }
