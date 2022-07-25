@@ -49,6 +49,8 @@ export class MainUiComponent {
     console.log("matchFoundEvent toggled!")
     if(event.match == true){
       this.toggleMatchAnimation = true;
+    }else{
+      this.toggleMatchAnimation = false;
     }
     
   }
