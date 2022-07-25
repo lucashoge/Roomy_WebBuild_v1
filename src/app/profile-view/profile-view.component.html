@@ -7,3 +7,24 @@
   <i class="fa fa-book" aria-hidden="true"> 0</i><i class="fa fa-users" aria-hidden="true"> 0</i>
 </div>
 </div>
+
+<form class="login-form" #userForm="ngForm">
+    
+        
+<input class="form-control" type="label" name="Benutzername" required minlength="4"
+                  [(ngModel)]="currentUser.username" #username="ngModel">
+                  <label for="">Username</label>
+
+<div *ngIf="currentUser.username=='wg'">
+  <input type="label" name="WG-Name" required
+      [(ngModel)]="currentUser.wgname" #wgname="ngModel"> 
+      <label for="wgname">WG-Name</label>
+</div> 
+
+<div *ngIf="currentUser.username=='person'">
+  <input type="label" name="Vorname" required
+    [(ngModel)]="currentUser.firstname" #firstname="ngModel"> 
+    <label for="firstname">Vorname</label>
+</div>
+
+</form>

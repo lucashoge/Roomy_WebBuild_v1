@@ -116,6 +116,7 @@ export class ProfileComponent {
       console.log(this.users);
       if(this.users.length > 0){
         this.currentUser = this.users[0]; 
+        localStorage.setItem("currentProfileViewUser", JSON.stringify(this.currentUser));
         console.log("currentUser from profiles" + this.currentUser)
         console.log(this.currentUser)
         this.userID = this.users[this.users.length-1].userid;

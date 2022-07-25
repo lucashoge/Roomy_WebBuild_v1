@@ -24,6 +24,8 @@ export class ProfileViewComponent implements OnInit {
     this.currentUser = localStorage.getItem('currentProfileViewUser');
     this.currentUser = JSON.parse(this.currentUser);
 
+    console.log(this.currentUser)
+
     this.loggedInUser = localStorage.getItem('loggedInUser');
     this.loggedInUser = JSON.parse(this.loggedInUser);
   }
