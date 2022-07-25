@@ -929,7 +929,7 @@ app.get('/settings', verifyToken, function (req, res) {
         console.log("connected");
         con.query('SELECT * FROM 22_DB_Gruppe3.chat'
           + ' LEFT JOIN 22_DB_Gruppe3.users AS userTable ON fk_wgid=userTable.userid'
-          + ' WHERE userTable.userid!=' + userid,
+          + ' WHERE 22_DB_Gruppe3.chat.fk_personid=' + userid,
           function (error, results, fields) {
             if (error) throw error;
             console.log(results);
@@ -953,7 +953,7 @@ app.get('/settings', verifyToken, function (req, res) {
         console.log("connected");
         con.query('SELECT * FROM 22_DB_Gruppe3.chat'
           + ' LEFT JOIN 22_DB_Gruppe3.users AS userTable ON fk_personid=userTable.userid'
-          + ' WHERE userTable.userid!=' + userid,
+          + ' WHERE 22_DB_Gruppe3.chat.fk_wgid=' + userid,
           function (error, results, fields) {
             if (error) throw error;
             console.log(results);
