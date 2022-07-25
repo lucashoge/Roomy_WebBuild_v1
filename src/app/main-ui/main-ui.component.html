@@ -25,7 +25,7 @@
       </svg>
     </div>
 
-    <div *ngIf="toggleMatchAnimation"><h1>MATCH!!!!</h1></div>
+    
 
     <a class="card-container" style="height: 40px;" target="_blank" rel="noopener" (click)='openChat()'>
         
@@ -50,7 +50,7 @@
       <!-- <a *ngIf="!auth.loggedIn()" routerLink="login" routerLinkActive="active">login</a> -->
       
       <!-- <a style="cursor:pointer" *ngIf="auth.loggedIn()" (click)="auth.logout()">Logout</a> -->
-
+      <div *ngIf="toggleMatchAnimation"><h1>MATCH!!!!</h1></div>
       <app-profile  [parentSubject]="parentSubject" (matchFound)=matchFoundEvent($event) style="height: 100%; width: 100%;">
       </app-profile>
 

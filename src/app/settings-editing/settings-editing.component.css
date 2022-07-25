@@ -41,12 +41,21 @@ body {
 
   width: 100%;
 
+  overflow: scroll;
   
   /* z-index: 1; */
   background: #FFFFFF;
   
-  padding: 37px;
+  /* padding: 37px; */
+  padding-right: 20px;
+  padding-left: 20px;
   text-align: center;
+}
+
+.form img {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
 }
 .form input {
   font-family: "Roboto", sans-serif;
