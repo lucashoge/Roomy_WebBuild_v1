@@ -14,6 +14,7 @@ export class HandleTokenErrorService {
     localStorage.removeItem("expires_at");
     localStorage.removeItem("currentChat");
     localStorage.removeItem("loggedInUser");
+    localStorage.removeItem("currentProfileViewUser");
     sessionStorage.setItem('tokenErrorMessage', "Ihr Login ist fehlerhaft oder ihre Sitzung ist abgelaufen.\nSie wurden automatisch ausgeloggt");
 
     this.router.navigate(['/login']);

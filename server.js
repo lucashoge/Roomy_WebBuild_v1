@@ -113,7 +113,6 @@ function verifyToken(req, res, next) {
   }catch (err) {
     console.log(err);
     return res.status(401).send("Unauthorized request");
-    throw new Error(err)
   }
   
 
@@ -135,42 +134,46 @@ app.get('/api/login', function (req, res) {
     userData = [req.query.Username, hashedPassword];
   }
 
-  try{
-    con.connect(function (error) {
-      if (error) throw error;
-      console.log("connected");
-      con.query("SELECT username, userid, password FROM users WHERE username = ?;", userData, function (error, results, fields) {
-        if (error) throw error;
-        if (results != "" && passwordHash.verify(req.query.password, results[0].password)) {
-          console.log(results[0].userid);
-          console.log(results[0].password)
-          console.log(passwordHash.verify(req.query.password, results[0].password));
-          payload = { subject: stringify(results[0].userid) };
+  con.connect(function (error) {
+    if (error) {
+      console.log(error);
+      return res.status(503).send("Service Unavailable"); 
+    }
+    console.log("connected");
+    con.query("SELECT username, userid, password FROM users WHERE username = ?;", userData, function (error, results, fields) {
+      if (error) {
+        console.log(error);
+        return res.status(500).send("Internal Server Error"); 
+      }
+      if (results != "" && passwordHash.verify(req.query.password, results[0].password)) {
+        console.log(results[0].userid);
+        console.log(results[0].password)
+        console.log(passwordHash.verify(req.query.password, results[0].password));
+        payload = { subject: stringify(results[0].userid) };
 
-          const jwtBearerToken = jwt.sign({}, privateKey, {
-            algorithm: 'RS256',
-            expiresIn: '24h',
-            subject: stringify(results[0].userid)
-          });
-
-
-          res.status(200).json({
-            idToken: jwtBearerToken,
-            expiresIn: '24h'
-          });
-        }
-        else {
-          res.send(stringify("err"));
-        }
-        con.end(function (error) {
-          if (error) throw error;
-          console.log("connection End");
+        const jwtBearerToken = jwt.sign({}, privateKey, {
+          algorithm: 'RS256',
+          expiresIn: '24h',
+          subject: stringify(results[0].userid)
         });
+
+
+        res.status(200).json({
+          idToken: jwtBearerToken,
+          expiresIn: '24h'
+        });
+      }
+      else {
+        res.send(stringify("err"));
+      }
+      con.end(function (error) {
+      if (error) {
+        console.log(error);
+      }
+        console.log("connection End");
       });
     });
-  }catch (err) {
-    throw new Error(err)
-  }
+  });
 
 });
 
@@ -181,61 +184,66 @@ app.get('/register', function (req, res) {
   var con = mysql.createConnection(conConfig);
   var username;
   console.log("Got it");
-  try{
-    con.connect(function (error) {
-      if (error) throw error;
-      console.log("connected");
-      //Abfragen ob Username / Email existieren
-      if (!req.query.Username) {
-        username = "";
-      }
-      else {
-        username = req.query.Username;
-      }
-      if (!req.query.Email) {
-        var email = "";
-      }
-      else {
-        email = req.query.Email;
-      }
+  con.connect(function (error) {
+    if (error) {
+      console.log(error);
+      return res.status(503).send("Service Unavailable"); 
+    }
+    console.log("connected");
+    //Abfragen ob Username / Email existieren
+    if (!req.query.Username) {
+      username = "";
+    }
+    else {
+      username = req.query.Username;
+    }
+    if (!req.query.Email) {
+      var email = "";
+    }
+    else {
+      email = req.query.Email;
+    }
 
-      con.query("SELECT COUNT(*) AS 'countUsernames' FROM users WHERE username = ?;", username, function (error, results, fields) {
-        if (error) throw error;
-        console.log("Counted Users: " + results[0].countUsernames);
-        if (results[0].countUsernames == 0) {
-          //Username frei
-          console.log("Username frei");
-          con.query("SELECT COUNT(*) AS 'countEmails' FROM users WHERE email = ?;", email, function (error, results, fields) {
-            if (error) throw error;
-            console.log("Counted Emails: " + results[0].countEmails);
+    con.query("SELECT COUNT(*) AS 'countUsernames' FROM users WHERE username = ?;", username, function (error, results, fields) {
+      if (error) {
+        console.log(error);
+        return res.status(500).send("Internal Server Error"); 
+      }
+      console.log("Counted Users: " + results[0].countUsernames);
+      if (results[0].countUsernames == 0) {
+        //Username frei
+        console.log("Username frei");
+        con.query("SELECT COUNT(*) AS 'countEmails' FROM users WHERE email = ?;", email, function (error, results, fields) {
+          if (error) {
+            console.log(error);
+            return res.status(500).send("Internal Server Error"); 
+          }
+          console.log("Counted Emails: " + results[0].countEmails);
 
-            if (results[0].countEmails == 0) {
-              //Username und Email frei
-              console.log("Username und Email frei");
-              res.send(stringify("registerAllowed"));
-            }
-            else {
-              //Email nicht frei
-              console.log("Email nicht frei");
-              res.send(stringify("emailUsed"));
-            }
-          });
-        }
-        else {
-          //Username nicht frei
-          console.log("Username nicht frei");
-          res.send(stringify("usernameUsed"));
-        }
-        //res.send(stringify(results[0].count));
-        //res.send(stringify("Halloloo"));
-        con.end(function (error) {
-          if (error) throw error;
+          if (results[0].countEmails == 0) {
+            //Username und Email frei
+            console.log("Username und Email frei");
+            res.send(stringify("registerAllowed"));
+          }
+          else {
+            //Email nicht frei
+            console.log("Email nicht frei");
+            res.send(stringify("emailUsed"));
+          }
         });
+      }
+      else {
+        //Username nicht frei
+        console.log("Username nicht frei");
+        res.send(stringify("usernameUsed"));
+      }
+      //res.send(stringify(results[0].count));
+      //res.send(stringify("Halloloo"));
+      con.end(function (error) {
+        if (error) console.log(error);
       });
     });
-  }catch (err) {
-  throw new Error(err)
-  }
+  });
 });
 
 
@@ -251,51 +259,55 @@ app.post('/register', function (req, res) {
     console.log("Person");
     //Person
     var con = mysql.createConnection(conConfig);    
-    try{
-      con.connect(function (error) {
-        if (error) throw error;
-        console.log("connected");
-        con.query('INSERT INTO users SET ?;INSERT INTO person(personid)  select MAX(userid) as newid FROM users; UPDATE person SET ? where personid = (SELECT MAX(userid) FROM users); ', [{ username: req.body.body.Username, email: req.body.body.Email, password: hashedPassword, usertype: req.body.body.kindOfUser },{ firstname: req.body.body.Vorname, surname: req.body.body.Nachname, gender: req.body.body.Geschlecht, birthdate: req.body.body.Geburtsdatum }],
-          function (error, results, fields) {
-            if (error) throw error;
-            res.sendStatus(200);
-            console.log(results[0]);
-            console.log(results[1]);
-            console.log(results[2]);
-            con.end(function (error) {
-              if (error) throw error;
-              console.log("connection End");
-            });
+    con.connect(function (error) {
+      if (error) {
+        console.log(error);
+        return res.status(503).send("Service Unavailable"); 
+      }
+      console.log("connected");
+      con.query('INSERT INTO users SET ?;INSERT INTO person(personid)  select MAX(userid) as newid FROM users; UPDATE person SET ? where personid = (SELECT MAX(userid) FROM users); ', [{ username: req.body.body.Username, email: req.body.body.Email, password: hashedPassword, usertype: req.body.body.kindOfUser },{ firstname: req.body.body.Vorname, surname: req.body.body.Nachname, gender: req.body.body.Geschlecht, birthdate: req.body.body.Geburtsdatum }],
+        function (error, results, fields) {
+          if (error) {
+            console.log(error);
+            return res.status(500).send("Internal Server Error"); 
+          }
+          res.sendStatus(200);
+          console.log(results[0]);
+          console.log(results[1]);
+          console.log(results[2]);
+          con.end(function (error) {
+            if (error) console.log(error);
+            console.log("connection End");
           });
-      });
-    }catch (err) {
-      throw new Error(err)
-    }
+        });
+    });
   }
   else if(req.body.body.kindOfUser=='wg'){
     console.log("WG");
     //WG
     var con = mysql.createConnection(conConfig);   
-      try{ 
-        con.connect(function (error) {
-          if (error) throw error;
-          console.log("connected");
-          con.query('INSERT INTO users SET ?;INSERT INTO wg(wgid)  select MAX(userid) as newid FROM users; UPDATE wg SET ? where wgid = (SELECT MAX(userid) FROM users); ', [{ username: req.body.body.Username, email: req.body.body.Email, password: hashedPassword, usertype: req.body.body.kindOfUser },{ wgname: req.body.body.WGName, postcode: req.body.body.Postleitzahl, city: req.body.body.Stadt, country: req.body.body.Land }],
-            function (error, results, fields) {
-              if (error) throw error;
-              res.sendStatus(200);
-              console.log(results[0]);
-              console.log(results[1]);
-              console.log(results[2]);
-              con.end(function (error) {
-                if (error) throw error;
-                console.log("connection End");
-              });
+      con.connect(function (error) {
+        if (error) {
+          console.log(error);
+          return res.status(503).send("Service Unavailable"); 
+        }
+        console.log("connected");
+        con.query('INSERT INTO users SET ?;INSERT INTO wg(wgid)  select MAX(userid) as newid FROM users; UPDATE wg SET ? where wgid = (SELECT MAX(userid) FROM users); ', [{ username: req.body.body.Username, email: req.body.body.Email, password: hashedPassword, usertype: req.body.body.kindOfUser },{ wgname: req.body.body.WGName, postcode: req.body.body.Postleitzahl, city: req.body.body.Stadt, country: req.body.body.Land }],
+          function (error, results, fields) {
+            if (error) {
+              console.log(error);
+              return res.status(500).send("Internal Server Error"); 
+            }
+            res.sendStatus(200);
+            console.log(results[0]);
+            console.log(results[1]);
+            console.log(results[2]);
+            con.end(function (error) {
+              if (error) console.log(error);
+              console.log("connection End");
             });
-        });
-      }catch (err) {
-        throw new Error(err)
-      }
+          });
+      });
   }
       
     });
@@ -311,25 +323,27 @@ app.get('/settings', verifyToken, function (req, res) {
 //___________________________________________________________________________Usertyp abfragen
   if (req.query.flag == "getKindOfUser") {
     var con = mysql.createConnection(conConfig);
-    try{
-      con.connect(function (error) {
-        if (error) throw error;
-        console.log("connected");
-        con.query("SELECT usertype  FROM users WHERE userid = ?;", userid,
-          function (error, results, fields) {
-            if (error) throw error;
-            console.log("sending back");
-            console.log(results);
-            res.send(stringify(results));
-            con.end(function (error) {
-              if (error) throw error;
-              console.log("connection End");
-            });
+    con.connect(function (error) {
+      if (error) {
+        console.log(error);
+        return res.status(503).send("Service Unavailable"); 
+      }
+      console.log("connected");
+      con.query("SELECT usertype  FROM users WHERE userid = ?;", userid,
+        function (error, results, fields) {
+          if (error) {
+            console.log(error);
+            return res.status(500).send("Internal Server Error"); 
+          }
+          console.log("sending back");
+          console.log(results);
+          res.send(stringify(results));
+          con.end(function (error) {
+            if (error) console.log(error);
+            console.log("connection End");
           });
-      });
-    }catch (err) {
-      throw new Error(err)
-    }
+        });
+    });
   }
 
 //___________________________________________________________________________Userdaten abfragen
@@ -340,32 +354,34 @@ app.get('/settings', verifyToken, function (req, res) {
     //Wenn User eine Person ist
     if(req.query.kindOfUser == "person"){
       console.log("inside Person");
-      try{
-        con.connect(function (error) {
-          if (error) throw error;
-          console.log("connected");
+      con.connect(function (error) {
+        if (error) {
+          console.log(error);
+          return res.status(503).send("Service Unavailable"); 
+        }
+        console.log("connected");
 
-          var sqlQuery = 'SELECT username, email, profilepic, smoker, volume, tidiness, cook, searching, usertype, firstname, surname, gender, birthdate, job, hobby, searchpostcode, searchcity, searchcountry, dog, cat, bird, others'
-              + ' FROM 22_DB_Gruppe3.users'
-              + ' LEFT JOIN 22_DB_Gruppe3.person AS personTable ON userid=personTable.personid'
-              + ' LEFT JOIN 22_DB_Gruppe3.pet AS petTable ON userid=petTable.petid'
-              + ' WHERE 22_DB_Gruppe3.users.userid=' + userid;
+        var sqlQuery = 'SELECT username, email, profilepic, smoker, volume, tidiness, cook, searching, usertype, firstname, surname, gender, birthdate, job, hobby, searchpostcode, searchcity, searchcountry, dog, cat, bird, others'
+            + ' FROM 22_DB_Gruppe3.users'
+            + ' LEFT JOIN 22_DB_Gruppe3.person AS personTable ON userid=personTable.personid'
+            + ' LEFT JOIN 22_DB_Gruppe3.pet AS petTable ON userid=petTable.petid'
+            + ' WHERE 22_DB_Gruppe3.users.userid=' + userid;
 
 
-          con.query(sqlQuery,
-            function (error, results, fields) {
-              if (error) throw error;
-              console.log(results);
-              res.send(stringify(results));
-              con.end(function (error) {
-                if (error) throw error;
-                console.log("connection End");
-              });
+        con.query(sqlQuery,
+          function (error, results, fields) {
+            if (error) {
+              console.log(error);
+              return res.status(500).send("Internal Server Error"); 
+            }
+            console.log(results);
+            res.send(stringify(results));
+            con.end(function (error) {
+              if (error) console.log(error);
+              console.log("connection End");
             });
-        });
-      }catch (err) {
-        throw new Error(err)
-      }
+          });
+      });
     }
     
 
@@ -374,30 +390,32 @@ app.get('/settings', verifyToken, function (req, res) {
         
       console.log("inside WG");
         console.log("get wg data");
-        try{
-          con.connect(function (error) {
-            if (error) throw error;
-            console.log("connected");
+        con.connect(function (error) {
+          if (error) {
+            console.log(error);
+            return res.status(503).send("Service Unavailable"); 
+          }
+          console.log("connected");
 
-            var sqlQuery = 'SELECT username, email, profilepic, smoker, volume, tidiness, cook, searching, usertype, wgname, postcode, city, country, spotfree, spotstotal, price, dog, cat, bird, others'
-                + ' FROM 22_DB_Gruppe3.users'
-                + ' LEFT JOIN 22_DB_Gruppe3.wg AS wgTable ON userid=wgTable.wgid'
-              + ' LEFT JOIN 22_DB_Gruppe3.pet AS petTable ON userid=petTable.petid'
-                + ' WHERE 22_DB_Gruppe3.users.userid=' + userid;
+          var sqlQuery = 'SELECT username, email, profilepic, smoker, volume, tidiness, cook, searching, usertype, wgname, postcode, city, country, spotfree, spotstotal, price, dog, cat, bird, others'
+              + ' FROM 22_DB_Gruppe3.users'
+              + ' LEFT JOIN 22_DB_Gruppe3.wg AS wgTable ON userid=wgTable.wgid'
+            + ' LEFT JOIN 22_DB_Gruppe3.pet AS petTable ON userid=petTable.petid'
+              + ' WHERE 22_DB_Gruppe3.users.userid=' + userid;
 
-            con.query(sqlQuery,
-              function (error, results, fields) {
-                if (error) throw error;
-                res.send(stringify(results));
-                con.end(function (error) {
-                  if (error) throw error;
-                  console.log("connection End");
-                });
+          con.query(sqlQuery,
+            function (error, results, fields) {
+              if (error) {
+                console.log(error);
+                return res.status(500).send("Internal Server Error"); 
+              }
+              res.send(stringify(results));
+              con.end(function (error) {
+                if (error) console.log(error);
+                console.log("connection End");
               });
-          });
-        }catch (err) {
-          throw new Error(err)
-        }
+            });
+        });
       }
       else{console.log("No Person No WG");}
     }
@@ -406,116 +424,122 @@ app.get('/settings', verifyToken, function (req, res) {
     //___________________________________________________________________________Prüfen ob neue Email schon existiert
     else if(req.query.flag == "checkMail"){
       var con = mysql.createConnection(conConfig);
-      try{
-        con.connect(function (error) {
-          if (error) throw error;
-          console.log("connected");
-          //Abfragen Email existiert
-          if (!req.query.Email) {
-            var email = "";
+      con.connect(function (error) {
+        if (error) {
+          console.log(error);
+          return res.status(503).send("Service Unavailable"); 
+        }
+        console.log("connected");
+        //Abfragen Email existiert
+        if (!req.query.Email) {
+          var email = "";
+        }
+        else {
+          email = req.query.Email;
+        }
+        con.query("SELECT COUNT(*) AS 'countEmails' FROM users WHERE email = ?;", email, function (error, results, fields) {
+          if (error) {
+            console.log(error);
+            return res.status(500).send("Internal Server Error"); 
+          }
+          console.log("Counted: " + results.countEmails);
+          console.log("Counted Emails: " + results[0].countEmails);
+          if (results[0].countEmails == 0) {
+            //Email frei
+            console.log("Email frei");
+            res.send(stringify("emailAllowed"));
           }
           else {
-            email = req.query.Email;
+            //Email nicht frei
+            console.log("Email nicht frei");
+            res.send(stringify("emailUsed"));
           }
-          con.query("SELECT COUNT(*) AS 'countEmails' FROM users WHERE email = ?;", email, function (error, results, fields) {
-            if (error) throw error;
-            console.log("Counted: " + results.countEmails);
-            console.log("Counted Emails: " + results[0].countEmails);
-            if (results[0].countEmails == 0) {
-              //Email frei
-              console.log("Email frei");
-              res.send(stringify("emailAllowed"));
-            }
-            else {
-              //Email nicht frei
-              console.log("Email nicht frei");
-              res.send(stringify("emailUsed"));
-            }
-          });
-          con.end(function (error) {
-            if (error) throw error;
-          });
         });
-      }catch (err) {
-        throw new Error(err)
-      }
+        con.end(function (error) {
+          if (error) console.log(error);
+        });
+      });
     }
     
     //___________________________________________________________________________Prüfen ob neuer Username schon existiert
     else if(req.query.flag == "checkUsername"){
       var con = mysql.createConnection(conConfig);
-      try{
-        con.connect(function (error) {
-          if (error) throw error;
-          console.log("connected");
-          //Abfragen Email existiert
-          if (!req.query.Username) {
-            var username = "";
+      con.connect(function (error) {
+        if (error) {
+          console.log(error);
+          return res.status(503).send("Service Unavailable"); 
+        }
+        console.log("connected");
+        //Abfragen Email existiert
+        if (!req.query.Username) {
+          var username = "";
+        }
+        else {
+          username = req.query.Username;
+        }
+        console.log(username);
+        con.query("SELECT COUNT(*) AS 'countUsernames' FROM users WHERE username = ?;", username, function (error, results, fields) {
+          if (error) {
+            console.log(error);
+            return res.status(500).send("Internal Server Error"); 
+          }
+          console.log("Counted: " + results.countUsernames);
+          console.log("Counted Users: " + results[0].countUsernames);
+          if (results[0].countUsernames == 0) {
+            //Usernamefrei
+            console.log("Username frei");
+            res.send(stringify("usernameAllowed"));
           }
           else {
-            username = req.query.Username;
+            //Username nicht frei
+            console.log("Username nicht frei");
+            res.send(stringify("usernameUsed"));
           }
-          console.log(username);
-          con.query("SELECT COUNT(*) AS 'countUsernames' FROM users WHERE username = ?;", username, function (error, results, fields) {
-            if (error) throw error;
-            console.log("Counted: " + results.countUsernames);
-            console.log("Counted Users: " + results[0].countUsernames);
-            if (results[0].countUsernames == 0) {
-              //Usernamefrei
-              console.log("Username frei");
-              res.send(stringify("usernameAllowed"));
-            }
-            else {
-              //Username nicht frei
-              console.log("Username nicht frei");
-              res.send(stringify("usernameUsed"));
-            }
-          });
-          con.end(function (error) {
-            if (error) throw error;
-          });
         });
-      }catch (err) {
-        throw new Error(err)
-      }
+        con.end(function (error) {
+          if (error) console.log(error);
+        });
+      });
     }
 
     //___________________________________________________________________________Prüfen ob Passwort übereinstimmt
     else if(req.query.flag == "checkPassword"){
       var con = mysql.createConnection(conConfig);
-      try{
-        con.connect(function (error) {
-          if (error) throw error;
-          console.log("connected");
-          //Abfragen ob Passwort existiert + Hashen
-          if (!req.query.passwort) {
-            var passwort = "";
+      con.connect(function (error) {
+        if (error) {
+          console.log(error);
+          return res.status(503).send("Service Unavailable"); 
+        }
+        console.log("connected");
+        //Abfragen ob Passwort existiert + Hashen
+        if (!req.query.passwort) {
+          var passwort = "";
+        }
+        else {
+          passwort = req.query.passwort;
+        }
+        console.log(passwort);
+        con.query("SELECT userid, password FROM users WHERE userid = ?;", userid, function (error, results, fields) {
+          if (error) {
+            console.log(error);
+            return res.status(500).send("Internal Server Error"); 
+          }
+          console.log("Counted passwords: " + results[0].countPasswords);
+          if (results[0]!="" && passwordHash.verify(passwort, results[0].password)) {
+            //Passwort richtig
+            console.log("Passwort richtig");
+            res.send(stringify("passwordCorrect"));
           }
           else {
-            passwort = req.query.passwort;
+            //Passwort falsch
+            console.log("Passwort falsch");
+            res.send(stringify("passwordWrong"));
           }
-          console.log(passwort);
-          con.query("SELECT userid, password FROM users WHERE userid = ?;", userid, function (error, results, fields) {
-            if (error) throw error;
-            console.log("Counted passwords: " + results[0].countPasswords);
-            if (results[0]!="" && passwordHash.verify(passwort, results[0].password)) {
-              //Passwort richtig
-              console.log("Passwort richtig");
-              res.send(stringify("passwordCorrect"));
-            }
-            else {
-              //Passwort falsch
-              console.log("Passwort falsch");
-              res.send(stringify("passwordWrong"));
-            }
-          });
-          con.end(function (error) {
-            if (error) throw error;
-          });
         });
-      }catch (err) {
-        throw new Error(err)
-      }
+        con.end(function (error) {
+          if (error) console.log(error);
+        });
+      });
     }
     //______________________________________________________Änderungen derr Settings in die Datenbank eintragen_______________________________________________________
 
@@ -524,48 +548,52 @@ app.get('/settings', verifyToken, function (req, res) {
       console.log("Email");
       //email
       var con = mysql.createConnection(conConfig);
-        try{
-          con.connect(function (error) {
-            if (error) throw error;
-            console.log("connected");
-            con.query('UPDATE users SET ? WHERE userid = ?;', [{ email: req.query.Email},userid],
-              function (error, results, fields) {
-                if (error) throw error;
-                res.sendStatus(200);
-                console.log("Update Done");
-                con.end(function (error) {
-                  if (error) throw error;
-                  console.log("connection End");
-                });
+        con.connect(function (error) {
+          if (error) {
+            console.log(error);
+            return res.status(503).send("Service Unavailable"); 
+          }
+          console.log("connected");
+          con.query('UPDATE users SET ? WHERE userid = ?;', [{ email: req.query.Email},userid],
+            function (error, results, fields) {
+              if (error) {
+                console.log(error);
+                return res.status(500).send("Internal Server Error"); 
+              }
+              res.sendStatus(200);
+              console.log("Update Done");
+              con.end(function (error) {
+                if (error) console.log(error);
+                console.log("connection End");
               });
-          });
-        }catch (err) {
-          throw new Error(err)
-        }
+            });
+        });
     }
     //___________________________________________________________________________Usernamen ändern
     else if(req.query.flag=="changeUsername"){
       console.log("Change Username");
       //Username
       var con = mysql.createConnection(conConfig);   
-      try{ 
-          con.connect(function (error) {
-            if (error) throw error;
-            console.log("connected");
-            con.query('UPDATE users SET ? where userid = ?;', [{ username: req.query.Username},userid],
-              function (error, results, fields) {
-                if (error) throw error;
-                res.sendStatus(200);
-                console.log("Update Done");
-                con.end(function (error) {
-                  if (error) throw error;
-                  console.log("connection End");
-                });
-              });
-          });
-        }catch (err) {
-          throw new Error(err)
+      con.connect(function (error) {
+        if (error) {
+          console.log(error);
+          return res.status(503).send("Service Unavailable"); 
         }
+        console.log("connected");
+        con.query('UPDATE users SET ? where userid = ?;', [{ username: req.query.Username},userid],
+          function (error, results, fields) {
+            if (error) {
+              console.log(error);
+              return res.status(500).send("Internal Server Error"); 
+            }
+            res.sendStatus(200);
+            console.log("Update Done");
+            con.end(function (error) {
+              if (error) console.log(error);
+              console.log("connection End");
+            });
+          });
+      });
     }
     //___________________________________________________________________________Passwort ändern
     else if(req.query.flag=="changePasswort"){
@@ -573,25 +601,27 @@ app.get('/settings', verifyToken, function (req, res) {
       console.log(req.query.Passwort);
       var hashedPassword = passwordHash.generate(req.query.Passwort);
       //Username
-      var con = mysql.createConnection(conConfig); 
-        try{   
-          con.connect(function (error) {
-            if (error) throw error;
-            console.log("connected");
-            con.query('UPDATE users SET ? where userid = ?;', [{ password: hashedPassword},userid],
-              function (error, results, fields) {
-                if (error) throw error;
-                res.sendStatus(200);
-                console.log("Update Done");
-                con.end(function (error) {
-                  if (error) throw error;
-                  console.log("connection End");
-                });
-              });
-          });
-        }catch (err) {
-          throw new Error(err)
+      var con = mysql.createConnection(conConfig);  
+      con.connect(function (error) {
+        if (error) {
+          console.log(error);
+          return res.status(503).send("Service Unavailable"); 
         }
+        console.log("connected");
+        con.query('UPDATE users SET ? where userid = ?;', [{ password: hashedPassword},userid],
+          function (error, results, fields) {
+            if (error) {
+              console.log(error);
+              return res.status(500).send("Internal Server Error"); 
+            }
+            res.sendStatus(200);
+            console.log("Update Done");
+            con.end(function (error) {
+              if (error) console.log(error);
+              console.log("connection End");
+            });
+          });
+      });
     }
     //___________________________________________________________________________Profil ändern 
     else if(req.query.flag=="changeProfile"){
@@ -670,36 +700,38 @@ app.get('/settings', verifyToken, function (req, res) {
         var con = mysql.createConnection(conConfig);  
         var sqlQuery="";  
         var value=[];
-        try{
-          if(Object.keys(valueList).length >0 || Object.keys(valueListPet).length >0){
-            if(Object.keys(valueList).length >0){
-              sqlQuery = sqlQuery+'UPDATE person SET ? where personid = ?;'
-              value.push(valueList);
-              value.push(userid);
-            }
-            if(Object.keys(valueListPet).length >0){
-              sqlQuery = sqlQuery + 'UPDATE pet SET ? where petid = ?;'
-              value.push(valueListPet);
-              value.push(userid);
-            }
-          
-            con.connect(function (error) {
-              if (error) throw error;
-              console.log("connected");
-              con.query(sqlQuery, value,
-                function (error, results, fields) {
-                  if (error) throw error;
-                  res.sendStatus(200);
-                  console.log("Update Done");
-                  con.end(function (error) {
-                    if (error) throw error;
-                    console.log("connection End");
-                  });
-                });
-            });
+        if(Object.keys(valueList).length >0 || Object.keys(valueListPet).length >0){
+          if(Object.keys(valueList).length >0){
+            sqlQuery = sqlQuery+'UPDATE person SET ? where personid = ?;'
+            value.push(valueList);
+            value.push(userid);
           }
-        }catch (err) {
-          throw new Error(err)
+          if(Object.keys(valueListPet).length >0){
+            sqlQuery = sqlQuery + 'UPDATE pet SET ? where petid = ?;'
+            value.push(valueListPet);
+            value.push(userid);
+          }
+        
+          con.connect(function (error) {
+            if (error) {
+              console.log(error);
+              return res.status(503).send("Service Unavailable"); 
+            }
+            console.log("connected");
+            con.query(sqlQuery, value,
+              function (error, results, fields) {
+                if (error) {
+                  console.log(error);
+                  return res.status(500).send("Internal Server Error"); 
+                }
+                res.sendStatus(200);
+                console.log("Update Done");
+                con.end(function (error) {
+                  if (error) console.log(error);
+                  console.log("connection End");
+                });
+              });
+          });
         }
       }
       //WG
@@ -707,35 +739,37 @@ app.get('/settings', verifyToken, function (req, res) {
         var con = mysql.createConnection(conConfig); 
         var sqlQuery="";  
         var value=[]; 
-        try{  
-          if(Object.keys(valueList).length >0 || Object.keys(valueListPet).length >0){
-            if(Object.keys(valueList).length >0){
-              sqlQuery = sqlQuery+'UPDATE wg SET ? where wgid = ?;'
-              value.push(valueList);
-              value.push(userid);
-            }
-            if(Object.keys(valueListPet).length >0){
-              sqlQuery = sqlQuery + 'UPDATE pet SET ? where petid = ?;'
-              value.push(valueListPet);
-              value.push(userid);
-            }
-            con.connect(function (error) {
-              if (error) throw error;
-              console.log("connected");
-              con.query(sqlQuery, value,
-                function (error, results, fields) {
-                  if (error) throw error;
-                  res.sendStatus(200);
-                  console.log("Update Done");
-                  con.end(function (error) {
-                    if (error) throw error;
-                    console.log("connection End");
-                  });
-                });
-            });
+        if(Object.keys(valueList).length >0 || Object.keys(valueListPet).length >0){
+          if(Object.keys(valueList).length >0){
+            sqlQuery = sqlQuery+'UPDATE wg SET ? where wgid = ?;'
+            value.push(valueList);
+            value.push(userid);
           }
-        }catch (err) {
-          throw new Error(err)
+          if(Object.keys(valueListPet).length >0){
+            sqlQuery = sqlQuery + 'UPDATE pet SET ? where petid = ?;'
+            value.push(valueListPet);
+            value.push(userid);
+          }
+          con.connect(function (error) {
+            if (error) {
+              console.log(error);
+              return res.status(503).send("Service Unavailable"); 
+            }
+            console.log("connected");
+            con.query(sqlQuery, value,
+              function (error, results, fields) {
+                if (error) {
+                  console.log(error);
+                  return res.status(500).send("Internal Server Error"); 
+                }
+                res.sendStatus(200);
+                console.log("Update Done");
+                con.end(function (error) {
+                  if (error) console.log(error);
+                  console.log("connection End");
+                });
+              });
+          });
         }
       }
 
@@ -793,94 +827,102 @@ app.get('/settings', verifyToken, function (req, res) {
         }
         else if(!req.query.SuchePostleitzahl && !req.query.SucheStadt && !req.query.SucheLand){
           console.log("SuchePlz,SucheStadt und SucheLand leer");
-          var con = mysql.createConnection(conConfig);
-          try{    
-            con.connect(function (error) {
-              if (error) throw error;
-              console.log("connected");
-              con.query('UPDATE users SET ? where userid = ?;', [valueListUser,userid],
-                function (error, results, fields) {
-                  if (error) throw error;
-                  res.sendStatus(200);
-                  console.log("Update Done");
-                  con.end(function (error) {
-                    if (error) throw error;
-                    console.log("connection End");
-                  });
+          var con = mysql.createConnection(conConfig); 
+          con.connect(function (error) {
+            if (error) {
+              console.log(error);
+              return res.status(503).send("Service Unavailable"); 
+            }
+            console.log("connected");
+            con.query('UPDATE users SET ? where userid = ?;', [valueListUser,userid],
+              function (error, results, fields) {
+                if (error) {
+                  console.log(error);
+                  return res.status(500).send("Internal Server Error"); 
+                }
+                res.sendStatus(200);
+                console.log("Update Done");
+                con.end(function (error) {
+                  if (error) console.log(error);
+                  console.log("connection End");
                 });
-            }); 
-          }catch (err) {
-            throw new Error(err)
-          }
+              });
+          }); 
         }
         else if(!req.query.Raucher && !req.query.Lautstaerke && !req.query.Kochen && !req.query.AktuellSuchend){
           
           console.log("Raucher, Lautstaerke,Kochen, Suchend leer");
-          var con = mysql.createConnection(conConfig); 
-          try{   
-            con.connect(function (error) {
-              if (error) throw error;
-              console.log("connected");
-              con.query('UPDATE person SET ? where personid = ?;', [valueListPerson,userid],
-                function (error, results, fields) {
-                  if (error) throw error;
-                  res.sendStatus(200);
-                  console.log("Update Done");
-                  con.end(function (error) {
-                    if (error) throw error;
-                    console.log("connection End");
-                  });
+          var con = mysql.createConnection(conConfig);  
+          con.connect(function (error) {
+            if (error) {
+              console.log(error);
+              return res.status(503).send("Service Unavailable"); 
+            }
+            console.log("connected");
+            con.query('UPDATE person SET ? where personid = ?;', [valueListPerson,userid],
+              function (error, results, fields) {
+                if (error) {
+                  console.log(error);
+                  return res.status(500).send("Internal Server Error"); 
+                }
+                res.sendStatus(200);
+                console.log("Update Done");
+                con.end(function (error) {
+                  if (error) console.log(error);
+                  console.log("connection End");
                 });
-            }); 
-          }catch (err) {
-            throw new Error(err)
-          }
+              });
+          }); 
         }
         else{
           console.log("Nichts leer");
           var con = mysql.createConnection(conConfig); 
-          try{   
-            con.connect(function (error) {
-              if (error) throw error;
-              console.log("connected");
-              con.query('UPDATE users SET ? where userid = ?; UPDATE person SET ? where personid = ?;', [valueListUser,userid,valueListPerson, userid],
-                function (error, results, fields) {
-                  if (error) throw error;
-                  res.sendStatus(200);
-                  console.log("Update Done");
-                  con.end(function (error) {
-                    if (error) throw error;
-                    console.log("connection End");
-                  });
+          con.connect(function (error) {
+            if (error) {
+              console.log(error);
+              return res.status(503).send("Service Unavailable"); 
+            }
+            console.log("connected");
+            con.query('UPDATE users SET ? where userid = ?; UPDATE person SET ? where personid = ?;', [valueListUser,userid,valueListPerson, userid],
+              function (error, results, fields) {
+                if (error) {
+                  console.log(error);
+                  return res.status(500).send("Internal Server Error"); 
+                }
+                res.sendStatus(200);
+                console.log("Update Done");
+                con.end(function (error) {
+                  if (error) console.log(error);
+                  console.log("connection End");
                 });
-            });
-          }catch (err) {
-            throw new Error(err)
-          }
+              });
+          });
         }
         
       }
       //WG
       if(req.query.kindOfUser=="wg"){
         var con = mysql.createConnection(conConfig); 
-        try{   
-          con.connect(function (error) {
-            if (error) throw error;
-            console.log("connected");
-            con.query('UPDATE users SET ? where userid = ?;', [valueListUser,userid],
-              function (error, results, fields) {
-                if (error) throw error;
-                res.sendStatus(200);
-                console.log("Update Done");
-                con.end(function (error) {
-                  if (error) throw error;
-                  console.log("connection End");
-                });
+        con.connect(function (error) {
+          if (error) {
+            console.log(error);
+            return res.status(503).send("Service Unavailable"); 
+          }
+          console.log("connected");
+          con.query('UPDATE users SET ? where userid = ?;', [valueListUser,userid],
+            function (error, results, fields) {
+              if (error) {
+                console.log(error);
+                return res.status(500).send("Internal Server Error"); 
+              }
+              res.sendStatus(200);
+              console.log("Update Done");
+              con.end(function (error) {
+                if (error) console.log(error);
+                console.log("connection End");
               });
-          });
-        }catch (err) {
-          throw new Error(err)
-        }
+            });
+        });
       }
       
     }
@@ -925,17 +967,23 @@ app.get('/settings', verifyToken, function (req, res) {
     var con = mysql.createConnection(conConfig);
   
       con.connect(function (error) {
-        if (error) throw error;
+        if (error) {
+          console.log(error);
+          return res.status(503).send("Service Unavailable"); 
+        }
         console.log("connected");
         con.query('SELECT * FROM 22_DB_Gruppe3.chat'
           + ' LEFT JOIN 22_DB_Gruppe3.users AS userTable ON fk_wgid=userTable.userid'
           + ' WHERE 22_DB_Gruppe3.chat.fk_personid=' + userid,
           function (error, results, fields) {
-            if (error) throw error;
+            if (error) {
+              console.log(error);
+              return res.status(500).send("Internal Server Error"); 
+            }
             console.log(results);
             res.send(stringify(results));
             con.end(function (error) {
-              if (error) throw error;
+              if (error) console.log(error);
               console.log("connection End");
             });
           });
@@ -949,17 +997,23 @@ app.get('/settings', verifyToken, function (req, res) {
     var con = mysql.createConnection(conConfig);
   
       con.connect(function (error) {
-        if (error) throw error;
+        if (error) {
+          console.log(error);
+          return res.status(503).send("Service Unavailable"); 
+        }
         console.log("connected");
         con.query('SELECT * FROM 22_DB_Gruppe3.chat'
           + ' LEFT JOIN 22_DB_Gruppe3.users AS userTable ON fk_personid=userTable.userid'
           + ' WHERE 22_DB_Gruppe3.chat.fk_wgid=' + userid,
           function (error, results, fields) {
-            if (error) throw error;
+            if (error) {
+              console.log(error);
+              return res.status(500).send("Internal Server Error"); 
+            }
             console.log(results);
             res.send(stringify(results));
             con.end(function (error) {
-              if (error) throw error;
+              if (error) console.log(error);
               console.log("connection End");
             });
           });
@@ -981,16 +1035,22 @@ app.get('/settings', verifyToken, function (req, res) {
       var con = mysql.createConnection(conConfig);
     
         con.connect(function (error) {
-          if (error) throw error;
+          if (error) {
+            console.log(error);
+            return res.status(503).send("Service Unavailable"); 
+          }
           console.log("connected");
           con.query('SELECT 22_DB_Gruppe3.chateintrag.msgDate, 22_DB_Gruppe3.chateintrag.msgText,22_DB_Gruppe3.chateintrag.from_id, 22_DB_Gruppe3.chateintrag.chatid, userTable.email AS userMail FROM 22_DB_Gruppe3.chateintrag LEFT JOIN 22_DB_Gruppe3.users AS userTable ON from_id=userTable.userid WHERE 22_DB_Gruppe3.chateintrag.chatid=' + req.body.body.chatid + ' ORDER BY msgDate',
             function (error, results, fields) {
-              if (error) throw error;
+              if (error) {
+                console.log(error);
+                return res.status(500).send("Internal Server Error"); 
+              }
               console.log(req.body.body.chatid);
               console.log(results);
               res.send(stringify(results));
               con.end(function (error) {
-                if (error) throw error;
+                if (error) console.log(error);
                 console.log("connection End");
               });
             });
@@ -1011,15 +1071,24 @@ app.get('/settings', verifyToken, function (req, res) {
       var con = mysql.createConnection(conConfig);
       var date = new Date().toISOString().slice(0, 19).replace('T', ' ');
         con.connect(function (error) {
-          if (error) throw error;
+          if (error) {
+            console.log(error);
+            return res.status(503).send("Service Unavailable"); 
+          }
           console.log("connected");
           con.query('INSERT INTO 22_DB_Gruppe3.chateintrag SET ?', [{ msgDate: req.body.body.msgDate, msgText: req.body.body.msgText, from_id: userid, chatid: req.body.body.chatid,}],
             function (error, results, fields) {
-              if (error) throw error;
+              if (error) {
+                console.log(error);
+                return res.status(500).send("Internal Server Error"); 
+              }
 
               con.query('UPDATE 22_DB_Gruppe3.chat SET lastMessage="'+req.body.body.msgDate+'" WHERE chatid='+req.body.body.chatid,
               function (error, results, fields) {
-                if (error) throw error;
+                if (error) {
+                  console.log(error);
+                  return res.status(500).send("Internal Server Error"); 
+                }
 
                 console.log("clients")
                 
@@ -1034,7 +1103,7 @@ app.get('/settings', verifyToken, function (req, res) {
               });
               res.send(stringify(results));
               con.end(function (error) {
-                if (error) throw error;
+                if (error) console.log(error);
                 console.log("connection End");
               });
             });
@@ -1058,7 +1127,10 @@ app.get('/settings', verifyToken, function (req, res) {
       var con = mysql.createConnection(conConfig);
     
         con.connect(function (error) {
-          if (error) throw error;
+          if (error) {
+            console.log(error);
+            return res.status(503).send("Service Unavailable"); 
+          }
           console.log("connected");
           var sqlQuery = 'SELECT 22_DB_Gruppe3.match.fk_personid, 22_DB_Gruppe3.match.fk_wgid, 22_DB_Gruppe3.match.wgmatch, 22_DB_Gruppe3.match.personmatch,userTable.email AS userMail, wgTable.email AS wgMail'
             + ' FROM 22_DB_Gruppe3.match'
@@ -1068,11 +1140,14 @@ app.get('/settings', verifyToken, function (req, res) {
 
           con.query(sqlQuery,
             function (error, results, fields) {
-              if (error) throw error;
+              if (error) {
+                console.log(error);
+                return res.status(500).send("Internal Server Error"); 
+              }
               console.log(results);
               res.send(stringify(results));
               con.end(function (error) {
-                if (error) throw error;
+                if (error) console.log(error);
                 console.log("connection End");
               });
             });
@@ -1095,7 +1170,10 @@ app.get('/settings', verifyToken, function (req, res) {
       var con = mysql.createConnection(conConfig);
     
         con.connect(function (error) {
-          if (error) throw error;
+          if (error) {
+            console.log(error);
+            return res.status(503).send("Service Unavailable"); 
+          }
           console.log("connected");
           var sqlQuery = 'SELECT *'
             + ' FROM 22_DB_Gruppe3.match'
@@ -1104,11 +1182,14 @@ app.get('/settings', verifyToken, function (req, res) {
 
           con.query(sqlQuery,
             function (error, results, fields) {
-              if (error) throw error;
+              if (error) {
+                console.log(error);
+                return res.status(500).send("Internal Server Error"); 
+              }
               console.log(results);
               res.send(stringify(results));
               con.end(function (error) {
-                if (error) throw error;
+                if (error) console.log(error);
                 console.log("connection End");
               });
             });
@@ -1131,7 +1212,10 @@ app.get('/settings', verifyToken, function (req, res) {
       var con = mysql.createConnection(conConfig);
     
         con.connect(function (error) {
-          if (error) throw error;
+          if (error) {
+            console.log(error);
+            return res.status(503).send("Service Unavailable"); 
+          }
           console.log("connected");
           var sqlQuery = 'SELECT *'
             + ' FROM 22_DB_Gruppe3.match'
@@ -1140,11 +1224,14 @@ app.get('/settings', verifyToken, function (req, res) {
 
           con.query(sqlQuery,
             function (error, results, fields) {
-              if (error) throw error;
+              if (error) {
+                console.log(error);
+                return res.status(500).send("Internal Server Error"); 
+              }
               console.log(results);
               res.send(stringify(results));
               con.end(function (error) {
-                if (error) throw error;
+                if (error) console.log(error);
                 console.log("connection End");
               });
             });
@@ -1220,13 +1307,19 @@ app.get('/settings', verifyToken, function (req, res) {
       var con = mysql.createConnection(conConfig);
     
         con.connect(function (error) {
-          if (error) throw error;
+          if (error) {
+            console.log(error);
+            return res.status(503).send("Service Unavailable"); 
+          }
           console.log("connected");
          
 
           con.query(sqlQuery,
             function (error, results, fields) {
-              if (error) throw error;
+              if (error) {
+                console.log(error);
+                return res.status(500).send("Internal Server Error"); 
+              }
               
 
               for (i = results.length - 1; i >= 0; i -= 1) {
@@ -1243,7 +1336,7 @@ app.get('/settings', verifyToken, function (req, res) {
               console.log(results);
               res.send(stringify(results));
               con.end(function (error) {
-                if (error) throw error;
+                if (error) console.log(error);
                 //res.sendStatus(200);
                 console.log("connection End");
               });
@@ -1300,7 +1393,10 @@ app.get('/settings', verifyToken, function (req, res) {
       var con = mysql.createConnection(conConfig);
     
         con.connect(function (error) {
-          if (error) throw error;
+          if (error) {
+            console.log(error);
+            return res.status(503).send("Service Unavailable"); 
+          }
           console.log("connected");
 
           
@@ -1311,7 +1407,9 @@ app.get('/settings', verifyToken, function (req, res) {
 
               //check if match from other person/wg is available
               con.query(sqlQuery1, function (error, results, fields) {
-            
+                if (error) {
+                  console.log(error);
+                }
                 
                 //Wenn keine matches gefunden wurden
                 if (results[0].countMatches == 0) {
@@ -1319,24 +1417,33 @@ app.get('/settings', verifyToken, function (req, res) {
 
                   //gibt es schon einen Eintrag in der DB
                   con.query(sqlQuery0, function (error, results, fields) {
+                    if (error) {
+                      console.log(error);
+                    }
                     if (results[0].countMatches == 0) {
 
                       console.log(sqlQuery2)
                       con.query(sqlQuery2, function (error, results, fields) {
+                        if (error) {
+                          console.log(error);
+                        }
                         console.log(results);
                         res.send(stringify({match: false}));
 
                         con.end(function (error) {
-                          if (error) throw error;
+                          if (error) console.log(error);
                           console.log("connection End");
                         });
                       });
                     }else{
                       con.query(sqlQuery3, function (error, results, fields) {
+                        if (error) {
+                          console.log(error);
+                        }
                         console.log(results);
                         res.send(stringify({match: false}));
                         con.end(function (error) {
-                          if (error) throw error;
+                          if (error) console.log(error);
                           console.log("connection End");
                         });
                       });
@@ -1349,7 +1456,6 @@ app.get('/settings', verifyToken, function (req, res) {
                 }else{
                   console.log("match gefunden! update: " + sqlQuery3);
                   con.query(sqlQuery3, function (error, results, fields) {
-                    if (error) throw error;
     
                     //Add Chat
                     var sqlQueryChat = "";
@@ -1361,9 +1467,10 @@ app.get('/settings', verifyToken, function (req, res) {
                     }
     
                     console.log("Add Chat!!: " + sqlQueryChat);
-                    con.query(sqlQueryChat, function (error1, results, fields) {
-                      if (error1) 
-                        console.log(error1)
+                    con.query(sqlQueryChat, function (error, results, fields) {
+                      if (error) {
+                        console.log(error);
+                      }
                       console.log("chat added?");
                       console.log(results);
     
@@ -1374,7 +1481,7 @@ app.get('/settings', verifyToken, function (req, res) {
                     res.send(stringify({match: true}));
                     
                     con.end(function (error) {
-                      if (error) throw error;
+                      if (error) console.log(error);
                       console.log("connection End");
                     });
                     
@@ -1391,19 +1498,25 @@ app.get('/settings', verifyToken, function (req, res) {
 
                   console.log(sqlQuery2)
                   con.query(sqlQuery2, function (error, results, fields) {
+                    if (error) {
+                      console.log(error);
+                    }
                     console.log(results);
                     res.send(stringify(results));
 
                     con.end(function (error) {
-                      if (error) throw error;
+                      if (error) console.log(error);
                       console.log("connection End");
                     });
                   });
                 }else{
                   con.query(sqlQuery3, function (error, results, fields) {
+                    if (error) {
+                      console.log(error);
+                    }
                     console.log(results);
                     con.end(function (error) {
-                      if (error) throw error;
+                      if (error) console.log(error);
                       console.log("connection End");
                     });
                   });
@@ -1413,7 +1526,7 @@ app.get('/settings', verifyToken, function (req, res) {
             }
 
             //con.end(function (error) {
-            //  if (error) throw error;
+            //  if (error) console.log(error);
             //  console.log("connection End");
             //});
           //});
@@ -1432,7 +1545,10 @@ app.get('/settings', verifyToken, function (req, res) {
       var con = mysql.createConnection(conConfig);
 
       con.connect(function (error) {
-        if (error) throw error;
+        if (error) {
+          console.log(error);
+          return res.status(503).send("Service Unavailable"); 
+        }
         console.log("connected");
 
         var form = new formidable.IncomingForm();
@@ -1477,15 +1593,17 @@ app.get('/settings', verifyToken, function (req, res) {
                 var sqlQuery = 'UPDATE 22_DB_Gruppe3.users SET profilepic="'+newpath +'" WHERE userid='+userid+';';
   
                 con.query(sqlQuery, function (error1, results, fields) {
-                  if (error1) 
-                    console.log(error1)
+                  if (error) {
+                    console.log(error);
+                    return res.status(500).send("Internal Server Error"); 
+                  }
                   console.log("profilepic set in users");
                   console.log(results);
 
                   res.send(stringify(results));
   
                   con.end(function (error) {
-                    if (error) throw error;
+                    if (error) console.log(error);
                     console.log("connection End");
                   });
                 });

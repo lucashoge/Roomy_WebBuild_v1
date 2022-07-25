@@ -159,6 +159,30 @@ export class SettingsEditingComponent implements OnInit {
           if(err.status==401){
             this.handleToken.handleTokenError();
           } 
+          if(err.status==503){
+            sessionStorage.setItem("errorMessage", "503 Error Service Unavailable. Schorryy")
+            this.router.navigate(['/error']);
+          }
+          if(err.status==500){
+            sessionStorage.setItem("errorMessage", "500 Error Internal Server Error. Irgendwas ist da am Server schiefgelaufen")
+            this.router.navigate(['/error']);
+          } 
+          if(err.status==503){
+            sessionStorage.setItem("errorMessage", "503 Error Service Unavailable. Schorryy")
+            this.router.navigate(['/error']);
+          }
+          if(err.status==500){
+            sessionStorage.setItem("errorMessage", "500 Error Internal Server Error. Irgendwas ist da am Server schiefgelaufen")
+            this.router.navigate(['/error']);
+          } 
+          if(err.status==503){
+            sessionStorage.setItem("errorMessage", "503 Error Service Unavailable. Schorryy")
+            this.router.navigate(['/error']);
+          }
+          if(err.status==500){
+            sessionStorage.setItem("errorMessage", "500 Error Internal Server Error. Irgendwas ist da am Server schiefgelaufen")
+            this.router.navigate(['/error']);
+          }
         }
       });
   }
@@ -258,6 +282,22 @@ export class SettingsEditingComponent implements OnInit {
           if(err.status==401){
             this.handleToken.handleTokenError();
           } 
+          if(err.status==503){
+            sessionStorage.setItem("errorMessage", "503 Error Service Unavailable. Schorryy")
+            this.router.navigate(['/error']);
+          }
+          if(err.status==500){
+            sessionStorage.setItem("errorMessage", "500 Error Internal Server Error. Irgendwas ist da am Server schiefgelaufen")
+            this.router.navigate(['/error']);
+          } 
+          if(err.status==503){
+            sessionStorage.setItem("errorMessage", "503 Error Service Unavailable. Schorryy")
+            this.router.navigate(['/error']);
+          }
+          if(err.status==500){
+            sessionStorage.setItem("errorMessage", "500 Error Internal Server Error. Irgendwas ist da am Server schiefgelaufen")
+            this.router.navigate(['/error']);
+          } 
         }
       });
   }
@@ -340,6 +380,22 @@ export class SettingsEditingComponent implements OnInit {
           if(err.status==401){
             this.handleToken.handleTokenError();
           } 
+          if(err.status==503){
+            sessionStorage.setItem("errorMessage", "503 Error Service Unavailable. Schorryy")
+            this.router.navigate(['/error']);
+          }
+          if(err.status==500){
+            sessionStorage.setItem("errorMessage", "500 Error Internal Server Error. Irgendwas ist da am Server schiefgelaufen")
+            this.router.navigate(['/error']);
+          } 
+          if(err.status==503){
+            sessionStorage.setItem("errorMessage", "503 Error Service Unavailable. Schorryy")
+            this.router.navigate(['/error']);
+          }
+          if(err.status==500){
+            sessionStorage.setItem("errorMessage", "500 Error Internal Server Error. Irgendwas ist da am Server schiefgelaufen")
+            this.router.navigate(['/error']);
+          } 
         }
       });
     }
@@ -385,6 +441,22 @@ export class SettingsEditingComponent implements OnInit {
           
           if(err.status==401){
             this.handleToken.handleTokenError();
+          } 
+          if(err.status==503){
+            sessionStorage.setItem("errorMessage", "503 Error Service Unavailable. Schorryy")
+            this.router.navigate(['/error']);
+          }
+          if(err.status==500){
+            sessionStorage.setItem("errorMessage", "500 Error Internal Server Error. Irgendwas ist da am Server schiefgelaufen")
+            this.router.navigate(['/error']);
+          } 
+          if(err.status==503){
+            sessionStorage.setItem("errorMessage", "503 Error Service Unavailable. Schorryy")
+            this.router.navigate(['/error']);
+          }
+          if(err.status==500){
+            sessionStorage.setItem("errorMessage", "500 Error Internal Server Error. Irgendwas ist da am Server schiefgelaufen")
+            this.router.navigate(['/error']);
           } 
         }
       });
@@ -449,6 +521,22 @@ export class SettingsEditingComponent implements OnInit {
         
           if(err.status==401){
             this.handleToken.handleTokenError();
+          } 
+          if(err.status==503){
+            sessionStorage.setItem("errorMessage", "503 Error Service Unavailable. Schorryy")
+            this.router.navigate(['/error']);
+          }
+          if(err.status==500){
+            sessionStorage.setItem("errorMessage", "500 Error Internal Server Error. Irgendwas ist da am Server schiefgelaufen")
+            this.router.navigate(['/error']);
+          } 
+          if(err.status==503){
+            sessionStorage.setItem("errorMessage", "503 Error Service Unavailable. Schorryy")
+            this.router.navigate(['/error']);
+          }
+          if(err.status==500){
+            sessionStorage.setItem("errorMessage", "500 Error Internal Server Error. Irgendwas ist da am Server schiefgelaufen")
+            this.router.navigate(['/error']);
           } 
       }
     });
@@ -528,6 +616,22 @@ export class SettingsEditingComponent implements OnInit {
         if (err instanceof HttpErrorResponse) {
                     if(err.status==401){
             this.handleToken.handleTokenError();
+          } 
+          if(err.status==503){
+            sessionStorage.setItem("errorMessage", "503 Error Service Unavailable. Schorryy")
+            this.router.navigate(['/error']);
+          }
+          if(err.status==500){
+            sessionStorage.setItem("errorMessage", "500 Error Internal Server Error. Irgendwas ist da am Server schiefgelaufen")
+            this.router.navigate(['/error']);
+          } 
+          if(err.status==503){
+            sessionStorage.setItem("errorMessage", "503 Error Service Unavailable. Schorryy")
+            this.router.navigate(['/error']);
+          }
+          if(err.status==500){
+            sessionStorage.setItem("errorMessage", "500 Error Internal Server Error. Irgendwas ist da am Server schiefgelaufen")
+            this.router.navigate(['/error']);
           } 
         }
       });
@@ -614,6 +718,22 @@ export class SettingsEditingComponent implements OnInit {
                     if(err.status==401){
             this.handleToken.handleTokenError();
           } 
+          if(err.status==503){
+            sessionStorage.setItem("errorMessage", "503 Error Service Unavailable. Schorryy")
+            this.router.navigate(['/error']);
+          }
+          if(err.status==500){
+            sessionStorage.setItem("errorMessage", "500 Error Internal Server Error. Irgendwas ist da am Server schiefgelaufen")
+            this.router.navigate(['/error']);
+          } 
+          if(err.status==503){
+            sessionStorage.setItem("errorMessage", "503 Error Service Unavailable. Schorryy")
+            this.router.navigate(['/error']);
+          }
+          if(err.status==500){
+            sessionStorage.setItem("errorMessage", "500 Error Internal Server Error. Irgendwas ist da am Server schiefgelaufen")
+            this.router.navigate(['/error']);
+          } 
         }
       });
       this.getUser();
@@ -631,6 +751,22 @@ export class SettingsEditingComponent implements OnInit {
       if (err instanceof HttpErrorResponse) {
                   if(err.status==401){
             this.handleToken.handleTokenError();
+          } 
+          if(err.status==503){
+            sessionStorage.setItem("errorMessage", "503 Error Service Unavailable. Schorryy")
+            this.router.navigate(['/error']);
+          }
+          if(err.status==500){
+            sessionStorage.setItem("errorMessage", "500 Error Internal Server Error. Irgendwas ist da am Server schiefgelaufen")
+            this.router.navigate(['/error']);
+          } 
+          if(err.status==503){
+            sessionStorage.setItem("errorMessage", "503 Error Service Unavailable. Schorryy")
+            this.router.navigate(['/error']);
+          }
+          if(err.status==500){
+            sessionStorage.setItem("errorMessage", "500 Error Internal Server Error. Irgendwas ist da am Server schiefgelaufen")
+            this.router.navigate(['/error']);
           } 
       }
     });
