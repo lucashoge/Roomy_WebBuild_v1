@@ -30,6 +30,10 @@ export class ProfileViewComponent implements OnInit {
     this.loggedInUser = JSON.parse(this.loggedInUser);
   }
 
+  openMain(){
+    this.router.navigate(['/mainUI'])
+  }
+
 
 
 }

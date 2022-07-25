@@ -1,18 +1,24 @@
     
     
-      <div class="tphoto"
-      [@cardAnimator]="animationState"
-      (@cardAnimator.done)="resetAnimationState($event)"
-      (swipeleft)='startAnimation("swipeleft")' 
-      (swiperight)='startAnimation("swiperight")'>
+<div class="tphoto"
+[@cardAnimator]="animationState"
+(@cardAnimator.done)="resetAnimationState($event)"
+(swipeleft)='startAnimation("swipeleft")' 
+(swiperight)='startAnimation("swiperight")'>
 
     <div *ngIf="!noMoreProfilesToBrowse">
       <td><img src={{currentUser.profilepic}} title="tphoto" alt="Tinder Photo" /></td>
       <div class="tname">
-          {{currentUser.username}}, <span class="age">{{currentUser.city}}</span>
+          <H2>
+            {{currentUser.username}}
+          </H2>
+          <p>
+            {{currentUser.city}}
+          </p>
+          <!-- <span class="age">{{currentUser.city}}</span> -->
       </div>
       <div class="info">
-          <a (click)="changeToProfileView()">
+          <!-- <a (click)="changeToProfileView()">
               <svg xmlns="http://www.w3.org/2000/svg" width="38" height="38" viewBox="0 0 38 38">
                   <g id="Gruppe_4" data-name="Gruppe 4" transform="translate(-1160 -552)">
                     <g id="Polygon_2" data-name="Polygon 2" transform="translate(1184 582) rotate(180)" fill="#fff">
@@ -24,21 +30,16 @@
                       <circle cx="19" cy="19" r="17.5" fill="none"/>
                     </g>
                     <g id="Ellipse_52" data-name="Ellipse 52" transform="translate(1160 552)" fill="none" stroke="#000" stroke-width="3">
-                      <<circle cx="5" cy="5" r="5" stroke="none"/>
+                      <circle cx="5" cy="5" r="5" stroke="none"/>
                       <circle cx="5" cy="5" r="3.5" fill="none"/>
                     </g>
                   </g>
                 </svg>
-          </a>
+          </a> -->
       </div>
     </div>
     <div class="tname" *ngIf="noMoreProfilesToBrowse">
       <p>Keine weiteren Profile verfügbar.</p>
     </div>
     
-    
-      
-    <!-- <div class="tinfo">
-        <i class="fa fa-book" aria-hidden="true"> 0</i><i class="fa fa-users" aria-hidden="true"> 0</i>
-    </div> -->
 </div>
