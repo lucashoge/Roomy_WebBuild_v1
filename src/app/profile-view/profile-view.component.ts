@@ -22,7 +22,7 @@ export class ProfileViewComponent implements OnInit {
   ngOnInit(): void {
 
     this.currentUser = localStorage.getItem('currentProfileViewUser');
-    this.currentUser = JSON.parse(this.loggedInUser);
+    this.currentUser = JSON.parse(this.currentUser);
 
     this.loggedInUser = localStorage.getItem('loggedInUser');
     this.loggedInUser = JSON.parse(this.loggedInUser);
