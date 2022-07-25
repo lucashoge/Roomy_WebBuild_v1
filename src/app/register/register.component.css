@@ -15,11 +15,6 @@ input.ng-invalid.ng-touched
   
 }
 
-H2{
-
-  font-size: 17px;
-}
-
 body {
   font-family: "Roboto", sans-serif;
   -webkit-font-smoothing: antialiased;
@@ -30,8 +25,7 @@ body {
 .login-page {
   display: flex;
   align-items: center;
-  align-items: flex-start;
-  justify-content: flex-start;
+  justify-content: center;
   width: 390px;
   height: 844px;
 }
@@ -41,7 +35,6 @@ body {
 
   width: 100%;
 
-  overflow: scroll;
   
   /* z-index: 1; */
   background: #FFFFFF;
@@ -50,12 +43,6 @@ body {
   padding-right: 20px;
   padding-left: 20px;
   text-align: center;
-}
-
-.form img {
-  width: 70px;
-  height: 70px;
-  border-radius: 50%;
 }
 .form input {
   font-family: "Roboto", sans-serif;
@@ -67,8 +54,6 @@ body {
   padding: 15px;
   box-sizing: border-box;
   font-size: 14px;
-
-  text-align: right;
 
   border-radius: 14px;
 }
@@ -90,42 +75,12 @@ body {
 
 }
 
-.settings-nav{
-  display: flex;
-  flex-direction: row;
-  /* justify-content: center;
-  align-items: center; */
-  
-  justify-content: space-between;
-}
-
-label{
-  position: absolute;
-  /* top: 50%; */
-  left: 51px;
-  font-size: 14px;
-  letter-spacing: 0.5px;
-  transform: translateY(+80%);
-  font-family: "Roboto", sans-serif;
-  text-transform: uppercase;
-  color: #8940FF;
-  font-weight: bold;
-
-}
-
-.nav-button {
-  display: flex;
-  flex-direction: row;
-  justify-content: center;
-  align-items: center;
-}
-
-.reg-button:active{
+.reg-button button:active{
   background-color: #E2D0FF;
   transform: scale(0.97);
 }
 
-.nav-button button:hover,.button:active,.button:focus {
+.p-button button:hover,.button:active,.button:focus {
   background-color: #E2D0FF;
   transform: scale(0.97);
 
@@ -133,7 +88,6 @@ label{
 
 .error-message{
   font-family: "Roboto", sans-serif;
-  margin-top: 0px;
   color: red;
   font-size: 12px;
 }
