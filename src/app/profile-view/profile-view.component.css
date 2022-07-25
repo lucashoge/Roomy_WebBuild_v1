@@ -45,7 +45,7 @@ body {
   /* z-index: 1; */
   background: #FFFFFF;
   
-  padding: 37px;
+  /*padding: 37px;*/
   text-align: center;
 }
 .form input {
@@ -63,6 +63,7 @@ body {
 
   border-radius: 14px;
 }
+
 .form button {
   font-family: "Roboto", sans-serif;
   text-transform: uppercase;

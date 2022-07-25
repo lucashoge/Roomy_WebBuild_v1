@@ -1177,7 +1177,7 @@ app.get('/settings', verifyToken, function (req, res) {
         + ' LEFT JOIN 22_DB_Gruppe3.person AS personTable ON userid=personTable.personid'
         + ' LEFT JOIN 22_DB_Gruppe3.match AS matchTable ON userid=matchTable.fk_personid'
         + ' WHERE usertype="' + userType + '" AND userid>' + minUserID +''
-        + ' AND (matchTable.wgseen=0 OR matchTable.wgseen IS NULL) AND (matchTable.fk_wgid="'+userid+'" OR matchTable.fk_wgid IS NULL)'
+        //+ ' AND (matchTable.wgseen=0 OR matchTable.wgseen IS NULL) AND (matchTable.fk_wgid="'+userid+'" OR matchTable.fk_wgid IS NULL)'
         + ' AND (users.searching=1 OR users.searching IS NULL) '
 
         if(sendingUser.smoker)
@@ -1200,8 +1200,8 @@ app.get('/settings', verifyToken, function (req, res) {
         + 'LEFT JOIN 22_DB_Gruppe3.wg AS wgTable ON userid=wgTable.wgid '
         + 'LEFT JOIN 22_DB_Gruppe3.match AS matchTable ON userid=matchTable.fk_wgid '
         + 'WHERE usertype="'+userType+'" AND userid>' + minUserID +' '
-        + 'AND (matchTable.personseen=0 OR matchTable.personseen IS NULL) '
-        + 'AND (matchTable.fk_personid="'+userid+'" OR matchTable.fk_personid IS NULL) '
+        //+ 'AND (matchTable.personseen=0 OR matchTable.personseen IS NULL) '
+        //+ 'AND (matchTable.fk_personid="'+userid+'" OR matchTable.fk_personid IS NULL) '
         + 'AND (users.searching=1 OR users.searching IS NULL) '
         if(sendingUser.smoker)
           sqlQuery = sqlQuery + 'AND (users.smoker='+sendingUser.smoker+' OR users.smoker IS NULL) ';
@@ -1227,6 +1227,19 @@ app.get('/settings', verifyToken, function (req, res) {
           con.query(sqlQuery,
             function (error, results, fields) {
               if (error) throw error;
+              
+
+              for (i = results.length - 1; i >= 0; i -= 1) {
+                if(req.body.body.sendingUser.usertype == "wg"){
+                  if(results[i].fk_wgid == userid && results[i].wgseen==1){
+                    results.splice(i, 1);
+                  }
+                }else{
+                  if(results[i].fk_personid == userid && results[i].personseen==1){
+                    results.splice(i, 1);
+                  }
+                }
+              }
               console.log(results);
               res.send(stringify(results));
               con.end(function (error) {

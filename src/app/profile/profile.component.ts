@@ -114,6 +114,7 @@ export class ProfileComponent {
       console.log("getNewUsersForMatching result:");
       console.log(this.users);
       if(this.users.length > 0){
+        this.noMoreProfilesToBrowse = false;
         this.currentUser = this.users[0]; 
         localStorage.setItem("currentProfileViewUser", JSON.stringify(this.currentUser));
         console.log("currentUser from profiles" + this.currentUser)
@@ -124,6 +125,7 @@ export class ProfileComponent {
         }
         console.log("profilePicture: " + this.currentUser.profilepic)
       }else{
+        console.log("noMoreProfilesToBrowse = true")
         this.noMoreProfilesToBrowse = true;
         this.currentUser = null;
       }

@@ -1,47 +1,58 @@
-<div class="tphoto">
-<td><img src={{currentUser.profilepic}} title="tphoto" alt="Tinder Photo" /></td>
-<div class="tname">
-  {{currentUser.username}}, <span class="age">{{currentUser.city}}</span>
-</div>
-<div class="tinfo">
-  <i class="fa fa-book" aria-hidden="true"> 0</i><i class="fa fa-users" aria-hidden="true"> 0</i>
-</div>
-</div>
+<div class="login-page">
 
-<form class="login-form" #userForm="ngForm">
+
+  <div class="form">
     
-
-  <!--_______________________Einstellungen Person____________________________________________________________-->
-  <div *ngIf="currentUser.usertype=='person'">
-    <form class="login-form" #profilPersonForm="ngForm">
-      <input type="text" name="Nachname" required
-                      [(ngModel)]="currentUser.surname" #nachname="ngModel"> 
-                      <label for="">Nachname</label>
-
-
-      <input type="text" name="Vorname" required
-                  [(ngModel)]="currentUser.firstname" #vorname="ngModel"> 
-                  <label for="">Vorname</label>
-
-
-      <input type="text" name="Geschlecht"
-                  [(ngModel)]="currentUser.gender" #geschlecht="ngModel"> 
-                  <label for="">Geschlecht</label>
+    <div class="tphoto">
+      <td><img src={{currentUser.profilepic}} title="tphoto" alt="Tinder Photo" /></td>
+      <div class="tname">
+        {{currentUser.username}}, <span class="age">{{currentUser.city}}</span>
+        
+        <!--_______________________Einstellungen Person____________________________________________________________-->
+        <div *ngIf="currentUser.usertype=='person'">
+          <form class="login-form">
       
-
-      <input type="date" name="Geburtsdatum" required
-                  [(ngModel)]="currentUser.birthdate" #geburtsdatum="ngModel"> 
-                  <label for="">Geburtsdatum</label>
-
-
-      <input type="text" name="Job"
-                  [(ngModel)]="currentUser.job" #job="ngModel"> 
-                  <label for="">Job</label>
+            <input type="text" name="Nachname" disabled="true"
+                        [(ngModel)]="currentUser.surname" #nachname="ngModel"> 
+                        <label for="">Nachname</label>
       
+      
+            <input type="text" name="Vorname" disabled="true"
+                        [(ngModel)]="currentUser.firstname" #vorname="ngModel"> 
+                        <label for="">Vorname</label>
+      
+      
+            <input type="text" name="Geschlecht" disabled="true"
+                        [(ngModel)]="currentUser.gender" #geschlecht="ngModel"> 
+                        <label for="">Geschlecht</label>
+            
+      
+            <input type="date" name="Geburtsdatum" disabled="true"
+                        [(ngModel)]="currentUser.birthdate" #geburtsdatum="ngModel"> 
+                        <label for="">Geburtsdatum</label>
+      
+      
+            <input type="text" name="Job" disabled="true"
+                        [(ngModel)]="currentUser.job" #job="ngModel"> 
+                        <label for="">Job</label>
+            
+      
+            Hobbys: <input type="text" name="Hobby" disabled="true"
+                        [(ngModel)]="currentUser.hobby" #hobby="ngModel"> <br>
 
-      Hobbys: <input type="text" name="Hobby"
-                  [(ngModel)]="currentUser.hobby" #hobby="ngModel"> <br>
-              
+          </form>
+                    
+        </div>
 
-    </form>
-  </div>
+        <div *ngIf="currentUser.usertype=='wg'">
+      
+          <input type="text" name="WG-Name" disabled="true"
+                        [(ngModel)]="currentUser.wgname" #vorname="ngModel"> 
+                        <label for="">WG-Name</label>
+    
+    
+      </div>
+    </div>
+</div>
+
+
