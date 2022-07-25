@@ -38,18 +38,19 @@
   <div class="swipebox" >
 
     <div style="height: 100%; width: 100%;">
-
-      <div class="match"  [@cardAnimator]="animationState"
-      (@cardAnimator.done)="resetAnimationState($event)"
-      (match)='startAnimation("match")'>
-        
-        <div class="matchbox">
-          <svg xmlns="http://www.w3.org/2000/svg" width="71.588" height="62.565" viewBox="0 0 71.588 62.565">
-            <path id="Vereinigungsmenge_4" data-name="Vereinigungsmenge 4" d="M35.794,1232.563v-49.576a34.047,34.047,0,0,1,6.866-8.7A15.659,15.659,0,0,1,53.04,1170c4.233,0,8.695,1.972,13.259,5.859a15.2,15.2,0,0,1,4.125,5.347,13.867,13.867,0,0,1,1.158,6.042c-.095,3.839-1.576,8.218-4.406,13.015a79,79,0,0,1-10.02,13.059A179.685,179.685,0,0,1,35.8,1232.564h0Zm0,0a179.684,179.684,0,0,1-21.362-19.241,78.922,78.922,0,0,1-10.02-13.059c-2.829-4.8-4.311-9.176-4.406-13.015a13.877,13.877,0,0,1,1.157-6.042,15.212,15.212,0,0,1,4.126-5.347c4.565-3.888,9.026-5.859,13.259-5.859a15.659,15.659,0,0,1,10.38,4.287,34.047,34.047,0,0,1,6.866,8.7v49.576h0Z" transform="translate(0 -1170)" fill="red"/>
-          </svg>
-        </div>
+      <div *ngIf="toggleMatchAnimation">
+        <div class="match"  [@cardAnimator]="animationState"
+        (@cardAnimator.done)="resetAnimationState($event)"
+        (match)='startAnimation("match")'>
+          
+          <div class="matchbox">
+            <svg xmlns="http://www.w3.org/2000/svg" width="71.588" height="62.565" viewBox="0 0 71.588 62.565">
+              <path id="Vereinigungsmenge_4" data-name="Vereinigungsmenge 4" d="M35.794,1232.563v-49.576a34.047,34.047,0,0,1,6.866-8.7A15.659,15.659,0,0,1,53.04,1170c4.233,0,8.695,1.972,13.259,5.859a15.2,15.2,0,0,1,4.125,5.347,13.867,13.867,0,0,1,1.158,6.042c-.095,3.839-1.576,8.218-4.406,13.015a79,79,0,0,1-10.02,13.059A179.685,179.685,0,0,1,35.8,1232.564h0Zm0,0a179.684,179.684,0,0,1-21.362-19.241,78.922,78.922,0,0,1-10.02-13.059c-2.829-4.8-4.311-9.176-4.406-13.015a13.877,13.877,0,0,1,1.157-6.042,15.212,15.212,0,0,1,4.126-5.347c4.565-3.888,9.026-5.859,13.259-5.859a15.659,15.659,0,0,1,10.38,4.287,34.047,34.047,0,0,1,6.866,8.7v49.576h0Z" transform="translate(0 -1170)" fill="red"/>
+            </svg>
+          </div>
         
       </div>
+    </div>
 
 
       <app-profile  [parentSubject]="parentSubject" (matchFound)=matchFoundEvent($event) style="height: 100%; width: 100%;">

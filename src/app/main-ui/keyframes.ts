@@ -6,7 +6,6 @@ export const match = [
     style({ transform: 'scale(2)' }),
     style({ transform: 'rotateY(0eg)' }),
     style({ opacity: 0 }),
-    
   ]
   
   
