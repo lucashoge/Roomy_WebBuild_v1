@@ -1,5 +1,13 @@
+/*@font-face {
+  font-family: "PanGramCustom";
+  src: url(../assets/fonts/PPPangramSansRounded-Bold.otf) format("opentype");
+  }*/
+
+@import url(https://fonts.googleapis.com/css?family=Roboto:300);
+
 :host {
-    font-family: "PPPangramSansRounded-Bold";
+    /*font-family: "PanGramCustom";*/
+    font-family: "Roboto";
     font-size: 22px;
     color: #333;
     box-sizing: border-box;
@@ -41,7 +49,7 @@
     color: white;
     
     font-weight: 600;
-    font-family: "Pangram";
+    font-family: "Roboto";
   }
 
   .toolbar svg {

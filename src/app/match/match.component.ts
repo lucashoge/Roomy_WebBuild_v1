@@ -1,7 +1,12 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Router } from "@angular/router";
+import { now } from 'moment';
+import { DatePipe } from '@angular/common';
+import { trigger, keyframes, animate, transition } from "@angular/animations";
+import { Subject } from 'rxjs';
+import { HandleTokenErrorService } from '../handle-token-error.service';
 
 @Component({
   selector: 'app-match',
@@ -10,13 +15,19 @@ import { Router } from "@angular/router";
 })
 export class MatchComponent implements OnInit {
 
-  constructor(private http: HttpClient, private router: Router) { }
+
+  parentSubject:Subject<string> = new Subject();
+
+  possibleMatchesFound: boolean = false;
+
+  constructor(private http: HttpClient, private router: Router, private handleToken: HandleTokenErrorService) { }
 
   matchResult: any;
   loggedInUser: any;
 
   ngOnInit(): void {
 
+    this.possibleMatchesFound = false;
     //get current user
     this.loggedInUser = localStorage.getItem('loggedInUser');
     this.loggedInUser = JSON.parse(this.loggedInUser);
@@ -29,24 +40,63 @@ export class MatchComponent implements OnInit {
 
     console.log("getPossibleMatches()");
 
+    console.log(this.loggedInUser);
     //check if current user is WG or Person
     if(this.loggedInUser.usertype == "wg"){
 
-      this.http.post<any>("getPossibleWgMatchesByMail", { body: this.loggedInUser }).subscribe((result) => {
+      this.http.post<any>("getPossibleWgMatchesByMail", { body: null }).subscribe((result) => {
       
+        console.log("matchResult");
         this.matchResult = result;
         console.log(this.matchResult);
+        if(result.length > 0){
+          this.possibleMatchesFound = true;
+        }
+      },
+      err => {
+        console.log("Error");
+        if (err instanceof HttpErrorResponse) {
+                    if(err.status==401){
+            this.handleToken.handleTokenError();
+          } 
+          if(err.status==503){
+            sessionStorage.setItem("errorMessage", "503 Error Service Unavailable. Schorryy")
+            this.router.navigate(['/error']);
+          }
+          if(err.status==500){
+            sessionStorage.setItem("errorMessage", "500 Error Internal Server Error. Irgendwas ist da am Server schiefgelaufen")
+            this.router.navigate(['/error']);
+          } 
+        }
       });
 
     }else{
-      this.http.post<any>("getPossiblePersonMatchesByMail", { body: this.loggedInUser }).subscribe((result) => {
+      this.http.post<any>("getPossiblePersonMatchesByMail", { body: null }).subscribe((result) => {
       
         this.matchResult = result;
+        console.log("matchResult");
         console.log(this.matchResult);
+        if(result.length > 0){
+          this.possibleMatchesFound = true;
+        }
+      },
+      err => {
+        console.log("Error");
+        if (err instanceof HttpErrorResponse) {
+                    if(err.status==401){
+            this.handleToken.handleTokenError();
+          } 
+          if(err.status==503){
+            sessionStorage.setItem("errorMessage", "503 Error Service Unavailable. Schorryy")
+            this.router.navigate(['/error']);
+          }
+          if(err.status==500){
+            sessionStorage.setItem("errorMessage", "500 Error Internal Server Error. Irgendwas ist da am Server schiefgelaufen")
+            this.router.navigate(['/error']);
+          } 
+        }
       });
     }
-    
-    //this.router.navigate(['/login']);
     
     return;
   };

@@ -1,7 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, HostListener } from '@angular/core';
 import { AuthService } from '../auth.service';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Router } from "@angular/router";
+
 
 @Component({
   selector: 'app-login',
@@ -10,13 +11,15 @@ import { Router } from "@angular/router";
 })
 export class LoginComponent implements OnInit {
 
-  constructor(private auth: AuthService, private http: HttpClient, private router: Router) { }
+  constructor(private auth: AuthService, private http: HttpClient, private router: Router ) { }
 
   ngOnInit(): void {
   }
+  
 
 
   loginMessage: any;
+  tokenErrorMessage: any=sessionStorage.getItem('tokenErrorMessage');
   kindOfUser: any;
 
   loginUser(event: any) {
@@ -44,7 +47,8 @@ export class LoginComponent implements OnInit {
         //Login erfolgreich
         this.auth.setSession(result);
         this.getUser();
-        this.router.navigate(['/mainUI']);
+        setTimeout(()=>{ this.router.navigate(['/mainUI']); }, 1000)
+        
       }
     });
   }
@@ -94,5 +98,22 @@ export class LoginComponent implements OnInit {
       console.log(JSON.stringify(resultArray[0]));
     });
   }
+
+  openReg() {
+    this.router.navigate(['/register']);
+
+  }
+  openMain(){
+    this.router.navigate(['/mainUI'])
+  }
+
+  @HostListener('unloaded')
+  ngOnDestroy() {
+    console.log('Items destroyed');
+  }
+
+  /* clearSessionStorage(){
+    sessionStorage.removeItem("tokenErrorMessage");
+  } */
 
 }
