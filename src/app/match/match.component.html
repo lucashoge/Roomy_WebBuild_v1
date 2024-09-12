@@ -1,8 +1,26 @@
-<br>
-<br>
-<br>
-<ul>
-    <li *ngFor="let resultObj of matchResult">
-        <div> <br> {{ resultObj.userMail }} <br> {{ resultObj.username }} <br> <p>Udd Bild oder was auch immer </p></div>
+<div class="content" role="main">
+    <!-- Swipe Window -->
+    <div class="swipebox" >
+
+        <!-- [ngStyle]="{'display':'none'}" -->
+        <li *ngIf="possibleMatchesFound" style="height: 100%; width: 100%;">
+            <app-profile-view *ngFor="let match of matchResult" ></app-profile-view>
+        </li>
+    </div>
+
+
+    <li *ngIf="!possibleMatchesFound" style="height: 100%; width: 100%;">
+        <div class="swipebox" >
+            <div *ngIf="!possibleMatchesFound" style="height: 100%; width: 100%;">
+                <p>Niemand hat dich gern. :(</p>
+            </div>
+        </div>
+        <div class="swipebox" >
+            <div *ngIf="!possibleMatchesFound" style="height: 100%; width: 100%;">
+                <p>Niemand hat dich gern. :(</p>
+            </div>
+        </div>
     </li>
-</ul>
+
+    
+</div>

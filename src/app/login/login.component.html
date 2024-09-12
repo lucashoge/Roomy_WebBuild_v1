@@ -1,11 +1,38 @@
-<br>
-<br>
-<br>
-<form (submit)="loginUser($event)">
+
+
+<div class="login-page">
+  <div class="form">
+    <form class="login-form" (submit)="loginUser($event)">
+      <input type="text" placeholder="Username" id="username">
+      <input type="password" placeholder="Passwort" id="password">
+      <button (click)="openMain()">Anmelden</button>
+      <p class="error-message">
+        {{loginMessage}}
+      </p>
+      <p class="message" style="margin-top: 0px;">
+        Noch nicht registriert? 
+        <a (click)="openReg()" style="cursor: pointer;">
+          Account erstellen!
+        </a>
+      </p>
+
+      
+    </form>
+    
+  </div>
+
+</div>
+
+
+
+<!-- <router-outlet></router-outlet> -->
+
+<!-- <form (submit)="loginUser($event)">
   <input type="text" placeholder="Username" id="username">
   <input type="password" placeholder="Passwort" id="password">
   <input type="Submit" value="Anmelden">
 </form>
-<br>
-<br>
-{{loginMessage}}
+
+<p class="message">
+  {{loginMessage}}
+</p> -->

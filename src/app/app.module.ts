@@ -10,7 +10,6 @@ import { FormsModule } from "@angular/forms";
 import { RegisterComponent } from './register/register.component';
 
 import { MainUiComponent } from './main-ui/main-ui.component';
-import { ProfileBoxComponent } from './profile-box/profile-box.component';
 import { ChatComponent } from './chat/chat.component';
 import { MatchComponent } from './match/match.component';
 import { SettingsEditingComponent } from './settings-editing/settings-editing.component';
@@ -21,22 +20,26 @@ import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ChatverlaeufeComponent } from './chatverlaeufe/chatverlaeufe.component';
 import { AuthInterceptor } from './auth-interceptor.interceptor';
 import { AuthGuard } from './auth.guard.guard';
+
 import { DatePipe } from '@angular/common';
 import {MatSliderModule,} from '@angular/material/slider'; 
 import {MatCheckboxModule} from '@angular/material/checkbox';
+import { ProfileViewComponent } from './profile-view/profile-view.component';
+import { ErrorComponent } from './error/error.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     RegisterComponent,
      MainUiComponent,
-     ProfileBoxComponent,
      ChatComponent,
      MatchComponent,
      SettingsEditingComponent,
      LoginComponent,
      ProfileComponent,
-     ChatverlaeufeComponent
+     ChatverlaeufeComponent,
+     ProfileViewComponent,
+     ErrorComponent
   ],
   imports: [
     BrowserModule,
@@ -48,6 +51,10 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
     MatCheckboxModule,
     RouterModule.forRoot([     //Abkürzungen für die Links zu den Components | Später wichtig für die Login Überwachung
       {
+      path: 'error',
+      component: ErrorComponent
+      },
+      {
         path: 'login',
         component: LoginComponent
       },
@@ -57,11 +64,6 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
       },{
         path: 'mainUI',
         component: MainUiComponent,
-        canActivate: [AuthGuard]
-      },
-      {
-        path: 'profileBox',
-        component: ProfileBoxComponent,
         canActivate: [AuthGuard]
       },
       {
@@ -76,7 +78,8 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
       },
       {
         path: 'chatverlaeufe',
-        component: ChatverlaeufeComponent
+        component: ChatverlaeufeComponent,
+        canActivate: [AuthGuard]
       },
       {
         path: 'match',
@@ -86,6 +89,11 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
       {
         path: 'settings',
         component: SettingsEditingComponent,
+        canActivate: [AuthGuard]
+      },
+      {
+        path: 'profileView',
+        component: ProfileViewComponent,
         canActivate: [AuthGuard]
       },
       {

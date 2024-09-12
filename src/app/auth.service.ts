@@ -32,12 +32,12 @@ export class AuthService {
   logout() {
     localStorage.removeItem("id_token");
     localStorage.removeItem("expires_at");
-    localStorage.removeItem("visitedUser");
     localStorage.removeItem("currentChat");
     localStorage.removeItem("loggedInUser");
+    sessionStorage.removeItem("tokenErrorMessage");
     
 
-    this.router.navigate(['/']);
+    this.router.navigate(['/login']);
   }
 
 
