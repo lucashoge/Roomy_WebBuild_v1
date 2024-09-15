@@ -7,3 +7,98 @@ input.ng-invalid.ng-touched
  {
     border-color: #ff4c6a;
 }
+
+@import url(https://fonts.googleapis.com/css?family=Roboto:300);
+
+:host{
+  -webkit-tap-highlight-color: transparent;     
+  
+}
+
+body {
+  font-family: "Roboto", sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;      
+}
+
+
+.login-page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 390px;
+  height: 844px;
+}
+.form {
+
+  position: relative;
+
+  width: 100%;
+
+  
+  /* z-index: 1; */
+  background: #FFFFFF;
+  
+  /* padding: 37px; */
+  padding-right: 20px;
+  padding-left: 20px;
+  text-align: center;
+}
+.form input {
+  font-family: "Roboto", sans-serif;
+  outline: 0;
+  background: #f2f2f2;
+  width: 100%;
+  border: 0;
+  margin: 0 0 15px;
+  padding: 15px;
+  box-sizing: border-box;
+  font-size: 14px;
+
+  border-radius: 14px;
+}
+.form button {
+  font-family: "Roboto", sans-serif;
+  text-transform: uppercase;
+  outline: 0;
+  background: #8940FF;
+  width: 100%;
+  border: 0;
+  padding: 15px;
+  margin-bottom: 15px;
+  color: #FFFFFF;
+  font-size: 14px;
+  -webkit-transition-duration: 0.3s; /* Safari */
+  transition-duration: 0.3s;
+  cursor: pointer;
+  border-radius: 14px;
+
+}
+
+.reg-button button:active{
+  background-color: #E2D0FF;
+  transform: scale(0.97);
+}
+
+.p-button button:hover,.button:active,.button:focus {
+  background-color: #E2D0FF;
+  transform: scale(0.97);
+
+} 
+
+.error-message{
+  font-family: "Roboto", sans-serif;
+  color: red;
+  font-size: 12px;
+}
+
+.form .message {
+  margin: 15px 0 0;
+  color: #b3b3b3;
+  font-size: 12px;
+}
+.form .message a {
+  color: #000000;
+  text-decoration: none;
+}
+

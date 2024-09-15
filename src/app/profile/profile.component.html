@@ -1,14 +1,51 @@
-    <div class="tphoto"
-      [@cardAnimator]="animationState"
-      (@cardAnimator.done)="resetAnimationState($event)"
-      (swipeleft)='startAnimation("swipeleft")' 
-      (swiperight)='startAnimation("swiperight")'
->
-    <td><img src="data:image/JPEG;base64,{{currentUser.profilepic.data}}" title="tphoto" alt="Tinder Photo" /></td>
-    <div class="tname">
-        {{currentUser.name}}, <span class="age">{{currentUser.age}}</span>
+    
+    
+<div class="tphoto"
+[@cardAnimator]="animationState"
+(@cardAnimator.done)="resetAnimationState($event)"
+(swipeleft)='startAnimation("swipeleft")' 
+(swiperight)='startAnimation("swiperight")'>
+
+    <div *ngIf="!noMoreProfilesToBrowse">
+      <td><img src={{currentUser.profilepic}} title="tphoto" alt="Tinder Photo" /></td>
+      <div class="profile-nav">
+        <div class="tname">
+            <H2>
+              {{currentUser.username}}
+            </H2>
+            <p>
+              {{currentUser.city}}
+            </p>
+            <!-- <span class="age">{{currentUser.city}}</span> -->
+        </div>
+        <div class="info">
+            <a (click)="changeToProfileView()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="34" height="34" viewBox="0 0 34 34">
+                    <g id="Gruppe_7" data-name="Gruppe 7" transform="translate(-1187 -374)">
+                      <g id="Gruppe_6" data-name="Gruppe 6">
+                        <g id="Ellipse_54" data-name="Ellipse 54" transform="translate(1187 374)" fill="none" stroke="#fff" stroke-width="4">
+                          <circle cx="17" cy="17" r="17" stroke="none"/>
+                          <circle cx="17" cy="17" r="15" fill="none"/>
+                        </g>
+                        <line id="Linie_13" data-name="Linie 13" y2="8.75" transform="translate(1204 390.5)" fill="none" stroke="#000" stroke-linecap="round" stroke-width="4"/>
+                        <circle id="Ellipse_53" data-name="Ellipse 53" cx="2.5" cy="2.5" r="2.5" transform="translate(1201.5 380.75)"/>
+                      </g>
+                    </g>
+                  </svg>
+      
+                  
+             
+            </a>   
+        </div>
+      </div>
+      
     </div>
-    <div class="tinfo">
-        <i class="fa fa-book" aria-hidden="true"> 0</i><i class="fa fa-users" aria-hidden="true"> 0</i>
+    <div class="no-match" *ngIf="noMoreProfilesToBrowse">
+
+        <div class="blob">
+            <p>Suche Leute:)</p>
+        </div>
+
     </div>
+    
 </div>
